@@ -6,6 +6,17 @@
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+struct StateInfo {
+    // ... (struct members not shown)
+};
+
+inline StateInfo* GetAppState(HWND hwnd)
+{
+    LONG_PTR ptr = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    StateInfo *pState = reinterpret_cast<StateInfo*>(ptr);
+    return pState;
+}
+
 void OnSize(HWND hwnd, UINT flag, int width, int height)
 {
     // Handle resizing
@@ -30,9 +41,18 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     
     RegisterClass(&wc);
 
+    StateInfo *pState = new StateInfo;
+
+    if (pState == NULL)
+    {
+        return 0;
+    }
+
+    // initialize the state here
+
     HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Learn to Program Windows", 
         WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-        NULL, NULL, hInstance, NULL);
+        NULL, NULL, hInstance, pState);
 
     if(hwnd == NULL) return 0;
     
@@ -49,6 +69,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    StateInfo *pState;
+    if (uMsg == WM_CREATE)
+    {
+        CREATESTRUCT *pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
+        pState = reinterpret_cast<StateInfo*>(pCreate->lpCreateParams);
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pState);
+    }
+    else
+    {
+        pState = GetAppState(hwnd);
+    }
+
+
     switch (uMsg)
     {
         case WM_SIZE:
