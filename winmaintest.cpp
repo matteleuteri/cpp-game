@@ -3,6 +3,7 @@
 #endif 
 
 #include <windows.h>
+#include <WindowsX.h>
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -69,6 +70,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+
+
+    int xPos = GET_X_LPARAM(lParam); 
+    int yPos = GET_Y_LPARAM(lParam);
+
     StateInfo *pState;
     if (uMsg == WM_CREATE)
     {
