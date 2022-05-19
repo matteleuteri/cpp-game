@@ -1,8 +1,5 @@
 #include "winmaintest.h"
 
-static bool isRunning;
-
-
 struct StateInfo 
 {
     // ... (struct members not shown)
@@ -26,13 +23,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 {
     StateInfo *pState = new StateInfo;
 
+    FRAMES_PER_SECOND = 60;
+
     if (pState == NULL) return 0;
 
     const wchar_t CLASS_NAME[]  = L"Matt's Windows c++ Project";
 
     WNDCLASS wc = { };
     
-    wc.style = 0;
+    wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc   = WindowProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
@@ -55,16 +54,23 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             isRunning = true;
             while(isRunning)
             {
-                MSG msg = { };
-                while (GetMessage(&msg, NULL, 0, 0) > 0)
-                {
-                    if(msg.message == WM_QUIT)
+                
+
+                    MSG msg = { };
+                    while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
                     {
-                        isRunning = false;
+                        if(msg.message == WM_QUIT)
+                        {
+                            isRunning = false;
+                            break;
+                        }
+                        TranslateMessage(&msg);
+                        DispatchMessage(&msg);
                     }
-                    TranslateMessage(&msg);
-                    DispatchMessage(&msg);
-                }
+
+                    //InvalidateRect(hwnd, NULL, TRUE);
+                    // processFrame();
+
             }
             // no longer running
         }
@@ -82,12 +88,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     return 0;
 }
 
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     LRESULT result = 0;
 
-    // int xPos = GET_X_LPARAM(lParam); 
-    // int yPos = GET_Y_LPARAM(lParam);
+//     POINT pt;
+// pt.x = LOWORD(lParam); 
+//                 pt.y = HIWORD(lParam);
+//                 renderScene2(hwnd, pt);
 
     StateInfo *pState;
     if (uMsg == WM_CREATE)
@@ -104,8 +113,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     switch (uMsg)
     {
+        // case MK_LBUTTON:
+        //     InvalidateRect(hwnd, NULL, TRUE);
+
         case WM_SIZE:
         {
+            // InvalidateRect(hwnd, NULL, TRUE);
             // OnSize(hwnd, (UINT)wParam, width, height);
         } break;
 
@@ -127,10 +140,20 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             renderScene(hwnd);
         } break;
         
+
+
+        case WM_LBUTTONDOWN:
+            {
+                
+            }
+        
+        break;
+
+
         default: 
         {
             result = DefWindowProc(hwnd, uMsg, wParam, lParam);
-        } break;
+        } 
 
     }
     return result;
