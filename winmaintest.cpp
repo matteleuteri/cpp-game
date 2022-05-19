@@ -1,5 +1,4 @@
 #include "winmaintest.h"
-#include "Scene.h"
 
 static bool isRunning;
 
