@@ -1,16 +1,14 @@
-#ifndef UNICODE
-#define UNICODE
-#endif 
+#include "winmaintest.h"
+#include "Scene.h"
 
-#include <windows.h>
-#include <WindowsX.h>
+static bool isRunning;
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 struct StateInfo 
 {
-    int stateID;
+    // ... (struct members not shown)
 };
+
 
 inline StateInfo* GetAppState(HWND hwnd)
 {
@@ -24,13 +22,16 @@ void OnSize(HWND hwnd, UINT flag, int width, int height)
     // Handle resizing
 }
 
-void OnPaint()
-{
-    // handle painting
-}
 
-int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PWSTR pCmdLine, _In_ int nCmdShow)
+
+
+
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
+    StateInfo *pState = new StateInfo;
+
+    if (pState == NULL) return 0;
+
     const wchar_t CLASS_NAME[]  = L"Sample Window Class";
 
     WNDCLASS wc = { };
@@ -45,100 +46,96 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     wc.hbrBackground = 0;
     wc.lpszMenuName = 0;
     wc.lpszClassName = CLASS_NAME;
-    
-    RegisterClass(&wc);
 
-    StateInfo *pState = new StateInfo;
-
-    if (pState == NULL)
+    if(RegisterClass(&wc))
     {
-        return 0;
-    }
-    pState->stateID = 1;
-
-    // initialize the state here
-
-    HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Learn to Program Windows", 
+        HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Learn to Program Windows", 
         WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
         NULL, NULL, hInstance, pState);
 
-    if(hwnd == NULL) return 0;
-    
-    ShowWindow(hwnd, nCmdShow);
-    MSG msg = { };
-    while (GetMessage(&msg, NULL, 0, 0) > 0)
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        if(hwnd) 
+        {
+            ShowWindow(hwnd, nCmdShow);
+            isRunning = true;
+            while(isRunning)
+            {
+                MSG msg = { };
+                while (GetMessage(&msg, NULL, 0, 0) > 0)
+                {
+                    if(msg.message == WM_QUIT)
+                    {
+                        isRunning = false;
+                    }
+                    TranslateMessage(&msg);
+                    DispatchMessage(&msg);
+                }
+            }
+            // no longer running
+        }
+        else 
+        {
+            // TODO log window creation failure
+        }
     }
+    else 
+    {
+        // TODO log window registration failure
+    }
+    
     
     return 0;
 }
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    int xPos = GET_X_LPARAM(lParam); 
-    int yPos = GET_Y_LPARAM(lParam);
+    LRESULT result = 0;
+
+    // int xPos = GET_X_LPARAM(lParam); 
+    // int yPos = GET_Y_LPARAM(lParam);
+
     StateInfo *pState;
-    if (uMsg == WM_CREATE) 
+    if (uMsg == WM_CREATE)
     {
-        CREATESTRUCT *pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
-        pState = reinterpret_cast<StateInfo*>(pCreate->lpCreateParams);
-        SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pState);
+        // loads state info
+        // CREATESTRUCT *pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
+        // pState = reinterpret_cast<StateInfo*>(pCreate->lpCreateParams);
+        // SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pState);
     }
-    else pState = GetAppState(hwnd);
- 
-    POINT pt;
+    else
+    {
+        // pState = GetAppState(hwnd);
+    }
 
     switch (uMsg)
     {
         case WM_SIZE:
-
         {
-            int width = LOWORD(lParam);  // Macro to get the low-order word.
-            int height = HIWORD(lParam); // Macro to get the high-order word.
+            // OnSize(hwnd, (UINT)wParam, width, height);
+        } break;
 
-            // Respond to the message:
-            OnSize(hwnd, (UINT)wParam, width, height);
-        }
-        break;
-
-
-
-        case WM_LBUTTONDOWN:
+        case WM_CLOSE: 
         {
-            pt.x = GET_X_LPARAM(lParam);
-            pt.y = GET_Y_LPARAM(lParam);
-
-            // do something with these coordinates
-            // drawCircle(pt);
-
-        }
-        break;
-
-
-        case WM_CLOSE:
-            if (MessageBox(hwnd, L"Really quit?", L"My application", MB_OKCANCEL) == IDOK)
-            {
-                DestroyWindow(hwnd);
-            }
-            return 0;
-
+            isRunning = false;
+            // if (MessageBox(hwnd, L"Really quit?", L"My application", MB_OKCANCEL) == IDOK) 
+            DestroyWindow(hwnd);
+        } break;
 
         case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-        
-        case WM_PAINT:
-            OnPaint();
-        //{
-        //    PAINTSTRUCT ps;
-        //    HDC hdc = BeginPaint(hwnd, &ps);
-        //    FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+1));
-        //    EndPaint(hwnd, &ps);
-        //}
-        return 0;
-    }
-    return DefWindowProc(hwnd, uMsg, wParam, lParam);
-}
+        {
+            isRunning = false;
+            PostQuitMessage(0);
+        } break;
 
+        case WM_PAINT:
+        {
+            renderScene(hwnd);
+        } break;
+        
+        default: 
+        {
+            result = DefWindowProc(hwnd, uMsg, wParam, lParam);
+        } break;
+
+    }
+    return result;
+}
