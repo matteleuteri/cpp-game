@@ -23,16 +23,13 @@ void OnSize(HWND hwnd, UINT flag, int width, int height)
 }
 
 
-
-
-
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     StateInfo *pState = new StateInfo;
 
     if (pState == NULL) return 0;
 
-    const wchar_t CLASS_NAME[]  = L"Sample Window Class";
+    const wchar_t CLASS_NAME[]  = L"Matt's Windows c++ Project";
 
     WNDCLASS wc = { };
     

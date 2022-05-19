@@ -13,15 +13,18 @@ void renderScene(HWND hwnd)
     // figure out what these two lines do????
     HGDIOBJ original = NULL;
     original = SelectObject(ps.hdc, GetStockObject(DC_PEN));
-    
+
     HPEN blackPen = CreatePen(PS_SOLID, 3, 0);
-    
     SelectObject(ps.hdc, blackPen);
-
+    
     // only being done once for now
+    // should I check for null here? do I have to?
     drawShape(&ps, &rc);
-
+    
     DeleteObject(blackPen);
+
+
+    
 
     EndPaint(hwnd, &ps);
 }
