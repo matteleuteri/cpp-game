@@ -4,7 +4,6 @@
 
 #include <windows.h>
 #include "Scene.h"
-// #include <WindowsX.h>
 
 static bool isRunning;
 static int FRAMES_PER_SECOND;
