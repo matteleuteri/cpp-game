@@ -9,7 +9,7 @@
 
 
 
-void handleKeyDown(WPARAM wParam)
+void handleKeyDown(WPARAM wParam, HWND hwnd)
 {
     if(wParam == VK_RETURN) // hitting ENTER starts the game
     {
@@ -20,6 +20,7 @@ void handleKeyDown(WPARAM wParam)
         player->width = 20;
         player->height = 20;
         player->direction = RIGHT;
+        InvalidateRect(hwnd, NULL, TRUE);
     }
     // modify the direction by something. use acceleration
     else if(wParam == VK_UP)
@@ -39,6 +40,24 @@ void handleKeyDown(WPARAM wParam)
         // turn(LEFT);
     }
 }
+
+
+
+
+
+/*static*/ int64_t getTick()
+{
+    LARGE_INTEGER ticks;
+    if (!QueryPerformanceCounter(&ticks))
+    {   
+        // log error
+    }
+    return ticks.QuadPart;
+}    
+
+
+
+
 
 
 
@@ -89,12 +108,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
         case WM_PAINT:
         {
-            renderScene(hwnd, player);
+            renderScene(hwnd);
         } break;
         
         case WM_KEYDOWN:
         {
-            handleKeyDown(wParam);
+            handleKeyDown(wParam, hwnd);
 
         } break;
 
@@ -148,9 +167,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             while(isRunning)
             {
                 // do something about iming and framerate here ????
+
+                DWORD currentTime = getTick();
+                DWORD endTime = currentTime + (1000 / FRAMES_PER_SECOND);
+
+                while(currentTime < endTime)
+                {
+
                     MSG msg = { };
                     while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
                     {
+                        int64_t t = getTick();
                         if(msg.message == WM_QUIT)
                         {
                             isRunning = false;
@@ -158,15 +185,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                         }
                         TranslateMessage(&msg);
                         DispatchMessage(&msg);
-                        renderScene(hwnd, player);
+                        // renderScene(hwnd, player);
                     }
+                    currentTime = getTick();
+
+                }
+    
 
 
+                InvalidateRect(hwnd, NULL, TRUE);
 
-
-                        //clear
-                    //InvalidateRect(hwnd, NULL, TRUE);
-                    // processFrame();
+                renderPlayer(hwnd, player, endTime-currentTime);
 
             }
             // no longer running

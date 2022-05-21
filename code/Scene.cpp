@@ -1,6 +1,6 @@
 #include "Scene.h"
 // todo organize to iterate first over pen, then over corresponding shapes associated with the pens (players)
-void renderScene(HWND hwnd, Player* player) 
+void renderScene(HWND hwnd) 
 {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hwnd, &ps);
@@ -26,7 +26,6 @@ void renderScene(HWND hwnd, Player* player)
     Rectangle(hdc, 100, 100, 1200, 600); // play area border
     // paint players here
 
-    Rectangle(hdc, player->x, player->y, player->x + player->width, player->y + player->height);
 
 
 
@@ -38,5 +37,26 @@ void renderScene(HWND hwnd, Player* player)
 
     EndPaint(hwnd, &ps);
 }
+
+
+void renderPlayer(HWND hwnd, Player* player, DWORD dTime)
+{
+    PAINTSTRUCT ps;
+    HDC hdc = BeginPaint(hwnd, &ps);
+    
+    dTime /= 5000000000;
+
+    player->x += (dTime * player->speed);
+    player->y += (dTime * player->speed); 
+    
+    HPEN hPen = CreatePen(PS_SOLID, 10, RGB(255,0,0));
+    // select tools
+    SelectObject(hdc, hPen);
+
+    Rectangle(hdc, player->x, player->y, player->x + player->width, player->y + player->height);
+    DeleteObject(hPen);
+    EndPaint(hwnd, &ps);
+
+} 
 
 
