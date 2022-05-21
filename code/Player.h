@@ -14,7 +14,8 @@ struct Player
     int y;
     int width;
     int height;
-    float speed;
+    float xSpeed;
+    float ySpeed;
     bool isActive;
 };
 

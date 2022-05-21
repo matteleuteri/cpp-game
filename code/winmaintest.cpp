@@ -5,59 +5,52 @@
 
 
 
-//turn()
-
-
-
-void handleKeyDown(WPARAM wParam, HWND hwnd)
+void accelerate(DIRECTION direction)
 {
-    if(wParam == VK_RETURN) // hitting ENTER starts the game
-    {
-        player->isActive = true;
-        player->x = 300;
-        player->y = 300;
-        player->speed = 1.0f;
-        player->width = 20;
-        player->height = 20;
-        player->direction = RIGHT;
-        InvalidateRect(hwnd, NULL, TRUE);
-    }
-    // modify the direction by something. use acceleration
-    else if(wParam == VK_UP)
-    {
-        // turn(UP);
-    }
-    else if(wParam == VK_RIGHT)
-    {
-        // turn(RIGHT);
-    }
-    else if(wParam == VK_DOWN)
-    {
-        // turn(DOWN);
-    }
-    else if(wParam == VK_LEFT)
-    {
-        // turn(LEFT);
-    }
+
 }
 
 
 
 
-
-/*static*/ int64_t getTick()
+void handleKeyDown(WPARAM wParam, HWND hwnd)
 {
-    LARGE_INTEGER ticks;
-    if (!QueryPerformanceCounter(&ticks))
-    {   
-        // log error
+    OutputDebugStringA("key down\n");
+    
+    InvalidateRect(hwnd, NULL, TRUE); 
+
+    if(wParam == VK_RETURN) // hitting ENTER starts the game
+    {
+        player->isActive = true;
+        player->x = 300;
+        player->y = 300;
+
+        player->width = 20;
+        player->height = 20;
+        
+        player->xSpeed = 0;
+        player->ySpeed = 0;
     }
-    return ticks.QuadPart;
-}    
-
-
-
-
+    // modify the direction by something. use acceleration
+    else if(wParam == VK_UP)
+    {
+        // player->xAcc++;
+        // accelerate(UP);
+    }
+    else if(wParam == VK_RIGHT)
+    {
+        (player->x)++;
+        // accelerate(RIGHT);
+    }
+    else if(wParam == VK_DOWN)
+    {
+        // accelerate(DOWN);
+    }
+    else if(wParam == VK_LEFT)
+    {
+        // accelerate(LEFT);
+    }
+}
 
 
 
@@ -65,57 +58,59 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     LRESULT result = 0;
 
-
-
-
-    // StateInfo *pState;
-    if (uMsg == WM_CREATE)
-    {
-        // loads state info
-        // CREATESTRUCT *pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
-        // pState = reinterpret_cast<StateInfo*>(pCreate->lpCreateParams);
-        // SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pState);
-    }
-    else
-    {
-        // pState = GetAppState(hwnd);
-    }
+    // // StateInfo *pState;
+    // if (uMsg == WM_CREATE)
+    // {
+    //     // loads state info
+    //     // CREATESTRUCT *pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
+    //     // pState = reinterpret_cast<StateInfo*>(pCreate->lpCreateParams);
+    //     // SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pState);
+    // }
+    // else
+    // {
+    //     // pState = GetAppState(hwnd);
+    // }
 
     switch (uMsg)
     {
         // case MK_LBUTTON:
         //     InvalidateRect(hwnd, NULL, TRUE);
 
-        case WM_SIZE:
-        {
+        // case WM_SIZE:
+        // {
 
-            // InvalidateRect(hwnd, NULL, TRUE);
-            // OnSize(hwnd, (UINT)wParam, width, height);
-        } break;
+        //     // InvalidateRect(hwnd, NULL, TRUE);
+        //     // renderScene(hwnd);
+        //     // renderPlayer(hwnd, player);
+        //     break;
+        // } 
 
         case WM_CLOSE: 
         {
             isRunning = false;
             // if (MessageBox(hwnd, L"Really quit?", L"My application", MB_OKCANCEL) == IDOK) 
             DestroyWindow(hwnd);
-        } break;
+            break;
+        } 
 
         case WM_DESTROY:
         {
             isRunning = false;
             PostQuitMessage(0);
-        } break;
+            break;
+        } 
 
         case WM_PAINT:
         {
-            renderScene(hwnd);
-        } break;
+            renderScene(hwnd, player);
+            break;
+        } 
         
         case WM_KEYDOWN:
         {
             handleKeyDown(wParam, hwnd);
-
-        } break;
+            break;
+        } 
 
         default: 
         {
@@ -168,16 +163,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             {
                 // do something about iming and framerate here ????
 
-                DWORD currentTime = getTick();
-                DWORD endTime = currentTime + (1000 / FRAMES_PER_SECOND);
+                // DWORD currentTime = getTick();
+                // DWORD endTime = currentTime + (1000 / FRAMES_PER_SECOND);
 
-                while(currentTime < endTime)
-                {
+                //while(currentTime < endTime)
+                //{
 
                     MSG msg = { };
-                    while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+                    if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
                     {
-                        int64_t t = getTick();
+                        // int64_t t = getTick();
                         if(msg.message == WM_QUIT)
                         {
                             isRunning = false;
@@ -187,15 +182,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                         DispatchMessage(&msg);
                         // renderScene(hwnd, player);
                     }
-                    currentTime = getTick();
+                    // currentTime = getTick();
 
-                }
-    
-
-
-                InvalidateRect(hwnd, NULL, TRUE);
-
-                renderPlayer(hwnd, player, endTime-currentTime);
+                // }
 
             }
             // no longer running
