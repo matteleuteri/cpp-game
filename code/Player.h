@@ -1,10 +1,21 @@
-
-
-
-struct Player 
+enum DIRECTION
 {
-    int direction;
+    UP,
+    RIGHT,
+    DOWN,
+    LEFT
+};
+
+
+struct Player
+{
+    DIRECTION direction;
     int x;
     int y;
-    int speed;
-}
+    int width;
+    int height;
+    float speed;
+    bool isActive;
+};
+
+

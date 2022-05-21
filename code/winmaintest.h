@@ -7,5 +7,14 @@
 
 static bool isRunning;
 static int FRAMES_PER_SECOND;
+Player *player;
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+// struct StateInfo 
+// {};
+
+// inline StateInfo* GetAppState(HWND hwnd)
+// {
+//     LONG_PTR ptr = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+//     StateInfo *pState = reinterpret_cast<StateInfo*>(ptr);
+//     return pState;
+// }

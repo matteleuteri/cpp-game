@@ -1,3 +1,3 @@
 #include <windows.h>
-
-void renderScene(HWND hwnd);
+#include "Player.h"
+void renderScene(HWND hwnd, Player* player);

@@ -1,26 +1,124 @@
 #include "winmaintest.h"
 
-struct StateInfo 
-{};
 
-inline StateInfo* GetAppState(HWND hwnd)
+
+
+
+
+//turn()
+
+
+
+void handleKeyDown(WPARAM wParam)
 {
-    LONG_PTR ptr = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    StateInfo *pState = reinterpret_cast<StateInfo*>(ptr);
-    return pState;
+    if(wParam == VK_RETURN) // hitting ENTER starts the game
+    {
+        player->isActive = true;
+        player->x = 300;
+        player->y = 300;
+        player->speed = 1.0f;
+        player->width = 20;
+        player->height = 20;
+        player->direction = RIGHT;
+    }
+    // modify the direction by something. use acceleration
+    else if(wParam == VK_UP)
+    {
+        // turn(UP);
+    }
+    else if(wParam == VK_RIGHT)
+    {
+        // turn(RIGHT);
+    }
+    else if(wParam == VK_DOWN)
+    {
+        // turn(DOWN);
+    }
+    else if(wParam == VK_LEFT)
+    {
+        // turn(LEFT);
+    }
 }
 
-void OnSize(HWND hwnd, UINT flag, int width, int height)
-{}
+
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    LRESULT result = 0;
+
+
+
+
+    // StateInfo *pState;
+    if (uMsg == WM_CREATE)
+    {
+        // loads state info
+        // CREATESTRUCT *pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
+        // pState = reinterpret_cast<StateInfo*>(pCreate->lpCreateParams);
+        // SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pState);
+    }
+    else
+    {
+        // pState = GetAppState(hwnd);
+    }
+
+    switch (uMsg)
+    {
+        // case MK_LBUTTON:
+        //     InvalidateRect(hwnd, NULL, TRUE);
+
+        case WM_SIZE:
+        {
+
+            // InvalidateRect(hwnd, NULL, TRUE);
+            // OnSize(hwnd, (UINT)wParam, width, height);
+        } break;
+
+        case WM_CLOSE: 
+        {
+            isRunning = false;
+            // if (MessageBox(hwnd, L"Really quit?", L"My application", MB_OKCANCEL) == IDOK) 
+            DestroyWindow(hwnd);
+        } break;
+
+        case WM_DESTROY:
+        {
+            isRunning = false;
+            PostQuitMessage(0);
+        } break;
+
+        case WM_PAINT:
+        {
+            renderScene(hwnd, player);
+        } break;
+        
+        case WM_KEYDOWN:
+        {
+            handleKeyDown(wParam);
+
+        } break;
+
+        default: 
+        {
+            result = DefWindowProc(hwnd, uMsg, wParam, lParam);
+        } 
+
+    }
+    return result;
+}
 
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    StateInfo *pState = new StateInfo;
+    // StateInfo *pState = new StateInfo;
+
+
+    player = new Player();
+
 
     FRAMES_PER_SECOND = 60;
 
-    if (pState == NULL) return 0;
+    // if (pState == NULL) return 0;
 
     const wchar_t CLASS_NAME[]  = L"Matt's Windows c++ Project";
 
@@ -41,7 +139,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     {
         HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Learn to Program Windows", 
         WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-        NULL, NULL, hInstance, pState);
+        NULL, NULL, hInstance, NULL);
 
         if(hwnd) 
         {
@@ -49,7 +147,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             isRunning = true;
             while(isRunning)
             {
-    
+                // do something about iming and framerate here ????
                     MSG msg = { };
                     while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
                     {
@@ -60,8 +158,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                         }
                         TranslateMessage(&msg);
                         DispatchMessage(&msg);
+                        renderScene(hwnd, player);
                     }
 
+
+
+
+                        //clear
                     //InvalidateRect(hwnd, NULL, TRUE);
                     // processFrame();
 
@@ -80,75 +183,4 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     
     
     return 0;
-}
-
-
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    LRESULT result = 0;
-
-//     POINT pt;
-// pt.x = LOWORD(lParam); 
-//                 pt.y = HIWORD(lParam);
-//                 renderScene2(hwnd, pt);
-
-    StateInfo *pState;
-    if (uMsg == WM_CREATE)
-    {
-        // loads state info
-        // CREATESTRUCT *pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
-        // pState = reinterpret_cast<StateInfo*>(pCreate->lpCreateParams);
-        // SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pState);
-    }
-    else
-    {
-        // pState = GetAppState(hwnd);
-    }
-
-    switch (uMsg)
-    {
-        // case MK_LBUTTON:
-        //     InvalidateRect(hwnd, NULL, TRUE);
-
-        case WM_SIZE:
-        {
-            // InvalidateRect(hwnd, NULL, TRUE);
-            // OnSize(hwnd, (UINT)wParam, width, height);
-        } break;
-
-        case WM_CLOSE: 
-        {
-            isRunning = false;
-            // if (MessageBox(hwnd, L"Really quit?", L"My application", MB_OKCANCEL) == IDOK) 
-            DestroyWindow(hwnd);
-        } break;
-
-        case WM_DESTROY:
-        {
-            isRunning = false;
-            PostQuitMessage(0);
-        } break;
-
-        case WM_PAINT:
-        {
-            renderScene(hwnd);
-        } break;
-        
-
-
-        case WM_LBUTTONDOWN:
-            {
-                
-            }
-        
-        break;
-
-
-        default: 
-        {
-            result = DefWindowProc(hwnd, uMsg, wParam, lParam);
-        } 
-
-    }
-    return result;
 }

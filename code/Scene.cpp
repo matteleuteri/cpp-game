@@ -1,6 +1,6 @@
 #include "Scene.h"
 // todo organize to iterate first over pen, then over corresponding shapes associated with the pens (players)
-void renderScene(HWND hwnd) 
+void renderScene(HWND hwnd, Player* player) 
 {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hwnd, &ps);
@@ -12,7 +12,7 @@ void renderScene(HWND hwnd)
     
     // declare tools
     HBRUSH blackBrush = CreateSolidBrush(RGB(0,0,0));
-    HPEN hPen = CreatePen(PS_SOLID,10,RGB(255,0,0));
+    HPEN hPen = CreatePen(PS_SOLID, 10, RGB(255,0,0));
     // select tools
     SelectObject(hdc, hPen);
     SelectObject(hdc, blackBrush);
@@ -23,17 +23,16 @@ void renderScene(HWND hwnd)
 
     // use tools
     FillRgn(hdc, bgRgn, blackBrush); // background
-    Rectangle(hdc, rc.left+100,rc.top+100,rc.right-100,rc.bottom-100); // play area border
-
-
+    Rectangle(hdc, 100, 100, 1200, 600); // play area border
     // paint players here
 
+    Rectangle(hdc, player->x, player->y, player->x + player->width, player->y + player->height);
 
 
 
 
 
-    // free tools ???
+    // free tools
     DeleteObject(hPen);
     DeleteObject(blackBrush);
 
