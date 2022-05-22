@@ -5,18 +5,10 @@
 #include <windows.h>
 #include <stdint.h>
 #include <profileapi.h>
+
 #include "Scene.h"
 
+
 static bool isRunning;
-static int FRAMES_PER_SECOND;
-Player *player;
-
-// struct StateInfo 
-// {};
-
-// inline StateInfo* GetAppState(HWND hwnd)
-// {
-//     LONG_PTR ptr = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-//     StateInfo *pState = reinterpret_cast<StateInfo*>(ptr);
-//     return pState;
-// }
+static win32_offscreen_buffer GlobalBackbuffer;
+static Player* player;
