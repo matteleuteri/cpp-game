@@ -5,7 +5,6 @@
 #include <windows.h>
 #include <stdint.h>
 #include <profileapi.h>
-#include <stdint.h>
 #include "Scene.h"
 
 static bool isRunning;

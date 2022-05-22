@@ -1,18 +1,5 @@
 #include "winmaintest.h"
 
-
-
-
-
-
-void accelerate(DIRECTION direction)
-{
-
-}
-
-
-
-
 void handleKeyDown(WPARAM wParam, HWND hwnd)
 {
     OutputDebugStringA("key down\n");
@@ -34,25 +21,25 @@ void handleKeyDown(WPARAM wParam, HWND hwnd)
     // modify the direction by something. use acceleration
     else if(wParam == VK_UP)
     {
-        // player->xAcc++;
+        (player->ySpeed)--;
         // accelerate(UP);
     }
     else if(wParam == VK_RIGHT)
     {
-        (player->x)++;
+        (player->xSpeed)++;
         // accelerate(RIGHT);
     }
     else if(wParam == VK_DOWN)
     {
+        (player->ySpeed)++;
         // accelerate(DOWN);
     }
     else if(wParam == VK_LEFT)
     {
+        (player->xSpeed)--;
         // accelerate(LEFT);
     }
 }
-
-
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -73,17 +60,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     switch (uMsg)
     {
-        // case MK_LBUTTON:
-        //     InvalidateRect(hwnd, NULL, TRUE);
-
-        // case WM_SIZE:
-        // {
-
-        //     // InvalidateRect(hwnd, NULL, TRUE);
-        //     // renderScene(hwnd);
-        //     // renderPlayer(hwnd, player);
-        //     break;
-        // } 
 
         case WM_CLOSE: 
         {
@@ -126,6 +102,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 {
     // StateInfo *pState = new StateInfo;
 
+    LARGE_INTEGER performanceFrequencyRes;
+    QueryPerformanceFrequency(&performanceFrequencyRes);
+
+    int64_t performanceFrequency = performanceFrequencyRes.QuadPart;
 
     player = new Player();
 
@@ -159,18 +139,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         {
             ShowWindow(hwnd, nCmdShow);
             isRunning = true;
+
+            LARGE_INTEGER prevCounter;
+            QueryPerformanceCounter(&prevCounter);
+
+
             while(isRunning)
             {
-                // do something about iming and framerate here ????
-
-                // DWORD currentTime = getTick();
-                // DWORD endTime = currentTime + (1000 / FRAMES_PER_SECOND);
 
                 //while(currentTime < endTime)
                 //{
 
                     MSG msg = { };
-                    if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+                    while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
                     {
                         // int64_t t = getTick();
                         if(msg.message == WM_QUIT)
@@ -180,12 +161,22 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                         }
                         TranslateMessage(&msg);
                         DispatchMessage(&msg);
-                        // renderScene(hwnd, player);
                     }
-                    // currentTime = getTick();
 
                 // }
 
+                    // InvalidateRect(hwnd, NULL, true);
+                    // UpdateWindow(hwnd);
+
+                    // pass a timestep too to et distance travelled since last render???
+                // renderScene(hwnd, player);
+
+
+                LARGE_INTEGER endCounter;
+                QueryPerformanceCounter(&endCounter);
+                int64_t counterElapsed = endCounter.QuadPart - prevCounter.QuadPart;
+                int32_t msPerFrame = (int32_t)((1000 * counterElapsed) / performanceFrequency);
+                prevCounter = endCounter;
             }
             // no longer running
         }
