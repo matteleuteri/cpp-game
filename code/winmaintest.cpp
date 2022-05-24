@@ -1,10 +1,6 @@
 #include "winmaintest.h"
 
-
-
-
-static win32_window_dimension
-Win32GetWindowDimension(HWND Window)
+static win32_window_dimension Win32GetWindowDimension(HWND Window)
 {
     win32_window_dimension Result;
     
@@ -16,9 +12,7 @@ Win32GetWindowDimension(HWND Window)
     return(Result);
 }
 
-static void
-Win32DisplayBufferInWindow(win32_offscreen_buffer *Buffer,
-                           HDC DeviceContext, int WindowWidth, int WindowHeight)
+static void Win32DisplayBufferInWindow(game_offscreen_buffer *Buffer, HDC DeviceContext, int WindowWidth, int WindowHeight)
 {
     StretchDIBits(DeviceContext,
                   0, 0, WindowWidth, WindowHeight,
@@ -28,24 +22,17 @@ Win32DisplayBufferInWindow(win32_offscreen_buffer *Buffer,
                   DIB_RGB_COLORS, SRCCOPY);
 }
 
-
-static void
-GameUpdateAndRender(game_offscreen_buffer *Buffer, int64_t elapsed)
+static void GameUpdateAndRender(game_offscreen_buffer *Buffer, int64_t elapsed)
 {
     updatePlayer(player, elapsed);
     render(Buffer, player);
 }
 
-
-
-
-
 // device independent bitmap
 // we can write into a dib
 // this resizes, or initializes in not yet created, a dib section
-static void Win32ResizeDIBSection(win32_offscreen_buffer *Buffer, int Width, int Height)
+static void Win32ResizeDIBSection(game_offscreen_buffer *Buffer, int Width, int Height)
 {
-
     if(Buffer->Memory)
     {
         VirtualFree(Buffer->Memory, 0, MEM_RELEASE);
@@ -68,67 +55,53 @@ static void Win32ResizeDIBSection(win32_offscreen_buffer *Buffer, int Width, int
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 static inline int64_t GetTicks()
 {
     LARGE_INTEGER ticks;
     if (!QueryPerformanceCounter(&ticks))
     {
+        // log error
     }
     return ticks.QuadPart;
 }
 
-
-void handleKeyDown(WPARAM wParam, HWND hwnd)
+static void handleKeyDown(WPARAM wParam, HWND hwnd)
 {
     OutputDebugStringA("key down\n");
     
-    // InvalidateRect(hwnd, NULL, TRUE); 
+        if(wParam == VK_RETURN) // hitting ENTER starts the game
+        {
+            player->isActive = true;
+            player->x = 300;
+            player->y = 300;
 
-    if(wParam == VK_RETURN) // hitting ENTER starts the game
-    {
-        player->isActive = true;
-        player->x = 300;
-        player->y = 300;
-
-        player->width = 20;
-        player->height = 20;
+            player->width = 20;
+            player->height = 20;
         
-        player->xSpeed = 0;
-        player->ySpeed = 0;
-    }
-    // // modify the direction by something. use acceleration
-    else if(wParam == VK_UP)
-    {
-        (player->ySpeed)--;
-        // accelerate(UP);
-    }
-    else if(wParam == VK_RIGHT)
-    {
-        (player->xSpeed)++;
-        // accelerate(RIGHT);
-    }
-    else if(wParam == VK_DOWN)
-    {
-        (player->ySpeed)++;
-        // accelerate(DOWN);
-    }
-    else if(wParam == VK_LEFT)
-    {
-        (player->xSpeed)--;
-        // accelerate(LEFT);
-    }
+            player->xSpeed = 0;
+            player->ySpeed = 0;
+            player->isAccY = 0;
+            player->isAccX = 0;
+        }
+        // // modify the direction by something. use acceleration
+        else if(wParam == VK_UP)
+        {
+            (player->ySpeed) = max(player->ySpeed - 0.01, -0.1);
+        }
+        else if(wParam == VK_RIGHT)
+        {
+            (player->xSpeed) = min((player->xSpeed) + 0.01, 0.1);
+        }
+        else if(wParam == VK_DOWN)
+        {
+            (player->ySpeed) = min((player->ySpeed) + 0.01, 0.1);
+        }
+        else if(wParam == VK_LEFT)
+        {
+            (player->xSpeed) = max((player->xSpeed) - 0.01, -0.1);
+        }
+    
+
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -169,6 +142,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             handleKeyDown(wParam, hwnd);
             break;
         } 
+        // case WM_KEYUP:
+        // {
+        //     break;
+        // } 
 
         default: 
         {

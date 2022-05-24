@@ -10,5 +10,5 @@
 
 
 static bool isRunning;
-static win32_offscreen_buffer GlobalBackbuffer;
+static game_offscreen_buffer GlobalBackbuffer;
 static Player* player;

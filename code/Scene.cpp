@@ -4,10 +4,10 @@ void render(game_offscreen_buffer *Buffer, Player* player)
 {
 
     uint8_t *Row = (uint8_t *)Buffer->Memory;    
-    for(int Y = 0; Y < Buffer->Height; ++Y)
+    for(int i = 0; i < Buffer->Height; i++)
     {
         uint32_t *Pixel = (uint32_t *)Row;
-        for(int X = 0; X < Buffer->Width; ++X)
+        for(int j = 0; j < Buffer->Width; j++)
         {
             // uint8_t Blue = X;
             // uint8_t Green = Y;
@@ -19,7 +19,7 @@ void render(game_offscreen_buffer *Buffer, Player* player)
             
             // red line on Y = 200
                 
-            if(player->isActive && abs(Y - player->y) < 20 && abs(X - player->x) < 20)
+            if(player->isActive && abs(i - player->y) < 20 && abs(j - player->x) < 20)
                 *Pixel = RGB(0,0,255);
             else
                 *Pixel = RGB(0,0,0);
@@ -46,16 +46,15 @@ void render(game_offscreen_buffer *Buffer, Player* player)
 
 void updatePlayer(Player* player, int64_t elapsed)
 {
-    // elapsed /= 1000;
-    // (player->x) = (player->x) + ((elapsed * player->xSpeed));
-    // (player->y) = (player->y) + ((elapsed * player->ySpeed)); 
 
-    // (player->x) = (player->x + 1) % 700;
-    // (player->y) = (player->y + 1) % 500;
 
-    player->x += (elapsed/10000 * player->xSpeed);
-    player->y += (elapsed/10000 * player->ySpeed);
+ 
 
+
+
+
+    player->x += (player->xSpeed * (elapsed/1000));
+    player->y += (player->ySpeed * (elapsed/1000));
 
     if(player->x > 500)
     {

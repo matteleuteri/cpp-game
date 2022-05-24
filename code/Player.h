@@ -16,6 +16,8 @@ struct Player
     int height;
     float xSpeed;
     float ySpeed;
+    bool isAccX;
+    bool isAccY;
     bool isActive;
 };
 
