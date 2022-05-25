@@ -1,5 +1,7 @@
 #include <windows.h>
 #include <stdint.h>
+#include <math.h>
+
 #include "Player.h"
 
 
@@ -28,5 +30,5 @@ struct win32_window_dimension
 
 
 // void render(HWND hwnd, Player* player);
-void updatePlayer(Player* player, int64_t elapsed);
-void render(game_offscreen_buffer *Buffer, Player* player);
+void updateState(Player* player, int64_t elapsed);
+void renderState(game_offscreen_buffer *Buffer, Player* player);

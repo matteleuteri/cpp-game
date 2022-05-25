@@ -14,18 +14,13 @@ static win32_window_dimension Win32GetWindowDimension(HWND Window)
 
 static void Win32DisplayBufferInWindow(game_offscreen_buffer *Buffer, HDC DeviceContext, int WindowWidth, int WindowHeight)
 {
-    StretchDIBits(DeviceContext,
-                  0, 0, WindowWidth, WindowHeight,
-                  0, 0, Buffer->Width, Buffer->Height,
-                  Buffer->Memory,
-                  &Buffer->Info,
-                  DIB_RGB_COLORS, SRCCOPY);
+    StretchDIBits(DeviceContext, 0, 0, WindowWidth, WindowHeight, 0, 0, Buffer->Width, Buffer->Height, Buffer->Memory, &Buffer->Info, DIB_RGB_COLORS, SRCCOPY);
 }
 
 static void GameUpdateAndRender(game_offscreen_buffer *Buffer, int64_t elapsed)
 {
-    updatePlayer(player, elapsed);
-    render(Buffer, player);
+    updateState(player, elapsed);
+    renderState(Buffer, player);
 }
 
 // device independent bitmap
@@ -80,25 +75,23 @@ static void handleKeyDown(WPARAM wParam, HWND hwnd)
         
             player->xSpeed = 0;
             player->ySpeed = 0;
-            player->isAccY = 0;
-            player->isAccX = 0;
         }
         // // modify the direction by something. use acceleration
         else if(wParam == VK_UP)
         {
-            (player->ySpeed) = max(player->ySpeed - 0.01, -0.1);
+            (player->ySpeed)-= 1;
         }
         else if(wParam == VK_RIGHT)
         {
-            (player->xSpeed) = min((player->xSpeed) + 0.01, 0.1);
+            (player->xSpeed)+= 1;
         }
         else if(wParam == VK_DOWN)
         {
-            (player->ySpeed) = min((player->ySpeed) + 0.01, 0.1);
+            (player->ySpeed)+= 1;
         }
         else if(wParam == VK_LEFT)
         {
-            (player->xSpeed) = max((player->xSpeed) - 0.01, -0.1);
+            (player->xSpeed)-= 1;
         }
     
 
@@ -131,8 +124,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT Paint;
             HDC DeviceContext = BeginPaint(hwnd, &Paint);
             win32_window_dimension Dimension = Win32GetWindowDimension(hwnd);
-            Win32DisplayBufferInWindow(&GlobalBackbuffer, DeviceContext,
-                                       Dimension.Width, Dimension.Height);
+            Win32DisplayBufferInWindow(&GlobalBackbuffer, DeviceContext, Dimension.Width, Dimension.Height);
             EndPaint(hwnd, &Paint);            
             break;
         } 
@@ -177,7 +169,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     if(RegisterClass(&wc))
     {
-        HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Learn to Program Windows", WS_OVERLAPPEDWINDOW|WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL);
+        HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Learn to Program Windows", WS_OVERLAPPEDWINDOW|WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, hInstance, 0);
 
         if(hwnd) 
         {
