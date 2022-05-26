@@ -7,8 +7,9 @@ enum DIRECTION
 };
 
 
-struct Player
+class Player
 {
+public:
     DIRECTION direction;
     int x;
     int y;
