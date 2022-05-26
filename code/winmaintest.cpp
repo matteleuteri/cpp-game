@@ -12,41 +12,11 @@ static win32_window_dimension Win32GetWindowDimension(HWND Window)
     return(Result);
 }
 
-static void Win32DisplayBufferInWindow(game_offscreen_buffer *Buffer, HDC DeviceContext, int WindowWidth, int WindowHeight)
-{
-    StretchDIBits(DeviceContext, 0, 0, WindowWidth, WindowHeight, 0, 0, Buffer->Width, Buffer->Height, Buffer->Memory, &Buffer->Info, DIB_RGB_COLORS, SRCCOPY);
-}
 
 static void GameUpdateAndRender(game_offscreen_buffer *Buffer, int64_t elapsed)
 {
     updateState(player, elapsed);
     renderState(Buffer, player);
-}
-
-// device independent bitmap
-// we can write into a dib
-// this resizes, or initializes in not yet created, a dib section
-static void Win32ResizeDIBSection(game_offscreen_buffer *Buffer, int Width, int Height)
-{
-    if(Buffer->Memory)
-    {
-        VirtualFree(Buffer->Memory, 0, MEM_RELEASE);
-    }
-
-    Buffer->Width = Width;
-    Buffer->Height = Height;
-
-    int BytesPerPixel = 4;
-
-    Buffer->Info.bmiHeader.biSize = sizeof(Buffer->Info.bmiHeader);
-    Buffer->Info.bmiHeader.biWidth = Buffer->Width;
-    Buffer->Info.bmiHeader.biHeight = -Buffer->Height;
-    Buffer->Info.bmiHeader.biPlanes = 1;
-    Buffer->Info.bmiHeader.biBitCount = 32;
-    Buffer->Info.bmiHeader.biCompression = BI_RGB;
-    int BitmapMemorySize = (Buffer->Width*Buffer->Height)*BytesPerPixel;
-    Buffer->Memory = VirtualAlloc(0, BitmapMemorySize, MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE);
-    Buffer->Pitch = Width*BytesPerPixel;
 }
 
 
@@ -66,35 +36,33 @@ static void handleKeyDown(WPARAM wParam, HWND hwnd)
     
         if(wParam == VK_RETURN) // hitting ENTER starts the game
         {
-            player->isActive = true;
-            player->x = 300;
-            player->y = 300;
+        //     player->isActive = true;
+        //     player->x = 300;
+        //     player->y = 300;
 
-            player->width = 20;
-            player->height = 20;
+        //     player->width = 20;
+        //     player->height = 20;
         
-            player->xSpeed = 0;
-            player->ySpeed = 0;
+        //     player->xSpeed = 0;
+        //     player->ySpeed = 0;
         }
         // // modify the direction by something. use acceleration
         else if(wParam == VK_UP)
         {
-            (player->ySpeed)-= 1;
+            yoff-= 1;
         }
         else if(wParam == VK_RIGHT)
         {
-            (player->xSpeed)+= 1;
+            xoff+= 1;
         }
         else if(wParam == VK_DOWN)
         {
-            (player->ySpeed)+= 1;
+            yoff+= 1;
         }
         else if(wParam == VK_LEFT)
         {
-            (player->xSpeed)-= 1;
+            xoff -= 1;
         }
-    
-
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -119,15 +87,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             break;
         } 
 
-        case WM_PAINT:
-        {
-            PAINTSTRUCT Paint;
-            HDC DeviceContext = BeginPaint(hwnd, &Paint);
-            win32_window_dimension Dimension = Win32GetWindowDimension(hwnd);
-            Win32DisplayBufferInWindow(&GlobalBackbuffer, DeviceContext, Dimension.Width, Dimension.Height);
-            EndPaint(hwnd, &Paint);            
-            break;
-        } 
+        // case WM_PAINT:
+        // {
+        //     PAINTSTRUCT Paint;
+        //     HDC DeviceContext = BeginPaint(hwnd, &Paint);
+        //     win32_window_dimension Dimension = Win32GetWindowDimension(hwnd);
+        //     Win32DisplayBufferInWindow(&GlobalBackbuffer, DeviceContext, Dimension.Width, Dimension.Height);
+        //     EndPaint(hwnd, &Paint);            
+        //     break;
+        // } 
         
         case WM_KEYDOWN:
         {
@@ -154,8 +122,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     const wchar_t CLASS_NAME[]  = L"Matt's Windows c++ Project";
     player = new Player();
     WNDCLASS wc = { };
-    Win32ResizeDIBSection(&GlobalBackbuffer, 1280, 720);
-
+    // Win32ResizeDIBSection(&GlobalBackbuffer, 1280, 720);
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wc.lpfnWndProc   = WindowProc;
     wc.cbClsExtra = 0;
@@ -167,17 +134,44 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     wc.lpszMenuName = 0;
     wc.lpszClassName = CLASS_NAME;
 
+    yoff = 0;
+    xoff = 0;
+
     if(RegisterClass(&wc))
     {
         HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Learn to Program Windows", WS_OVERLAPPEDWINDOW|WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, hInstance, 0);
 
         if(hwnd) 
         {
-            HDC DeviceContext = GetDC(hwnd);
+            // HDC DeviceContext = GetDC(hwnd);
 
             isRunning = true;
 
-            int64_t startTime = GetTicks();
+            // direct2d code begins here
+            ID2D1Factory* pD2DFactory = NULL;
+            //  returns HRESULT
+            D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
+            
+            // repeat this as needed
+            RECT rc;
+            GetClientRect(hwnd, &rc);
+            
+            ID2D1HwndRenderTarget* pRT = NULL;          
+            
+            //  returns HRESULT
+            HRESULT hr = pD2DFactory->CreateHwndRenderTarget(
+                        D2D1::RenderTargetProperties(),
+                        D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)), &pRT
+            );
+
+
+            ID2D1SolidColorBrush* pBlackBrush = NULL;
+            if (SUCCEEDED(hr))
+            {
+                pRT->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Blue), &pBlackBrush); 
+            }
+
+            // int64_t startTime = GetTicks();
             
             while(isRunning)
             {
@@ -194,19 +188,18 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                     DispatchMessageA(&msg);
                 }
 
-                game_offscreen_buffer Buffer = {};
-                Buffer.Memory = GlobalBackbuffer.Memory;
-                Buffer.Width = GlobalBackbuffer.Width; 
-                Buffer.Height = GlobalBackbuffer.Height;
-                Buffer.Pitch = GlobalBackbuffer.Pitch; 
+                pRT->BeginDraw();
+                pRT->Clear(D2D1::ColorF(D2D1::ColorF::Black));// "clears" the screen to a solid color
 
-                int64_t endTime = GetTicks();
+                pRT->DrawRectangle(D2D1::RectF(rc.left, rc.top, rc.right, rc.bottom), pBlackBrush);
 
-                GameUpdateAndRender(&Buffer, endTime - startTime);
-                win32_window_dimension Dimension = Win32GetWindowDimension(hwnd);
-                Win32DisplayBufferInWindow(&GlobalBackbuffer, DeviceContext, Dimension.Width, Dimension.Height);
 
-                startTime = endTime;
+                pRT->DrawRectangle(D2D1::RectF(rc.left + 100.0f + xoff, rc.top + 100.0f+yoff, rc.right - 100.0f+xoff, rc.bottom - 100.0f+yoff), pBlackBrush);
+                
+                HRESULT hr = pRT->EndDraw();  
+                // int64_t endTime = GetTicks();
+
+                // startTime = endTime;
 
             }
             // no longer running

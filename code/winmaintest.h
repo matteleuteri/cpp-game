@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <stdint.h>
 #include <profileapi.h>
+#include <d2d1.h>
 
 #include "Scene.h"
 
@@ -29,3 +30,7 @@ struct windowConfigs
     SCREENSTATE screenState;
     // refresh rate??? what else???
 };
+
+
+int xoff;
+int yoff;
