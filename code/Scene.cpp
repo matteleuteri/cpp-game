@@ -59,8 +59,16 @@ void Scene::updateState(int64_t timeElapsed)
         if(player->xSpeed > 1.0)
         {
             player->xSpeed = 1.0;
-            player->goingRight = false;
+            // player->goingRight = false;
         }
+    }
+    else
+    {
+        if(player->xSpeed > 0.0)
+        {
+            player->xSpeed -= 0.01;
+            
+        }   
     }
     if(player->goingLeft)
     {
@@ -68,17 +76,15 @@ void Scene::updateState(int64_t timeElapsed)
         if(player->xSpeed < -1.0)
         {
             player->xSpeed = -1.0;
-            player->goingLeft = false;
+            // player->goingLeft = false;
         }
     }
-    if(player->goingUp)
+    else
     {
-        (player->ySpeed) -= 0.01;
-        if(player->ySpeed < -1.0)
+        if(player->xSpeed < 0)
         {
-            player->ySpeed = -1.0;
-            player->goingUp = false;
-        }
+            player->xSpeed += 0.01;
+        }   
     }
     if(player->goingDown)
     {
@@ -86,9 +92,33 @@ void Scene::updateState(int64_t timeElapsed)
         if(player->ySpeed > 1.0)
         {
             player->ySpeed = 1.0;
-            player->goingDown = false;
+            // player->goingDown = false;
         }
     }
+    else
+    {
+        if(player->ySpeed > 0)
+        {
+            player->ySpeed -= 0.01;
+        }   
+    }
+        if(player->goingUp)
+    {
+        (player->ySpeed) -= 0.01;
+        if(player->ySpeed < -1.0)
+        {
+            player->ySpeed = -1.0;
+            // player->goingUp = false;
+        }
+    }
+    else
+    {
+        if(player->ySpeed < 0)
+        {
+            player->ySpeed += 0.01;
+        }   
+    }
+
 
     player->x += (player->xSpeed * (timeElapsed / 10000000));
     player->y += (player->ySpeed * (timeElapsed / 10000000));
