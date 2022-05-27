@@ -5,14 +5,16 @@
 #include <windows.h>
 #include <stdint.h>
 #include <profileapi.h>
-#include <d2d1.h>
 
 #include "Scene.h"
+// #include "Player.h"
 
 
 static bool isRunning;
-static game_offscreen_buffer GlobalBackbuffer;
 static Player* player;
+static Scene* scene;
+static HANDLE  m_hTimer;
+
 
 enum SCREENSTATE
 {
@@ -22,6 +24,11 @@ enum SCREENSTATE
     OTHER
 };
 
+struct window_dimension 
+{
+    int height;
+    int width;
+};
 
 struct windowConfigs 
 {

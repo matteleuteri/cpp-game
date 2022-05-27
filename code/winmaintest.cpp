@@ -1,24 +1,16 @@
 #include "winmaintest.h"
 
-static win32_window_dimension Win32GetWindowDimension(HWND Window)
+static window_dimension GetWindowDimension(HWND Window)
 {
-    win32_window_dimension Result;
+    window_dimension result;
     
     RECT ClientRect;
     GetClientRect(Window, &ClientRect);
-    Result.Width = ClientRect.right - ClientRect.left;
-    Result.Height = ClientRect.bottom - ClientRect.top;
+    result.width = ClientRect.right - ClientRect.left;
+    result.height = ClientRect.bottom - ClientRect.top;
 
-    return(Result);
+    return result;
 }
-
-
-static void GameUpdateAndRender(game_offscreen_buffer *Buffer, int64_t elapsed)
-{
-    updateState(player, elapsed);
-    renderState(Buffer, player);
-}
-
 
 static inline int64_t GetTicks()
 {
@@ -36,33 +28,34 @@ static void handleKeyDown(WPARAM wParam, HWND hwnd)
     
         if(wParam == VK_RETURN) // hitting ENTER starts the game
         {
-        //     player->isActive = true;
-        //     player->x = 300;
-        //     player->y = 300;
+            scene->player->isActive = true;
 
-        //     player->width = 20;
-        //     player->height = 20;
+            scene->player->x = 400;
+            scene->player->y = 400;
+
+            scene->player->width = 20;
+            scene->player->height = 20;
         
-        //     player->xSpeed = 0;
-        //     player->ySpeed = 0;
+            scene->player->xSpeed = 0;
+            scene->player->ySpeed = 0;
         }
         // // modify the direction by something. use acceleration
-        else if(wParam == VK_UP)
-        {
-            yoff-= 1;
-        }
+        // else if(wParam == VK_UP)
+        // {
+        //     yoff-= 1;
+        // }
         else if(wParam == VK_RIGHT)
         {
-            xoff+= 1;
+            scene->speedUp(LEFT);
         }
-        else if(wParam == VK_DOWN)
-        {
-            yoff+= 1;
-        }
-        else if(wParam == VK_LEFT)
-        {
-            xoff -= 1;
-        }
+        // else if(wParam == VK_DOWN)
+        // {
+        //     yoff+= 1;
+        // }
+        // else if(wParam == VK_LEFT)
+        // {
+        //     xoff -= 1;
+        // }
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -89,12 +82,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
         // case WM_PAINT:
         // {
-        //     PAINTSTRUCT Paint;
-        //     HDC DeviceContext = BeginPaint(hwnd, &Paint);
-        //     win32_window_dimension Dimension = Win32GetWindowDimension(hwnd);
-        //     Win32DisplayBufferInWindow(&GlobalBackbuffer, DeviceContext, Dimension.Width, Dimension.Height);
-        //     EndPaint(hwnd, &Paint);            
-        //     break;
         // } 
         
         case WM_KEYDOWN:
@@ -120,9 +107,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     const wchar_t CLASS_NAME[]  = L"Matt's Windows c++ Project";
-    player = new Player();
+    scene = new Scene();
     WNDCLASS wc = { };
-    // Win32ResizeDIBSection(&GlobalBackbuffer, 1280, 720);
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wc.lpfnWndProc   = WindowProc;
     wc.cbClsExtra = 0;
@@ -188,15 +174,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                     DispatchMessageA(&msg);
                 }
 
-                pRT->BeginDraw();
-                pRT->Clear(D2D1::ColorF(D2D1::ColorF::Black));// "clears" the screen to a solid color
 
-                pRT->DrawRectangle(D2D1::RectF(rc.left, rc.top, rc.right, rc.bottom), pBlackBrush);
+                scene->updateState();
 
+                scene->renderState(pRT, rc, pBlackBrush);
 
-                pRT->DrawRectangle(D2D1::RectF(rc.left + 100.0f + xoff, rc.top + 100.0f+yoff, rc.right - 100.0f+xoff, rc.bottom - 100.0f+yoff), pBlackBrush);
-                
-                HRESULT hr = pRT->EndDraw();  
                 // int64_t endTime = GetTicks();
 
                 // startTime = endTime;

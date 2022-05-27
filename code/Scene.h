@@ -1,34 +1,24 @@
+#ifndef _SCENE
+#define _SCENE
+
 #include <windows.h>
 #include <stdint.h>
 #include <math.h>
+#include <d2d1.h>
 
 #include "Player.h"
 
 
-// struct game_offscreen_buffer
-// {
-//     // NOTE(casey): Pixels are alwasy 32-bits wide, Memory Order BB GG RR XX
-//     void *Memory;
-//     int Width;
-//     int Height;
-//     int Pitch;
-// };
-struct game_offscreen_buffer
+class Scene
 {
-    // NOTE(casey): Pixels are alwasy 32-bits wide, Memory Order BB GG RR XX
-    BITMAPINFO Info;
-    void *Memory;
-    int Width;
-    int Height;
-    int Pitch;
-};
-struct win32_window_dimension
-{
-    int Width;
-    int Height;
+public:
+    Player* player;
+    Scene::Scene();
+    Scene::~Scene();
+    void Scene::speedUp(DIRECTION direction);
+    void Scene::updateState();
+    void Scene::renderState(ID2D1HwndRenderTarget* pRT, RECT rc, ID2D1SolidColorBrush* pBlackBrush);
 };
 
 
-// void render(HWND hwnd, Player* player);
-void updateState(Player* player, int64_t elapsed);
-void renderState(game_offscreen_buffer *Buffer, Player* player);
+#endif

@@ -1,89 +1,46 @@
 #include "Scene.h"
-// todo organize to iterate first over pen, then over corresponding shapes associated with the pens (players)
-void renderState(game_offscreen_buffer *Buffer, Player* player)
+
+
+Scene::Scene()
 {
-    uint8_t *Row = (uint8_t *)Buffer->Memory;
-
-    int numRows = Buffer->Height;
-    int numCols = Buffer->Width;
+    player = new Player();// dont forget to free
+}
 
 
-
-    for(int i = 0; i < numRows; i++)
+void Scene::speedUp(DIRECTION direction)
+{
+    if(direction == LEFT)
     {
-        uint32_t *Pixel = (uint32_t *)Row;
-        for(int j = 0; j < numCols; j++)
-        {
-            // if(i < 100)         *Pixel = RGB(0,255,255);
-            // else if(i < 200)    *Pixel = RGB(255,0,255);
-            // else if(i < 300)    *Pixel = RGB(127,0,127);
-            // if(/*player->isActive && */abs(i - player->y) < 20 && abs(j - player->x) < 20)
-            //     *Pixel = RGB(255,0,127);
-            // else
-            //     *Pixel = RGB(0,0,0);
-
-
-            // int ie = labs(sin(j) + 20) * 20;
-
-            // if(ie - i < 3)
-            //     *Pixel = RGB(0,0,255);
-            // else
-            //     *Pixel = RGB(0,0,0);
-
-            // if(i == 2 * j)
-            //     *Pixel = RGB(0,0,255);
-            // else
-            //     *Pixel = RGB(100,200,76);
-
-            //draw one cycle of fractal borde
-
-
-            bool b = labs(i - 40 * (sin(j / 50) + 5)) < 2;
-
-
-
-
-            if(b)
-            {
-                *Pixel = RGB(0,0,255);
-            }
-            else
-            {
-                *Pixel = RGB(0,0,0);
-            }
-
-
-
-
-
-
-            *Pixel++;
-        }
-        Row += (Buffer->Pitch);
+        (player->x)++; 
     }
 }
 
-void updateState(Player* player, int64_t elapsed)
-{
-    // coordinates used here refer to the game state coordinates, not window coordinates
-    player->x += (player->xSpeed * (elapsed/10000));
-    player->y += (player->ySpeed * (elapsed/10000));
 
-    if(player->x > 500)
-    {
-        player->x = 0;
-    }
-    else if(player->x < 0)
-    {
-        player->x = 500;
-    }
-    if(player->y > 500)
-    {
-        player->y = 0;
-    }
-    else if(player->y < 0)
-    {
-        player->y = 500;
-    }
-    // map coordinates from some game world onto the canvas, at a dimension the window can handle
+void Scene::updateState()
+{
+    // update player position based on how long the key has been pressed down, or how long since releease it has been
+}
+
+
+void Scene::renderState(ID2D1HwndRenderTarget* pRT, RECT rc, ID2D1SolidColorBrush* pBlackBrush)
+{
+    pRT->BeginDraw();
+    // clear to a black background
+    pRT->Clear(D2D1::ColorF(D2D1::ColorF::Black));// "clears" the screen to a solid color
+
+        // border of window
+    pRT->DrawRectangle(D2D1::RectF(rc.left, rc.top, rc.right, rc.bottom), pBlackBrush);
+
+        // border of playable area
+    pRT->DrawRectangle(D2D1::RectF(rc.left + 100.0f, rc.top + 100.0f, rc.right - 100.0f, rc.bottom - 100.0f), pBlackBrush);
+               
+        // draw player
+    pRT->DrawRectangle(D2D1::RectF(player->x, player->y, player->x + player->width, player->y + player->height), pBlackBrush);
+
+    HRESULT hr = pRT->EndDraw();  
+}
+
+Scene::~Scene()
+{
+    delete player;
 }
