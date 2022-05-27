@@ -16,7 +16,8 @@ public:
     Scene::Scene();
     Scene::~Scene();
     void Scene::speedUp(DIRECTION direction);
-    void Scene::updateState();
+    void Scene::slowDown(DIRECTION direction);
+    void Scene::updateState(int64_t timeElapsed);
     void Scene::renderState(ID2D1HwndRenderTarget* pRT, RECT rc, ID2D1SolidColorBrush* pBlackBrush);
 };
 

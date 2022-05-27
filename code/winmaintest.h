@@ -7,7 +7,6 @@
 #include <profileapi.h>
 
 #include "Scene.h"
-// #include "Player.h"
 
 
 static bool isRunning;

@@ -22,40 +22,62 @@ static inline int64_t GetTicks()
     return ticks.QuadPart;
 }
 
-static void handleKeyDown(WPARAM wParam, HWND hwnd)
+static void handleKeyDown(WPARAM wParam)
 {
     OutputDebugStringA("key down\n");
     
-        if(wParam == VK_RETURN) // hitting ENTER starts the game
-        {
-            scene->player->isActive = true;
+    if(wParam == VK_RETURN) // hitting ENTER starts the game
+    {
+        scene->player->isActive = true;
 
-            scene->player->x = 400;
-            scene->player->y = 400;
+        scene->player->x = 400;
+        scene->player->y = 400;
 
-            scene->player->width = 20;
-            scene->player->height = 20;
+        scene->player->width = 20;
+        scene->player->height = 20;
         
-            scene->player->xSpeed = 0;
-            scene->player->ySpeed = 0;
-        }
-        // // modify the direction by something. use acceleration
-        // else if(wParam == VK_UP)
-        // {
-        //     yoff-= 1;
-        // }
-        else if(wParam == VK_RIGHT)
-        {
-            scene->speedUp(LEFT);
-        }
-        // else if(wParam == VK_DOWN)
-        // {
-        //     yoff+= 1;
-        // }
-        // else if(wParam == VK_LEFT)
-        // {
-        //     xoff -= 1;
-        // }
+        scene->player->xSpeed = 0;
+        scene->player->ySpeed = 0;
+    }
+    // // modify the direction by something. use acceleration
+    else if(wParam == VK_UP)
+    {
+        scene->speedUp(UP);
+    }
+    else if(wParam == VK_RIGHT)
+    {
+        scene->speedUp(RIGHT);
+    }
+    else if(wParam == VK_DOWN)
+    {
+        scene->speedUp(DOWN);
+    }
+    else if(wParam == VK_LEFT)
+    {
+        scene->speedUp(LEFT);
+    }
+}
+
+static void handleKeyUp(WPARAM wParam)
+{
+    OutputDebugStringA("key up\n");
+    // // modify the direction by something. use acceleration
+    if(wParam == VK_UP)
+    {
+        scene->slowDown(UP);
+    }
+    else if(wParam == VK_RIGHT)
+    {
+        scene->slowDown(RIGHT);
+    }
+    else if(wParam == VK_DOWN)
+    {
+        scene->slowDown(DOWN);
+    }
+    else if(wParam == VK_LEFT)
+    {
+        scene->slowDown(LEFT);
+    }
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -86,13 +108,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         
         case WM_KEYDOWN:
         {
-            handleKeyDown(wParam, hwnd);
+            handleKeyDown(wParam);
             break;
         } 
-        // case WM_KEYUP:
-        // {
-        //     break;
-        // } 
+        case WM_KEYUP:
+        {
+            handleKeyUp(wParam);
+            break;
+        } 
 
         default: 
         {
@@ -157,7 +180,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 pRT->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Blue), &pBlackBrush); 
             }
 
-            // int64_t startTime = GetTicks();
+            int64_t startTime = GetTicks();
             
             while(isRunning)
             {
@@ -174,14 +197,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                     DispatchMessageA(&msg);
                 }
 
+                int64_t endTime = GetTicks();
 
-                scene->updateState();
+                scene->updateState(endTime - startTime);
+
+                endTime = startTime;
 
                 scene->renderState(pRT, rc, pBlackBrush);
-
-                // int64_t endTime = GetTicks();
-
-                // startTime = endTime;
 
             }
             // no longer running

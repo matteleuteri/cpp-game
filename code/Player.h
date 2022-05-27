@@ -20,8 +20,11 @@ public:
     int height;
     float xSpeed;
     float ySpeed;
-    bool isAccX;
-    bool isAccY;
+    bool goingRight;
+    bool goingLeft;
+
+    bool goingUp;
+    bool goingDown;
     bool isActive;
 };
 

@@ -9,18 +9,106 @@ Scene::Scene()
 
 void Scene::speedUp(DIRECTION direction)
 {
-    if(direction == LEFT)
+
+    if(direction == RIGHT)
     {
-        (player->x)++; 
+        player->goingRight = true; 
+    }
+    else if(direction == LEFT)
+    {
+        player->goingLeft = true;
+    }
+    else if(direction == UP)
+    {
+        player->goingUp = true;    
+    }
+    else if(direction == DOWN)
+    {
+        player->goingDown = true;
     }
 }
 
-
-void Scene::updateState()
+void Scene::slowDown(DIRECTION direction)
 {
-    // update player position based on how long the key has been pressed down, or how long since releease it has been
+    if(direction == RIGHT)
+    {
+        player->goingRight = false; 
+    }
+    else if(direction == LEFT)
+    {
+        player->goingLeft = false;
+    }
+    else if(direction == UP)
+    {
+        player->goingUp = false;    
+    }
+    else if(direction == DOWN)
+    {
+        player->goingDown = false;
+    }
 }
 
+void Scene::updateState(int64_t timeElapsed)
+{
+    if(player->goingRight)
+    {
+        (player->xSpeed) += 0.01;
+        if(player->xSpeed > 1.0)
+        {
+            player->xSpeed = 1.0;
+            player->goingRight = false;
+        }
+    }
+    if(player->goingLeft)
+    {
+        (player->xSpeed) -= 0.01;
+        if(player->xSpeed < -1.0)
+        {
+            player->xSpeed = -1.0;
+            player->goingLeft = false;
+        }
+    }
+    if(player->goingUp)
+    {
+        (player->ySpeed) -= 0.01;
+        if(player->ySpeed < -1.0)
+        {
+            player->ySpeed = -1.0;
+            player->goingUp = false;
+        }
+    }
+    if(player->goingDown)
+    {
+        (player->ySpeed) += 0.01;
+        if(player->ySpeed > 1.0)
+        {
+            player->ySpeed = 1.0;
+            player->goingDown = false;
+        }
+    }
+
+    player->x += (player->xSpeed * (timeElapsed / 10000000));
+    player->y += (player->ySpeed * (timeElapsed / 10000000));
+
+    if(player->x > 1280)
+    {
+        player->x = 0;
+    }
+    else if(player->x < 0)
+    {
+        player->x = 1280;
+    }
+
+    if(player->y > 720)
+    {
+        player->y = 0;
+    }
+    else if(player->y < 0)
+    {
+        player->y = 720;
+    }
+
+}
 
 void Scene::renderState(ID2D1HwndRenderTarget* pRT, RECT rc, ID2D1SolidColorBrush* pBlackBrush)
 {
