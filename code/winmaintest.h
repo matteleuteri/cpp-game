@@ -13,7 +13,7 @@ static bool isRunning;
 static Player* player;
 static Scene* scene;
 static HANDLE  m_hTimer;
-
+ID2D1HwndRenderTarget* pRT;
 
 enum SCREENSTATE
 {

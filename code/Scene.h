@@ -12,13 +12,20 @@
 class Scene
 {
 public:
+    // ID2D1HwndRenderTarget* pRT;
+    // ID2D1SolidColorBrush* pPinkBrush;
+    ID2D1SolidColorBrush* pPinkBrush;
+    ID2D1SolidColorBrush* pOrangeBrush;
+
     Player* player;
     Scene::Scene();
     Scene::~Scene();
     void Scene::speedUp(DIRECTION direction);
     void Scene::slowDown(DIRECTION direction);
     void Scene::updateState(int64_t timeElapsed);
-    void Scene::renderState(ID2D1HwndRenderTarget* pRT, RECT rc, ID2D1SolidColorBrush* pBlackBrush);
+    void Scene::renderState(RECT* rc, ID2D1HwndRenderTarget* pRT);
+
+    ID2D1HwndRenderTarget* Scene::createResources(HWND hwnd, RECT* rc);
 };
 
 

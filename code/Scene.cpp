@@ -5,7 +5,10 @@ Scene::Scene()
 {
     player = new Player();// dont forget to free
 }
-
+Scene::~Scene()
+{
+    delete player;
+}
 
 void Scene::speedUp(DIRECTION direction)
 {
@@ -110,25 +113,44 @@ void Scene::updateState(int64_t timeElapsed)
 
 }
 
-void Scene::renderState(ID2D1HwndRenderTarget* pRT, RECT rc, ID2D1SolidColorBrush* pBlackBrush)
+void Scene::renderState(RECT* rc, ID2D1HwndRenderTarget* pRT)
 {
     pRT->BeginDraw();
     // clear to a black background
     pRT->Clear(D2D1::ColorF(D2D1::ColorF::Black));// "clears" the screen to a solid color
 
-        // border of window
-    pRT->DrawRectangle(D2D1::RectF(rc.left, rc.top, rc.right, rc.bottom), pBlackBrush);
+    // border of window
+    pRT->DrawRectangle(D2D1::RectF(rc->left, rc->top, rc->right, rc->bottom), pPinkBrush);
 
-        // border of playable area
-    pRT->DrawRectangle(D2D1::RectF(rc.left + 100.0f, rc.top + 100.0f, rc.right - 100.0f, rc.bottom - 100.0f), pBlackBrush);
+    // border of playable area
+    pRT->DrawRectangle(D2D1::RectF(rc->left + 100.0f, rc->top + 100.0f, rc->right - 100.0f, rc->bottom - 100.0f), pOrangeBrush);
                
-        // draw player
-    pRT->DrawRectangle(D2D1::RectF(player->x, player->y, player->x + player->width, player->y + player->height), pBlackBrush);
+    // draw player
+    pRT->FillRectangle(D2D1::RectF(player->x, player->y, player->x + player->width, player->y + player->height), pPinkBrush);
 
     HRESULT hr = pRT->EndDraw();  
 }
 
-Scene::~Scene()
+
+
+ID2D1HwndRenderTarget* Scene::createResources(HWND hwnd, RECT* rc)
 {
-    delete player;
+    ID2D1Factory* pD2DFactory = NULL; // only needed here for initialization
+    ID2D1HwndRenderTarget* pRT = NULL; // one of these is used by the main window
+    pPinkBrush = NULL;
+    pOrangeBrush = NULL;
+    // pOrangeBrush = NULL;
+
+    //  returns HRESULT
+    if(!D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory))
+    {
+        // handle failure to create factory
+    }
+
+    pD2DFactory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rc->right - rc->left, rc->bottom - rc->top)), &pRT);
+    
+    pRT->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink), &pPinkBrush); 
+    pRT->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Orange), &pOrangeBrush); 
+
+    return pRT;
 }

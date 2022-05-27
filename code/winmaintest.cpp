@@ -131,6 +131,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 {
     const wchar_t CLASS_NAME[]  = L"Matt's Windows c++ Project";
     scene = new Scene();
+    
+    ID2D1HwndRenderTarget* pRT = NULL;
+
     WNDCLASS wc = { };
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wc.lpfnWndProc   = WindowProc;
@@ -152,40 +155,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
         if(hwnd) 
         {
-            // HDC DeviceContext = GetDC(hwnd);
-
             isRunning = true;
 
-            // direct2d code begins here
-            ID2D1Factory* pD2DFactory = NULL;
-            //  returns HRESULT
-            D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
-            
-            // repeat this as needed
             RECT rc;
             GetClientRect(hwnd, &rc);
             
-            ID2D1HwndRenderTarget* pRT = NULL;          
-            
-            //  returns HRESULT
-            HRESULT hr = pD2DFactory->CreateHwndRenderTarget(
-                        D2D1::RenderTargetProperties(),
-                        D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)), &pRT
-            );
-
-
-            ID2D1SolidColorBrush* pBlackBrush = NULL;
-            if (SUCCEEDED(hr))
-            {
-                pRT->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Blue), &pBlackBrush); 
-            }
+            pRT = scene->createResources(hwnd, &rc);        
 
             int64_t startTime = GetTicks();
             
             while(isRunning)
             {
-
-
                 MSG msg;
                 while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
                 {
@@ -198,12 +178,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 }
 
                 int64_t endTime = GetTicks();
-
                 scene->updateState(endTime - startTime);
-
                 endTime = startTime;
-
-                scene->renderState(pRT, rc, pBlackBrush);
+                scene->renderState(&rc, pRT);
 
             }
             // no longer running
