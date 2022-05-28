@@ -13,7 +13,7 @@ enum DIRECTION
 class Player
 {
 public:
-    DIRECTION direction;
+    DIRECTION direction; // make a pointer?
     int x;
     int y;
     int width;
@@ -22,11 +22,16 @@ public:
     float ySpeed;
     bool goingRight;
     bool goingLeft;
-
     bool goingUp;
     bool goingDown;
     bool isActive;
+    void Player::speedUp(DIRECTION direction);
+    void Player::slowDown(DIRECTION direction);
+    void Player::moveTowardsZeroX();
+    void Player::moveTowardsZeroY();
 };
+
+
 
 
 #endif

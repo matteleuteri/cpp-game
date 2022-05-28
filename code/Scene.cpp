@@ -10,113 +10,64 @@ Scene::~Scene()
     delete player;
 }
 
-void Scene::speedUp(DIRECTION direction)
-{
 
-    if(direction == RIGHT)
-    {
-        player->goingRight = true; 
-    }
-    else if(direction == LEFT)
-    {
-        player->goingLeft = true;
-    }
-    else if(direction == UP)
-    {
-        player->goingUp = true;    
-    }
-    else if(direction == DOWN)
-    {
-        player->goingDown = true;
-    }
-}
 
-void Scene::slowDown(DIRECTION direction)
-{
-    if(direction == RIGHT)
-    {
-        player->goingRight = false; 
-    }
-    else if(direction == LEFT)
-    {
-        player->goingLeft = false;
-    }
-    else if(direction == UP)
-    {
-        player->goingUp = false;    
-    }
-    else if(direction == DOWN)
-    {
-        player->goingDown = false;
-    }
-}
 
-void Scene::updateState(int64_t timeElapsed)
+void Scene::updatePlayer(int64_t timeElapsed)
 {
     if(player->goingRight)
     {
-        (player->xSpeed) += 0.01;
-        if(player->xSpeed > 1.0)
+        player->xSpeed += 0.05;
+        if(player->xSpeed > 1)
         {
             player->xSpeed = 1.0;
-            // player->goingRight = false;
         }
     }
-    else
+    else if(!player->goingLeft)
     {
-        if(player->xSpeed > 0.0)
-        {
-            player->xSpeed -= 0.01;
-            
-        }   
+        player->moveTowardsZeroX();
     }
+
     if(player->goingLeft)
     {
-        (player->xSpeed) -= 0.01;
+        (player->xSpeed) -= 0.05;
         if(player->xSpeed < -1.0)
         {
             player->xSpeed = -1.0;
             // player->goingLeft = false;
         }
     }
-    else
+    else if(!player->goingRight)
     {
-        if(player->xSpeed < 0)
-        {
-            player->xSpeed += 0.01;
-        }   
+        player->moveTowardsZeroX();  
     }
+
     if(player->goingDown)
     {
-        (player->ySpeed) += 0.01;
+        (player->ySpeed) += 0.05;
         if(player->ySpeed > 1.0)
         {
             player->ySpeed = 1.0;
             // player->goingDown = false;
         }
     }
-    else
+    else if(!player->goingUp)
     {
-        if(player->ySpeed > 0)
-        {
-            player->ySpeed -= 0.01;
-        }   
+        player->moveTowardsZeroY();
     }
-        if(player->goingUp)
+
+    if(player->goingUp)
     {
-        (player->ySpeed) -= 0.01;
+        (player->ySpeed) -= 0.05;
         if(player->ySpeed < -1.0)
         {
             player->ySpeed = -1.0;
             // player->goingUp = false;
         }
     }
-    else
+    else if(!player->goingDown)
     {
-        if(player->ySpeed < 0)
-        {
-            player->ySpeed += 0.01;
-        }   
+        player->moveTowardsZeroY();
     }
 
 

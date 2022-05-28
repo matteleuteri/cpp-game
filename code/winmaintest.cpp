@@ -22,6 +22,11 @@ static inline int64_t GetTicks()
     return ticks.QuadPart;
 }
 
+
+
+/*  THESE FUNCTIONS BELOW ARE NOT FINAL  */
+
+
 static void handleKeyDown(WPARAM wParam)
 {
     OutputDebugStringA("key down\n");
@@ -42,19 +47,19 @@ static void handleKeyDown(WPARAM wParam)
     // // modify the direction by something. use acceleration
     else if(wParam == VK_UP)
     {
-        scene->speedUp(UP);
+        scene->player->goingUp = true;
     }
     else if(wParam == VK_RIGHT)
     {
-        scene->speedUp(RIGHT);
+        scene->player->goingRight = true;
     }
     else if(wParam == VK_DOWN)
     {
-        scene->speedUp(DOWN);
+        scene->player->goingDown = true;
     }
     else if(wParam == VK_LEFT)
     {
-        scene->speedUp(LEFT);
+        scene->player->goingLeft = true;
     }
 }
 
@@ -64,19 +69,19 @@ static void handleKeyUp(WPARAM wParam)
     // // modify the direction by something. use acceleration
     if(wParam == VK_UP)
     {
-        scene->slowDown(UP);
+        scene->player->goingUp = false;
     }
     else if(wParam == VK_RIGHT)
     {
-        scene->slowDown(RIGHT);
+        scene->player->goingRight = false;
     }
     else if(wParam == VK_DOWN)
     {
-        scene->slowDown(DOWN);
+        scene->player->goingDown = false;
     }
     else if(wParam == VK_LEFT)
     {
-        scene->slowDown(LEFT);
+        scene->player->goingLeft = false;
     }
 }
 
@@ -178,7 +183,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 }
 
                 int64_t endTime = GetTicks();
-                scene->updateState(endTime - startTime);
+                scene->updatePlayer(endTime - startTime);
                 endTime = startTime;
                 scene->renderState(&rc, pRT);
 
