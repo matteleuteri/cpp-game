@@ -1,87 +1,52 @@
 #include "Player.h"
 
-// these could be done with switch cases
-void Player::speedUp(DIRECTION direction)
+void Player::moveTowardsZeroRight() 
 {
-    if(direction == RIGHT)
+    if(rightSpeed == 0) return;
+    else if(rightSpeed > 0) 
     {
-        goingRight = true; 
-    }
-    else if(direction == LEFT)
-    {
-        goingLeft = true;
-    }
-    else if(direction == UP)
-    {
-        goingUp = true;    
-    }
-    else if(direction == DOWN)
-    {
-        goingDown = true;
-    }
-}
-
-void Player::slowDown(DIRECTION direction)
-{
-    if(direction == RIGHT)
-    {
-        goingRight = false; 
-    }
-    else if(direction == LEFT)
-    {
-        goingLeft = false;
-    }
-    else if(direction == UP)
-    {
-        goingUp = false;    
-    }
-    else if(direction == DOWN)
-    {
-        goingDown = false;
-    }
-}
-
-
-
-
-void Player::moveTowardsZeroX() 
-{
-    if(xSpeed == 0) return;
-    else if(xSpeed > 0) 
-    {
-        xSpeed -= 0.001;
-        if(xSpeed < 0)
+        rightSpeed -= 0.05;
+        if(rightSpeed < 0)
         {
-            xSpeed = 0;
+            rightSpeed = 0;
         }
     }
-    else
+}
+void Player::moveTowardsZeroLeft() 
+{
+    if(leftSpeed == 0) return;
+    else if(leftSpeed > 0) 
     {
-        xSpeed += 0.001;
-        if(xSpeed > 0)
+        leftSpeed -= 0.05;
+        if(leftSpeed < 0)
         {
-            xSpeed =0;
+            leftSpeed = 0;
         }
     }
 }
 
-void Player::moveTowardsZeroY() 
+void Player::moveTowardsZeroUp() 
 {
-    if(ySpeed == 0) return;
-    else if(ySpeed > 0) 
+    if(upSpeed == 0) return;
+    else if(upSpeed > 0) 
     {
-        ySpeed -= 0.001;
-        if(ySpeed < 0)
+        upSpeed -= 0.05;
+        if(upSpeed < 0)
         {
-            ySpeed = 0;
+            upSpeed = 0;
         }
     }
-    else
+}
+
+void Player::moveTowardsZeroDown() 
+{
+    if(downSpeed == 0) return;
+    else if(downSpeed > 0) 
     {
-        ySpeed += 0.001;
-        if(ySpeed > 0)
+        downSpeed -= 0.05;
+        if(downSpeed < 0)
         {
-            ySpeed =0;
+            downSpeed = 0;
         }
     }
 }

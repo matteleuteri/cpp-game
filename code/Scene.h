@@ -19,7 +19,7 @@ public:
     Scene::~Scene();
     void Scene::updatePlayer(int64_t timeElapsed);
     void Scene::renderState(RECT* rc, ID2D1HwndRenderTarget* pRT);
-    ID2D1HwndRenderTarget* Scene::createResources(HWND hwnd, RECT* rc);
+    /*static*/ ID2D1HwndRenderTarget* Scene::createResources(HWND hwnd, RECT* rc);
 };
 
 #endif

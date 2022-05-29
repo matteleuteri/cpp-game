@@ -17,62 +17,62 @@ void Scene::updatePlayer(int64_t timeElapsed)
 {
     if(player->goingRight)
     {
-        player->xSpeed += 0.05;
-        if(player->xSpeed > 1)
+        player->rightSpeed += 0.05;
+        if(player->rightSpeed > 1)
         {
-            player->xSpeed = 1.0;
+            player->rightSpeed = 1.0;
         }
     }
-    else if(!player->goingLeft)
+    else
     {
-        player->moveTowardsZeroX();
+        player->moveTowardsZeroRight();
     }
 
     if(player->goingLeft)
     {
-        (player->xSpeed) -= 0.05;
-        if(player->xSpeed < -1.0)
+        (player->leftSpeed) += 0.05;
+        if(player->leftSpeed > 1.0)
         {
-            player->xSpeed = -1.0;
-            // player->goingLeft = false;
+            player->leftSpeed = 1.0;
         }
     }
-    else if(!player->goingRight)
+    else
     {
-        player->moveTowardsZeroX();  
+        player->moveTowardsZeroLeft();  
     }
 
     if(player->goingDown)
     {
-        (player->ySpeed) += 0.05;
-        if(player->ySpeed > 1.0)
+        (player->downSpeed) += 0.05;
+        if(player->downSpeed > 1.0)
         {
-            player->ySpeed = 1.0;
-            // player->goingDown = false;
+            player->downSpeed = 1.0;
         }
     }
-    else if(!player->goingUp)
+    else
     {
-        player->moveTowardsZeroY();
+        player->moveTowardsZeroDown();
     }
 
     if(player->goingUp)
     {
-        (player->ySpeed) -= 0.05;
-        if(player->ySpeed < -1.0)
+        (player->upSpeed) += 0.05;
+        if(player->upSpeed > 1.0)
         {
-            player->ySpeed = -1.0;
-            // player->goingUp = false;
+            player->upSpeed = 1.0;
         }
     }
-    else if(!player->goingDown)
+    else
     {
-        player->moveTowardsZeroY();
+        player->moveTowardsZeroUp();
     }
 
 
-    player->x += (player->xSpeed * (timeElapsed / 10000000));
-    player->y += (player->ySpeed * (timeElapsed / 10000000));
+    player->x += (player->rightSpeed * (timeElapsed / 10000000));
+    player->y += (player->downSpeed * (timeElapsed / 10000000));
+
+    player->x -= (player->leftSpeed * (timeElapsed / 10000000));
+    player->y -= (player->upSpeed * (timeElapsed / 10000000));
 
     if(player->x > 1280)
     {
@@ -122,12 +122,8 @@ ID2D1HwndRenderTarget* Scene::createResources(HWND hwnd, RECT* rc)
     pOrangeBrush = NULL;
     // pOrangeBrush = NULL;
 
-    //  returns HRESULT
-    if(!D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory))
-    {
-        // handle failure to create factory
-    }
-
+    // both return HRESULTs
+    D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
     pD2DFactory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rc->right - rc->left, rc->bottom - rc->top)), &pRT);
     
     pRT->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink), &pPinkBrush); 

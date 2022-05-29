@@ -41,8 +41,10 @@ static void handleKeyDown(WPARAM wParam)
         scene->player->width = 20;
         scene->player->height = 20;
         
-        scene->player->xSpeed = 0;
-        scene->player->ySpeed = 0;
+        scene->player->leftSpeed = 0;
+        scene->player->rightSpeed = 0;
+        scene->player->upSpeed = 0;
+        scene->player->downSpeed = 0;
     }
     // // modify the direction by something. use acceleration
     else if(wParam == VK_UP)

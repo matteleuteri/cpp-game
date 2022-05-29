@@ -18,20 +18,23 @@ public:
     int y;
     int width;
     int height;
-    float xSpeed;
-    float ySpeed;
+    bool isActive;
+    
+    float leftSpeed;
+    float rightSpeed;
+    float upSpeed;
+    float downSpeed;
+    
     bool goingRight;
     bool goingLeft;
     bool goingUp;
     bool goingDown;
-    bool isActive;
-    void Player::speedUp(DIRECTION direction);
-    void Player::slowDown(DIRECTION direction);
-    void Player::moveTowardsZeroX();
-    void Player::moveTowardsZeroY();
+
+    void Player::moveTowardsZeroUp();
+    void Player::moveTowardsZeroDown();
+    void Player::moveTowardsZeroLeft();
+    void Player::moveTowardsZeroRight();    
 };
-
-
 
 
 #endif
