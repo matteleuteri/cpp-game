@@ -30,10 +30,7 @@ public:
     bool goingUp;
     bool goingDown;
 
-    void Player::moveTowardsZeroUp();
-    void Player::moveTowardsZeroDown();
-    void Player::moveTowardsZeroLeft();
-    void Player::moveTowardsZeroRight();    
+    void Player::moveTowardsZero(DIRECTION direction);   
 };
 
 

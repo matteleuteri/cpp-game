@@ -22,7 +22,7 @@ void Scene::updatePlayer(int64_t timeElapsed)
     }
     else
     {
-        player->moveTowardsZeroRight();
+        player->moveTowardsZero(RIGHT);
     }
 
     if(player->goingLeft)
@@ -35,7 +35,7 @@ void Scene::updatePlayer(int64_t timeElapsed)
     }
     else
     {
-        player->moveTowardsZeroLeft();  
+        player->moveTowardsZero(LEFT);  
     }
 
     if(player->goingDown)
@@ -48,7 +48,7 @@ void Scene::updatePlayer(int64_t timeElapsed)
     }
     else
     {
-        player->moveTowardsZeroDown();
+        player->moveTowardsZero(DOWN);
     }
 
     if(player->goingUp)
@@ -61,7 +61,7 @@ void Scene::updatePlayer(int64_t timeElapsed)
     }
     else
     {
-        player->moveTowardsZeroUp();
+        player->moveTowardsZero(UP);
     }
 
 

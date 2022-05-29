@@ -1,52 +1,21 @@
 #include "Player.h"
 
-void Player::moveTowardsZeroRight() 
+void Player::moveTowardsZero(DIRECTION direction) 
 {
-    if(rightSpeed == 0) return;
-    else if(rightSpeed > 0) 
-    {
-        rightSpeed -= 0.05;
-        if(rightSpeed < 0)
-        {
-            rightSpeed = 0;
-        }
-    }
-}
-void Player::moveTowardsZeroLeft() 
-{
-    if(leftSpeed == 0) return;
-    else if(leftSpeed > 0) 
-    {
-        leftSpeed -= 0.05;
-        if(leftSpeed < 0)
-        {
-            leftSpeed = 0;
-        }
-    }
-}
+    float* dirSpeed = 0;
 
-void Player::moveTowardsZeroUp() 
-{
-    if(upSpeed == 0) return;
-    else if(upSpeed > 0) 
-    {
-        upSpeed -= 0.05;
-        if(upSpeed < 0)
-        {
-            upSpeed = 0;
-        }
-    }
-}
+    if(direction == UP) dirSpeed = &upSpeed;
+    else if(direction == DOWN) dirSpeed = &downSpeed;
+    else if(direction == LEFT) dirSpeed = &leftSpeed;
+    else if(direction == RIGHT) dirSpeed = &rightSpeed;
 
-void Player::moveTowardsZeroDown() 
-{
-    if(downSpeed == 0) return;
-    else if(downSpeed > 0) 
+    if(*dirSpeed == 0) return;
+    else if(*dirSpeed > 0) 
     {
-        downSpeed -= 0.05;
-        if(downSpeed < 0)
+        *dirSpeed -= 0.05;
+        if(*dirSpeed < 0)
         {
-            downSpeed = 0;
+            *dirSpeed = 0;
         }
     }
 }
