@@ -139,7 +139,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     const wchar_t CLASS_NAME[]  = L"Matt's Windows c++ Project";
     scene = new Scene();
     
-    ID2D1HwndRenderTarget* pRT = NULL;
+    ID2D1HwndRenderTarget* renderTarget = NULL;
 
     WNDCLASS wc = { };
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -153,9 +153,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     wc.lpszMenuName = 0;
     wc.lpszClassName = CLASS_NAME;
 
-    yoff = 0;
-    xoff = 0;
-
     if(RegisterClass(&wc))
     {
         HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Learn to Program Windows", WS_OVERLAPPEDWINDOW|WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, hInstance, 0);
@@ -167,7 +164,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             RECT rc;
             GetClientRect(hwnd, &rc);
             
-            pRT = scene->createResources(hwnd, &rc);        
+            renderTarget = scene->createResources(hwnd, &rc);        
 
             int64_t startTime = GetTicks();
             
@@ -179,6 +176,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                     if(msg.message == WM_QUIT)
                     {
                         isRunning = false;
+                        break;
                     }
                     TranslateMessage(&msg);
                     DispatchMessageA(&msg);
@@ -186,9 +184,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
                 int64_t endTime = GetTicks();
                 scene->updatePlayer(endTime - startTime);
-                endTime = startTime;
-                scene->renderState(&rc, pRT);
-
+                startTime = endTime;
+                scene->renderState(&rc, renderTarget);
             }
             // no longer running
         }

@@ -12,13 +12,14 @@
 class Scene
 {
 public:
-    ID2D1SolidColorBrush* pPinkBrush;
-    ID2D1SolidColorBrush* pOrangeBrush;
+    ID2D1SolidColorBrush* brushes[3];
     Player* player;
+
     Scene::Scene();
     Scene::~Scene();
+    
     void Scene::updatePlayer(int64_t timeElapsed);
-    void Scene::renderState(RECT* rc, ID2D1HwndRenderTarget* pRT);
+    void Scene::renderState(RECT* rc, ID2D1HwndRenderTarget* renderTarget);
     /*static*/ ID2D1HwndRenderTarget* Scene::createResources(HWND hwnd, RECT* rc);
 };
 

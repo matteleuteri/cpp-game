@@ -1,6 +1,10 @@
 # Prerequisites
 *.d
 
+# debug
+*.pdb
+*.rdbg
+
 # Compiled Object files
 *.o
 *.obj
@@ -17,3 +21,5 @@
 
 # Executables
 *.exe
+
+build/
