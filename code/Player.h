@@ -14,8 +14,8 @@ class Player
 {
 public:
     DIRECTION direction; // make a pointer?
-    int x;
-    int y;
+    float x;
+    float y;
     int width;
     int height;
     bool isActive;

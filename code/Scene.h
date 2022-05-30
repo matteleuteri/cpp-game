@@ -8,7 +8,6 @@
 
 #include "Player.h"
 
-
 class Scene
 {
 public:

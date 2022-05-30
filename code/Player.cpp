@@ -10,12 +10,13 @@ void Player::moveTowardsZero(DIRECTION direction)
     else if(direction == RIGHT) dirSpeed = &rightSpeed;
 
     if(*dirSpeed == 0) return;
-    else if(*dirSpeed > 0) 
+     if(*dirSpeed > 0) 
     {
-        *dirSpeed -= 0.05;
+        *dirSpeed -= 0.01;
         if(*dirSpeed < 0)
         {
             *dirSpeed = 0;
         }
     }
+
 }

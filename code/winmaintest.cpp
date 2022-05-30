@@ -46,7 +46,6 @@ static void handleKeyDown(WPARAM wParam)
         scene->player->upSpeed = 0;
         scene->player->downSpeed = 0;
     }
-    // // modify the direction by something. use acceleration
     else if(wParam == VK_UP)
     {
         scene->player->goingUp = true;
@@ -68,7 +67,6 @@ static void handleKeyDown(WPARAM wParam)
 static void handleKeyUp(WPARAM wParam)
 {
     OutputDebugStringA("key up\n");
-    // // modify the direction by something. use acceleration
     if(wParam == VK_UP)
     {
         scene->player->goingUp = false;
@@ -116,12 +114,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_KEYDOWN:
         {
             handleKeyDown(wParam);
-            break;
+            return 0;
         } 
         case WM_KEYUP:
         {
             handleKeyUp(wParam);
-            break;
+            return 0;
         } 
 
         default: 

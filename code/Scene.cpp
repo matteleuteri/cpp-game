@@ -14,8 +14,8 @@ void Scene::updatePlayer(int64_t timeElapsed)
 {
     if(player->goingRight)
     {
-        player->rightSpeed += 0.05;
-        if(player->rightSpeed > 1)
+        player->rightSpeed += 0.025;
+        if(player->rightSpeed > 1.0)
         {
             player->rightSpeed = 1.0;
         }
@@ -27,7 +27,7 @@ void Scene::updatePlayer(int64_t timeElapsed)
 
     if(player->goingLeft)
     {
-        (player->leftSpeed) += 0.05;
+        (player->leftSpeed) += 0.025;
         if(player->leftSpeed > 1.0)
         {
             player->leftSpeed = 1.0;
@@ -35,12 +35,12 @@ void Scene::updatePlayer(int64_t timeElapsed)
     }
     else
     {
-        player->moveTowardsZero(LEFT);  
+        player->moveTowardsZero(LEFT); 
     }
 
     if(player->goingDown)
     {
-        (player->downSpeed) += 0.05;
+        (player->downSpeed) += 0.025;
         if(player->downSpeed > 1.0)
         {
             player->downSpeed = 1.0;
@@ -53,7 +53,7 @@ void Scene::updatePlayer(int64_t timeElapsed)
 
     if(player->goingUp)
     {
-        (player->upSpeed) += 0.05;
+        (player->upSpeed) += 0.025;
         if(player->upSpeed > 1.0)
         {
             player->upSpeed = 1.0;
@@ -65,11 +65,12 @@ void Scene::updatePlayer(int64_t timeElapsed)
     }
 
 
-    player->x += (player->rightSpeed * (timeElapsed / 100000));
-    player->y += (player->downSpeed * (timeElapsed / 100000));
+    // BUG: adding to x and y is delayed, subtracting is not.
+    player->x += (player->rightSpeed* (timeElapsed / 50000));
+    player->x -= (player->leftSpeed * (timeElapsed / 50000));
 
-    player->x -= (player->leftSpeed * (timeElapsed / 100000));
-    player->y -= (player->upSpeed * (timeElapsed / 100000));
+    player->y += (player->downSpeed * (timeElapsed / 50000));
+    player->y -= (player->upSpeed * (timeElapsed / 50000));
 
     if(player->x > 1280)
     {

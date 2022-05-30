@@ -12,8 +12,8 @@
 static bool isRunning;
 static Player* player;
 static Scene* scene;
-static HANDLE  m_hTimer;
-ID2D1HwndRenderTarget* pRT;
+static HANDLE m_hTimer;
+static ID2D1HwndRenderTarget* pRT;
 
 enum SCREENSTATE
 {
@@ -36,7 +36,3 @@ struct windowConfigs
     SCREENSTATE screenState;
     // refresh rate??? what else???
 };
-
-
-int xoff;
-int yoff;
