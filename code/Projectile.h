@@ -1,7 +1,9 @@
 #ifndef _PROJECTILE
 #define _PROJECTILE
+#include <math.h>
 
 #include <windows.h> // for point type
+
 class Projectile
 {
 public:
@@ -9,7 +11,10 @@ public:
     float y;
     float speed;
     float direction[2];
-    Projectile::Projectile();
+    bool isActive;
+    Projectile::Projectile(LPARAM lparam, float xy, float y2);
+    Projectile::~Projectile();
+
 };
 
 

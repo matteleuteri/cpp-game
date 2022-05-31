@@ -1,6 +1,7 @@
 #ifndef _PLAYER
 #define _PLAYER
 
+#include <stdint.h>
 
 
 enum DIRECTION
@@ -31,7 +32,7 @@ public:
     bool goingLeft;
     bool goingUp;
     bool goingDown;
-
+    void Player::updatePlayer(int64_t timeElapsed);
     void Player::moveTowardsZero(DIRECTION direction);   
 };
 

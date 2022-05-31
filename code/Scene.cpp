@@ -11,78 +11,25 @@ Scene::~Scene()
     delete player;
 }
 
-void Scene::updatePlayer(int64_t timeElapsed)
-{
-    if(player->goingRight)
-    {
-        player->rightSpeed += 0.025;
-        if(player->rightSpeed > 1.0)
-        {
-            player->rightSpeed = 1.0;
-        }
-    }
-    else player->moveTowardsZero(RIGHT);
 
-
-    if(player->goingLeft)
-    {
-        (player->leftSpeed) += 0.025;
-        if(player->leftSpeed > 1.0)
-        {
-            player->leftSpeed = 1.0;
-        }
-    }
-    else player->moveTowardsZero(LEFT);
-
-
-    if(player->goingDown)
-    {
-        (player->downSpeed) += 0.025;
-        if(player->downSpeed > 1.0)
-        {
-            player->downSpeed = 1.0;
-        }
-    }
-    else player->moveTowardsZero(DOWN);
-
-
-    if(player->goingUp)
-    {
-        (player->upSpeed) += 0.025;
-        if(player->upSpeed > 1.0)
-        {
-            player->upSpeed = 1.0;
-        }
-    }
-    else player->moveTowardsZero(UP);
-
-
-    player->x += (player->rightSpeed* (timeElapsed / 25000));
-    player->x -= (player->leftSpeed * (timeElapsed / 25000));
-
-    player->y += (player->downSpeed * (timeElapsed / 25000));
-    player->y -= (player->upSpeed * (timeElapsed / 25000));
-
-    if(player->x > 1280)    player->x = 0;
-    else if(player->x < 0)  player->x = 1280;
-
-    if(player->y > 720)     player->y = 0;
-    else if(player->y < 0)  player->y = 720;
-
-}
 
 void Scene::updateProjectiles(int64_t timeElapsed)
 {
     for(Projectile* proj : projectiles)
     {
-        proj->x += (proj->direction[0]*3);
-        proj->y += (proj->direction[1]*3);
+        proj->x += (proj->direction[0]*10);
+        proj->y += (proj->direction[1]*10);
+        if(proj->y <= 0 || proj->y >= 720 || proj->x <= 0 || proj->x >= 1280)
+        {
+            // delete proj;
+            proj->isActive = false;
+        }
     }
 }
 
 void Scene::updateState(int64_t timeElapsed)
 {
-    updatePlayer(timeElapsed);
+    player->updatePlayer(timeElapsed);
     updateProjectiles(timeElapsed);
 }
 
@@ -102,8 +49,6 @@ void Scene::renderState(RECT* rc, ID2D1HwndRenderTarget* renderTarget)
     // draw player
     renderTarget->FillRectangle(D2D1::RectF(player->x, player->y, player->x + player->width, player->y + player->height), brushes[0]);
 
-    // if(projectiles[0] != NULL)
-    // renderTarget->FillRectangle(D2D1::RectF(projectiles[0]->x, projectiles[0]->y, projectiles[0]->x + 10, projectiles[0]->y+10), brushes[0]);
     for(Projectile* p : projectiles)
     {
         // OutputDebugString("here\n"); 
@@ -120,15 +65,16 @@ ID2D1HwndRenderTarget* Scene::createResources(HWND hwnd, RECT* rc)
     ID2D1Factory* pD2DFactory = NULL; // only needed here for initialization
     ID2D1HwndRenderTarget* renderTarget = NULL; // one of these is used by the main window
 
-    // both return HRESULTs
+    // both lines below return HRESULT, I should make sure they succeez
     D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
     pD2DFactory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rc->right - rc->left, rc->bottom - rc->top)), &renderTarget);
     
-
-    for(int i = 0; i < sizeof(brushes) / sizeof(brushes[0]); i++)
-    {
-        renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink), &brushes[i]); 
-    }
+    // for(int i = 0; i < sizeof(brushes) / sizeof(brushes[0]); i++) // do this better
+    // {
+        renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &brushes[0]); 
+        renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &brushes[1]); 
+        renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink), &brushes[2]); 
+    // }
 
     return renderTarget;
 }

@@ -113,32 +113,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         // } 
         case WM_LBUTTONDOWN:
         {
+            if(!scene->player->isActive) break;
 
-            Projectile* p = new Projectile(); // dont forget to free
-            p->speed = 1.0;
-
-
-            // how do we get direction
+            Projectile* p = new Projectile(lParam, scene->player->x,  scene->player->y); // dont forget to free
 
 
-
-            p->direction[0] = LOWORD(lParam) - scene->player->x;
-            p->direction[1] = HIWORD(lParam) - scene->player->y;
-
-            float divisor = sqrt(pow(p->direction[0], 2) + pow(p->direction[1], 2));
-
-            p->direction[0] /= divisor;
-            p->direction[1] /= divisor;
-
-            // normnalize!!! need length 1for consistent speed
-
-            p->x = scene->player->x;
-            p->y = scene->player->y;
-
-
-
-
-            // calculate direction so we know how to move it
             scene->projectiles.push_back(p);
         }
         
