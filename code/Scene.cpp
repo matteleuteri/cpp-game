@@ -3,6 +3,7 @@
 
 Scene::Scene()
 {
+    projectiles = {};
     player = new Player();// dont forget to free
 }
 Scene::~Scene()
@@ -20,10 +21,8 @@ void Scene::updatePlayer(int64_t timeElapsed)
             player->rightSpeed = 1.0;
         }
     }
-    else
-    {
-        player->moveTowardsZero(RIGHT);
-    }
+    else player->moveTowardsZero(RIGHT);
+
 
     if(player->goingLeft)
     {
@@ -33,10 +32,8 @@ void Scene::updatePlayer(int64_t timeElapsed)
             player->leftSpeed = 1.0;
         }
     }
-    else
-    {
-        player->moveTowardsZero(LEFT); 
-    }
+    else player->moveTowardsZero(LEFT);
+
 
     if(player->goingDown)
     {
@@ -46,10 +43,8 @@ void Scene::updatePlayer(int64_t timeElapsed)
             player->downSpeed = 1.0;
         }
     }
-    else
-    {
-        player->moveTowardsZero(DOWN);
-    }
+    else player->moveTowardsZero(DOWN);
+
 
     if(player->goingUp)
     {
@@ -59,38 +54,38 @@ void Scene::updatePlayer(int64_t timeElapsed)
             player->upSpeed = 1.0;
         }
     }
-    else
-    {
-        player->moveTowardsZero(UP);
-    }
+    else player->moveTowardsZero(UP);
 
 
-    // BUG: adding to x and y is delayed, subtracting is not.
-    player->x += (player->rightSpeed* (timeElapsed / 50000));
-    player->x -= (player->leftSpeed * (timeElapsed / 50000));
+    player->x += (player->rightSpeed* (timeElapsed / 25000));
+    player->x -= (player->leftSpeed * (timeElapsed / 25000));
 
-    player->y += (player->downSpeed * (timeElapsed / 50000));
-    player->y -= (player->upSpeed * (timeElapsed / 50000));
+    player->y += (player->downSpeed * (timeElapsed / 25000));
+    player->y -= (player->upSpeed * (timeElapsed / 25000));
 
-    if(player->x > 1280)
-    {
-        player->x = 0;
-    }
-    else if(player->x < 0)
-    {
-        player->x = 1280;
-    }
+    if(player->x > 1280)    player->x = 0;
+    else if(player->x < 0)  player->x = 1280;
 
-    if(player->y > 720)
-    {
-        player->y = 0;
-    }
-    else if(player->y < 0)
-    {
-        player->y = 720;
-    }
+    if(player->y > 720)     player->y = 0;
+    else if(player->y < 0)  player->y = 720;
 
 }
+
+void Scene::updateProjectiles(int64_t timeElapsed)
+{
+    for(Projectile* proj : projectiles)
+    {
+        proj->x += (proj->direction[0]*3);
+        proj->y += (proj->direction[1]*3);
+    }
+}
+
+void Scene::updateState(int64_t timeElapsed)
+{
+    updatePlayer(timeElapsed);
+    updateProjectiles(timeElapsed);
+}
+
 
 void Scene::renderState(RECT* rc, ID2D1HwndRenderTarget* renderTarget)
 {
@@ -106,6 +101,14 @@ void Scene::renderState(RECT* rc, ID2D1HwndRenderTarget* renderTarget)
                
     // draw player
     renderTarget->FillRectangle(D2D1::RectF(player->x, player->y, player->x + player->width, player->y + player->height), brushes[0]);
+
+    // if(projectiles[0] != NULL)
+    // renderTarget->FillRectangle(D2D1::RectF(projectiles[0]->x, projectiles[0]->y, projectiles[0]->x + 10, projectiles[0]->y+10), brushes[0]);
+    for(Projectile* p : projectiles)
+    {
+        // OutputDebugString("here\n"); 
+        renderTarget->FillRectangle(D2D1::RectF(p->x, p->y, p->x + 10, p->y+10), brushes[0]);        
+    }
 
     HRESULT hr = renderTarget->EndDraw();  
 }

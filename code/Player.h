@@ -1,6 +1,8 @@
 #ifndef _PLAYER
 #define _PLAYER
 
+
+
 enum DIRECTION
 {
     UP,

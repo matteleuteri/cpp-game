@@ -88,6 +88,7 @@ static void handleKeyUp(WPARAM wParam)
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     LRESULT result = 0;
+    // POINT pt;
 
     switch (uMsg)
     {
@@ -110,6 +111,36 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         // case WM_PAINT:
         // {
         // } 
+        case WM_LBUTTONDOWN:
+        {
+
+            Projectile* p = new Projectile(); // dont forget to free
+            p->speed = 1.0;
+
+
+            // how do we get direction
+
+
+
+            p->direction[0] = LOWORD(lParam) - scene->player->x;
+            p->direction[1] = HIWORD(lParam) - scene->player->y;
+
+            float divisor = sqrt(pow(p->direction[0], 2) + pow(p->direction[1], 2));
+
+            p->direction[0] /= divisor;
+            p->direction[1] /= divisor;
+
+            // normnalize!!! need length 1for consistent speed
+
+            p->x = scene->player->x;
+            p->y = scene->player->y;
+
+
+
+
+            // calculate direction so we know how to move it
+            scene->projectiles.push_back(p);
+        }
         
         case WM_KEYDOWN:
         {
@@ -153,7 +184,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     if(RegisterClass(&wc))
     {
-        HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Learn to Program Windows", WS_OVERLAPPEDWINDOW|WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, hInstance, 0);
+        HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Learn to Program Windows", 
+                    WS_OVERLAPPEDWINDOW|WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 
+                    CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, hInstance, 0);
 
         if(hwnd) 
         {
@@ -181,7 +214,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 }
 
                 int64_t endTime = GetTicks();
-                scene->updatePlayer(endTime - startTime);
+                scene->updateState(endTime - startTime);
                 startTime = endTime;
                 scene->renderState(&rc, renderTarget);
             }
