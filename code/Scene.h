@@ -17,12 +17,15 @@ public:
     ID2D1SolidColorBrush* brushes[3];
     Player* player;
     std::vector<Projectile*> projectiles;
+    ID2D1HwndRenderTarget* renderTarget;
 
-    Scene::Scene();
+    ID2D1PathGeometry* playerGeometry;
+
+    Scene::Scene(HWND hwnd, RECT* rc);
     Scene::~Scene();
     void Scene::updateState(int64_t timeElapsed);
     void Scene::updateProjectiles(int64_t timeElapsed);
-    void Scene::renderState(RECT* rc, ID2D1HwndRenderTarget* renderTarget);
+    void Scene::renderState(RECT* rc);
     ID2D1HwndRenderTarget* Scene::createResources(HWND hwnd, RECT* rc);
 };
 

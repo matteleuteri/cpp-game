@@ -1,17 +1,5 @@
 #include "winmaintest.h"
 
-static window_dimension GetWindowDimension(HWND Window)
-{
-    window_dimension result;
-    
-    RECT ClientRect;
-    GetClientRect(Window, &ClientRect);
-    result.width = ClientRect.right - ClientRect.left;
-    result.height = ClientRect.bottom - ClientRect.top;
-
-    return result;
-}
-
 static inline int64_t GetTicks()
 {
     LARGE_INTEGER ticks;
@@ -22,11 +10,7 @@ static inline int64_t GetTicks()
     return ticks.QuadPart;
 }
 
-
-
-/*  THESE FUNCTIONS BELOW ARE NOT FINAL  */
-
-
+/*  THESE KEY FUNCTIONS BELOW ARE NOT FINAL  */
 static void handleKeyDown(WPARAM wParam)
 {
     OutputDebugStringA("key down\n");
@@ -114,10 +98,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_LBUTTONDOWN:
         {
             if(!scene->player->isActive) break;
-
             Projectile* p = new Projectile(lParam, scene->player->x,  scene->player->y); // dont forget to free
-
-
             scene->projectiles.push_back(p);
         }
         
@@ -145,10 +126,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     const wchar_t CLASS_NAME[]  = L"Matt's Windows c++ Project";
-    scene = new Scene();
     
-    ID2D1HwndRenderTarget* renderTarget = NULL;
-
     WNDCLASS wc = { };
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wc.lpfnWndProc   = WindowProc;
@@ -174,7 +152,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             RECT rc;
             GetClientRect(hwnd, &rc);
             
-            renderTarget = scene->createResources(hwnd, &rc);        
+            scene = new Scene(hwnd, &rc);
 
             int64_t startTime = GetTicks();
             
@@ -195,7 +173,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 int64_t endTime = GetTicks();
                 scene->updateState(endTime - startTime);
                 startTime = endTime;
-                scene->renderState(&rc, renderTarget);
+                scene->renderState(&rc);
             }
             // no longer running
         }
