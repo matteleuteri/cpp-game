@@ -9,12 +9,16 @@
 
 #include "Player.h"
 #include "Projectile.h"
-
-
+#include <wincodec.h> // needed for iwicimagingfactory
+#include <combaseapi.h> // also needed for that
+#include <Objbase.h>
 class Scene
 {
 public:
     ID2D1SolidColorBrush* brushes[3];
+
+    ID2D1Bitmap *ppBitmap;
+
     Player* player;
     std::vector<Projectile*> projectiles;
     ID2D1HwndRenderTarget* renderTarget;
@@ -26,7 +30,10 @@ public:
     void Scene::updateState(int64_t timeElapsed);
     void Scene::updateProjectiles(int64_t timeElapsed);
     void Scene::renderState(RECT* rc);
-    ID2D1HwndRenderTarget* Scene::createResources(HWND hwnd, RECT* rc);
+    void Scene::createResources(HWND hwnd, RECT* rc);
+    HRESULT Scene::LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, PCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap);
+    // template <class T> void Scene::SafeRelease(T **ppT);
+
 };
 
 #endif
