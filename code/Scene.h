@@ -3,14 +3,13 @@
 
 #include <windows.h>
 #include <stdint.h>
-// #include <math.h>
 #include <d2d1.h>
 #include <vector>
 
 #include "Player.h"
 #include "Projectile.h"
-#include <wincodec.h> // needed for iwicimagingfactory
-#include <combaseapi.h> // also needed for that
+#include <wincodec.h>
+#include <combaseapi.h>
 #include <Objbase.h>
 class Scene
 {
