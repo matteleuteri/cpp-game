@@ -3,8 +3,9 @@
 Scene::Scene(HWND hwnd, RECT* rc)
 {
     projectiles = {};
-    player = new Player();// dont forget to free
     createResources(hwnd, rc);
+    player = new Player();// dont forget to free
+    player->bitmap = playerBitmap;
 }
 Scene::~Scene()
 {
@@ -31,7 +32,7 @@ void Scene::updateState(int64_t timeElapsed)
     updateProjectiles(timeElapsed);
 }
 
-void Scene::renderState(RECT* rc)
+void Scene::renderState(RECT* rc, HWND hwnd)
 {
     renderTarget->BeginDraw();
     renderTarget->SetTransform(D2D1::Matrix3x2F::Translation(0,0));
@@ -55,37 +56,25 @@ void Scene::renderState(RECT* rc)
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     // draw player bitmap
     if(player->isActive) 
     {
         float fAngle = 0; //  make property of player
-
-        // get mouse location and calculate angle
-
         POINT mousePosition;
         BOOL cursorFound = GetCursorPos(&mousePosition);
+        BOOL converted = ScreenToClient(hwnd, &mousePosition);
 
-        if(cursorFound)
+        if(cursorFound && converted)
         {
-            float xDistance = mousePosition.x - (player->x - (player->width / 2));
-            float yDistance = mousePosition.y - (player->y - (player->height / 2));
+            float xDistance = (mousePosition.x) - (player->x);
+            float yDistance = (mousePosition.y) - (player->y);
+            fAngle = (int)((atan(yDistance / xDistance)) * (180.0/3.141592653589793238463) + 90) % 360;
 
-            // xDistance /= divisor;
-            // yDistance /= divisor;
-            fAngle = (atan(yDistance / xDistance)) * (180.0/3.141592653589793238463) * -1;
+            if(mousePosition.x < player->x)
+                fAngle += 180;
+
+            // player->x = mousePosition.x;
+            // player->y = mousePosition.y;
 
         }
 
@@ -94,37 +83,16 @@ void Scene::renderState(RECT* rc)
         center.y = player->y;
 
         D2D1_SIZE_F size = player->bitmap->GetSize();
-
-
-
-        // renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(fAngle, center));
+        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(fAngle, center));
 
         renderTarget->DrawBitmap(player->bitmap, D2D1::RectF(
                     player->x - (size.width / 2), 
                     player->y - (size.height / 2), 
                     player->x + (size.width / 2), 
                     player->y + (size.height / 2)));
-        // renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
-            
+
+        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // draw projectiles
     for(Projectile* p : projectiles)
@@ -150,18 +118,18 @@ void Scene::createResources(HWND hwnd, RECT* rc)
 
     // load images here
     IWICImagingFactory *pIWICFactory = NULL; 
-    ID2D1Bitmap *playerBitmap = NULL;
-    // ID2D1Bitmap *enemyBitmap = NULL;
+    playerBitmap = NULL;
+    enemyBitmap = NULL;
     
     CoInitializeEx(NULL, COINIT_MULTITHREADED); 
     HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));    
 
     LPCWSTR player_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\player.png";
     hr = LoadBitmapFromFile(pIWICFactory, player_uri, 20, 20, &playerBitmap);
-    player->bitmap = playerBitmap;
+    // player->bitmap = playerBitmap;
 
-    // LPCWSTR enemy_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\enemy.png";
-    // hr = LoadBitmapFromFile(pIWICFactory, enemy_uri, 20, 20, &enemyBitmap);
+    LPCWSTR enemy_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\enemy.png";
+    hr = LoadBitmapFromFile(pIWICFactory, enemy_uri, 20, 20, &enemyBitmap);
     // player->bitmap = enemyBitmap;
 
 

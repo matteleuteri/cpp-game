@@ -19,11 +19,14 @@ public:
     std::vector<Projectile*> projectiles;
     ID2D1HwndRenderTarget* renderTarget;
 
+    ID2D1Bitmap *playerBitmap;
+    ID2D1Bitmap *enemyBitmap;
+
     Scene::Scene(HWND hwnd, RECT* rc);
     Scene::~Scene();
     void Scene::updateState(int64_t timeElapsed);
     void Scene::updateProjectiles(int64_t timeElapsed);
-    void Scene::renderState(RECT* rc);
+    void Scene::renderState(RECT* rc, HWND hwnd);
     void Scene::createResources(HWND hwnd, RECT* rc);
     HRESULT Scene::LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, PCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap);
 

@@ -171,7 +171,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 int64_t endTime = GetTicks();
                 scene->updateState(endTime - startTime);
                 startTime = endTime;
-                scene->renderState(&rc);
+                scene->renderState(&rc, hwnd);
             }
             // no longer running
         }
