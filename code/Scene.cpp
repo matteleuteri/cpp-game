@@ -42,9 +42,6 @@ void Scene::renderState(RECT* rc)
     // draw border of window
     renderTarget->DrawRectangle(D2D1::RectF(rc->left, rc->top, rc->right, rc->bottom), brushes[0]);
 
-    // darw border of playable area
-    renderTarget->DrawRectangle(D2D1::RectF(rc->left + 100.0f, rc->top + 100.0f, rc->right - 100.0f, rc->bottom - 100.0f), brushes[1]);
-               
     // draw grid lines:
     for(int i = 0; i < rc->right; i++)
     {
@@ -57,15 +54,77 @@ void Scene::renderState(RECT* rc)
             renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)i), D2D1::Point2F(rc->right, (float)i), brushes[0], 0.5f);
     }
 
-    D2D1_SIZE_F size = ppBitmap->GetSize();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // draw player bitmap
-    if(player->isActive) {
-        renderTarget->DrawBitmap(ppBitmap, D2D1::RectF(
+    if(player->isActive) 
+    {
+        float fAngle = 0; //  make property of player
+
+        // get mouse location and calculate angle
+
+        POINT mousePosition;
+        BOOL cursorFound = GetCursorPos(&mousePosition);
+
+        if(cursorFound)
+        {
+            float xDistance = mousePosition.x - (player->x - (player->width / 2));
+            float yDistance = mousePosition.y - (player->y - (player->height / 2));
+
+            // xDistance /= divisor;
+            // yDistance /= divisor;
+            fAngle = (atan(yDistance / xDistance)) * (180.0/3.141592653589793238463) * -1;
+
+        }
+
+        D2D1_POINT_2F center = {};
+        center.x = player->x;
+        center.y = player->y;
+
+        D2D1_SIZE_F size = player->bitmap->GetSize();
+
+
+
+        // renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(fAngle, center));
+
+        renderTarget->DrawBitmap(player->bitmap, D2D1::RectF(
                     player->x - (size.width / 2), 
                     player->y - (size.height / 2), 
                     player->x + (size.width / 2), 
                     player->y + (size.height / 2)));
+        // renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
+            
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // draw projectiles
     for(Projectile* p : projectiles)
@@ -89,34 +148,22 @@ void Scene::createResources(HWND hwnd, RECT* rc)
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &brushes[1]); 
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink), &brushes[2]); 
 
+    // load images here
     IWICImagingFactory *pIWICFactory = NULL; 
+    ID2D1Bitmap *playerBitmap = NULL;
+    // ID2D1Bitmap *enemyBitmap = NULL;
     
     CoInitializeEx(NULL, COINIT_MULTITHREADED); 
     HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));    
 
-    LPCWSTR uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\player.png"; // Image to be decoded
+    LPCWSTR player_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\player.png";
+    hr = LoadBitmapFromFile(pIWICFactory, player_uri, 20, 20, &playerBitmap);
+    player->bitmap = playerBitmap;
 
-    hr = LoadBitmapFromFile(pIWICFactory, uri, 20, 20, &ppBitmap);
+    // LPCWSTR enemy_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\enemy.png";
+    // hr = LoadBitmapFromFile(pIWICFactory, enemy_uri, 20, 20, &enemyBitmap);
+    // player->bitmap = enemyBitmap;
 
-    // player's geomery is defined here for now 
-    pD2DFactory->CreatePathGeometry(&playerGeometry); // is this the right parameter
-    ID2D1GeometrySink *pSink = NULL;
-    playerGeometry->Open(&pSink);
-
-    pSink->SetFillMode(D2D1_FILL_MODE_WINDING);
-    pSink->BeginFigure(D2D1::Point2F(0,0), D2D1_FIGURE_BEGIN_FILLED);
-    D2D1_POINT_2F points[6] = 
-    {
-        D2D1::Point2F(-10, -10),
-        D2D1::Point2F(0, -7.5),
-        D2D1::Point2F(10, -10),
-        D2D1::Point2F(10, 10),
-        D2D1::Point2F(-10, 10), 
-        D2D1::Point2F(-10, -10),
-    };
-    pSink->AddLines(points, ARRAYSIZE(points));
-    pSink->EndFigure(D2D1_FIGURE_END_CLOSED);
-    pSink->Close();
 
 }
 
@@ -151,4 +198,3 @@ HRESULT Scene::LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri,
     }
     return hr;
 }
-

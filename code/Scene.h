@@ -15,14 +15,9 @@ class Scene
 {
 public:
     ID2D1SolidColorBrush* brushes[3];
-
-    ID2D1Bitmap *ppBitmap;
-
     Player* player;
     std::vector<Projectile*> projectiles;
     ID2D1HwndRenderTarget* renderTarget;
-
-    ID2D1PathGeometry* playerGeometry;
 
     Scene::Scene(HWND hwnd, RECT* rc);
     Scene::~Scene();
@@ -31,7 +26,6 @@ public:
     void Scene::renderState(RECT* rc);
     void Scene::createResources(HWND hwnd, RECT* rc);
     HRESULT Scene::LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, PCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap);
-    // template <class T> void Scene::SafeRelease(T **ppT);
 
 };
 

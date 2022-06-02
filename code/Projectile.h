@@ -12,7 +12,7 @@ public:
     float speed;
     float direction[2];
     bool isActive;
-    Projectile::Projectile(LPARAM lparam, float xy, float y2);
+    Projectile::Projectile(LPARAM lparam, float x2, float y2);
     Projectile::~Projectile();
 
 };

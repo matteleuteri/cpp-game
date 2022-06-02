@@ -10,7 +10,6 @@
 
 
 static bool isRunning;
-// static Player* player;
 static Scene* scene;
 
 // enum SCREENSTATE

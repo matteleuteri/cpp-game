@@ -95,6 +95,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         // case WM_PAINT:
         // {
         // } 
+
         case WM_LBUTTONDOWN:
         {
             if(!scene->player->isActive) break;
@@ -148,12 +149,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         if(hwnd) 
         {
             isRunning = true;
-
             RECT rc;
             GetClientRect(hwnd, &rc);
-            
             scene = new Scene(hwnd, &rc);
-
             int64_t startTime = GetTicks();
             
             while(isRunning)
