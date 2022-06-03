@@ -13,7 +13,7 @@ void Player::moveTowardsZero(DIRECTION direction)
     
     if(*dirSpeed > 0) 
     {
-        *dirSpeed -= 0.01;
+        *dirSpeed -= 0.01f;
         if(*dirSpeed < 0)
         {
             *dirSpeed = 0;
@@ -26,8 +26,8 @@ void Player::updatePlayer(int64_t timeElapsed)
 {
     if(goingRight)
     {
-        rightSpeed += 0.025;
-        if(rightSpeed > 1.0)
+        rightSpeed += 0.025f;
+        if(rightSpeed > 1.0) // do these ones neede f annotation for float?
         {
             rightSpeed = 1.0;
         }
@@ -37,7 +37,7 @@ void Player::updatePlayer(int64_t timeElapsed)
 
     if(goingLeft)
     {
-        (leftSpeed) += 0.025;
+        (leftSpeed) += 0.025f;
         if(leftSpeed > 1.0)
         {
             leftSpeed = 1.0;
@@ -48,7 +48,7 @@ void Player::updatePlayer(int64_t timeElapsed)
 
     if(goingDown)
     {
-        (downSpeed) += 0.025;
+        (downSpeed) += 0.025f;
         if(downSpeed > 1.0)
         {
             downSpeed = 1.0;
@@ -59,7 +59,7 @@ void Player::updatePlayer(int64_t timeElapsed)
 
     if(goingUp)
     {
-        (upSpeed) += 0.025;
+        (upSpeed) += 0.025f;
         if(upSpeed > 1.0)
         {
             upSpeed = 1.0;

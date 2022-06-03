@@ -16,11 +16,12 @@ void Scene::updateProjectiles(int64_t timeElapsed)
     {
         proj.x += (proj.direction[0]*10);
         proj.y += (proj.direction[1]*10);
-        if(proj.y <= 0 || proj.y >= 720 || proj.x <= 0 || proj.x >= 1280)
-        {
-            // delete projectile;
-            proj.isActive = false;
-        }
+        // if(proj.y <= 0 || proj.y >= 720 || proj.x <= 0 || proj.x >= 1280)
+        // {
+        //     // delete projectile;
+        //     timeElapsed *= 1;
+        //     proj.isActive = false;
+        // }
     }
 }
 
@@ -39,11 +40,11 @@ void Scene::updateState(int64_t endTime, int64_t startTime)
             lastSpawnTime = endTime;
             Enemy *e = new Enemy(100, 100, enemyBitmap);
             
-            enemies.push_back(*e);
+            enemies.push_back(e);
         }
-        for(Enemy &e : enemies)
+        for(Enemy *e : enemies)
         {
-            e.move();       
+            e->move(player.get());       
         }
     }
 }
@@ -57,7 +58,14 @@ void Scene::renderState(RECT* rc, HWND hwnd)
     renderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black));
 
     // draw border of window
-    renderTarget->DrawRectangle(D2D1::RectF(rc->left, rc->top, rc->right, rc->bottom), brushes[0]);
+
+
+
+    D2D1_RECT_F border = D2D1::RectF((float)rc->left, (float)rc->top, (float)rc->right, (float)rc->bottom);
+
+
+
+    renderTarget->DrawRectangle(border, brushes[0]);
 
     renderGrid(rc);
 
@@ -99,7 +107,8 @@ void Scene::renderState(RECT* rc, HWND hwnd)
         drawEnemies();
     }
     
-    HRESULT hr = renderTarget->EndDraw();  
+    // HRESULT hr = renderTarget->EndDraw();  
+    renderTarget->EndDraw();  
 }
 
 void Scene::createResources(HWND hwnd, RECT* rc)
@@ -135,9 +144,9 @@ HRESULT Scene::LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri,
 {
     IWICBitmapDecoder *pDecoder = NULL;
     IWICBitmapFrameDecode *pSource = NULL;
-    IWICStream *pStream = NULL;
+    // IWICStream *pStream = NULL;
     IWICFormatConverter *pConverter = NULL;
-    IWICBitmapScaler *pScaler = NULL;
+    // IWICBitmapScaler *pScaler = NULL;
 
     HRESULT hr = pIWICFactory->CreateDecoderFromFilename(uri, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &pDecoder);
 
@@ -170,8 +179,8 @@ void Scene::renderGrid(RECT* rc)
     {
         if(i % 32 == 0) 
         {
-            renderTarget->DrawLine(D2D1::Point2F((float)i, 0.0f), D2D1::Point2F((float)i, rc->bottom), brushes[0], 0.5f);
-            renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)i), D2D1::Point2F(rc->right, (float)i), brushes[0], 0.5f);
+            renderTarget->DrawLine(D2D1::Point2F((float)i, 0.0f), D2D1::Point2F((float)i, (float)rc->bottom), brushes[0], 0.5f);
+            renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)i), D2D1::Point2F((float)rc->right, (float)i), brushes[0], 0.5f);
         }
     }
 }
@@ -181,7 +190,7 @@ void Scene::pointPlayerTowards(POINT mousePosition)
 {
     float xDistance = (mousePosition.x) - (player->x);
     float yDistance = (mousePosition.y) - (player->y);
-    player->angle = (int)((atan(yDistance / xDistance)) * (180.0/3.141592653589793238463) + 90) % 360;
+    player->angle = ((float)atan(yDistance / xDistance) * (180.0f /3.141592653589793238463f )) + 90.0f; // offset needed to define origin rotation angle 
 
     if(mousePosition.x < player->x) player->angle += 180; // not sure why, but this is important
 
@@ -189,48 +198,31 @@ void Scene::pointPlayerTowards(POINT mousePosition)
     // player->y = mousePosition.y;
 }
 
-
-
-
 void Scene::drawEnemies()
 {
-    // get angle so it points toward where the player was a second ago
 
-
-
-
-
-
-    for(Enemy &e : enemies)
+    for(Enemy *e : enemies)
     {
-        float xDistance = (player->x) - (e.x);
-        float yDistance = (player->y) - (e.y);
+        float xDistance = (player->x) - (e->x);
+        float yDistance = (player->y) - (e->y);
 
-        e.angle = (int)((atan(yDistance / xDistance)) * (180.0/3.141592653589793238463) + 45) % 360;
+        e->angle = ((float)atan(yDistance / xDistance) * (180.0f /3.141592653589793238463f)) + 45.0f;
 
-        if(player->x < e.x) e.angle += 180; // not sure why, but this is important
-
-
+        if(player->x < e->x) e->angle += 180; // not sure why, but this is important
 
         D2D1_POINT_2F center = {};
-        center.x = e.x;
-        center.y = e.y;
+        center.x = e->x;
+        center.y = e->y;
 
+        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(e->angle, center));
 
-        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(e.angle, center));
-
-        D2D1_SIZE_F size = e.bitmap->GetSize();
-        renderTarget->DrawBitmap(e.bitmap, D2D1::RectF(
-                    e.x - (size.width / 2), 
-                    e.y - (size.height / 2), 
-                    e.x + (size.width / 2), 
-                    e.y + (size.height / 2)));        
+        D2D1_SIZE_F size = e->bitmap->GetSize();
+        renderTarget->DrawBitmap(e->bitmap, D2D1::RectF(
+                    e->x - (size.width / 2), 
+                    e->y - (size.height / 2), 
+                    e->x + (size.width / 2), 
+                    e->y + (size.height / 2)));
     
         renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
-
-
-
-
-
     }
 }

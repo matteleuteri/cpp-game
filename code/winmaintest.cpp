@@ -172,10 +172,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 int64_t endTime = GetTicks();
 
 
-
-
-
                 // these lines should change depending on the screen state
+
 
                 scene->updateState(endTime, startTime);
                 scene->renderState(&rc, hwnd);

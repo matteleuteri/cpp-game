@@ -18,15 +18,17 @@
 class Scene
 {
 public:
-    ID2D1SolidColorBrush* brushes[3];
     std::unique_ptr<Player> player;
     std::vector<Projectile> projectiles;
-    std::vector<Enemy> enemies;
+    std::vector<Enemy*> enemies;
+
+    int64_t lastSpawnTime = 0;
+
+    ID2D1SolidColorBrush* brushes[3];
     ID2D1HwndRenderTarget* renderTarget;
     ID2D1Bitmap *playerBitmap;
     ID2D1Bitmap *enemyBitmap;
-    int64_t lastSpawnTime = 0;
-
+    
     Scene::Scene(HWND hwnd, RECT* rc);
     Scene::~Scene();
     void Scene::drawEnemies();

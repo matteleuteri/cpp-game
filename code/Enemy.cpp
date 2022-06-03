@@ -1,25 +1,32 @@
 #include "Enemy.h"
 
 
-// funcitons for enemt go here, like turn angle and reactionspeed
+// funcitons for enemy go here, like turn angle and reactionspeed
+Enemy::Enemy() 
+{}
 Enemy::Enemy(float x, float y) : x(x), y(y)
-{
-    // x = x;
-    // y = y;
-    // bitmap = bitmap;
-}
+{}
 Enemy::Enemy(float x, float y, ID2D1Bitmap* b) : x(x), y(y), bitmap(b)
-{
-    // x = x;
-    // y = y;
-    // bitmap = b;
-}
-// Enemy::Enemy() 
-// {}
-Enemy::~Enemy() {}
+{}
 
-void Enemy::move()
+
+
+Enemy::~Enemy() 
+{}
+
+void Enemy::move(Player* player) // needs time elapsed as well
 {
-    x+=2;
-    y+=2;
+    // use the angle to get how much to go in either direction
+    // then add random noise back and forth
+
+    // float d = (float)tan(angle * 3.14159265358979323 / 180);
+    // maybe we need to account for the flip 180 when we get the angle
+
+
+    float xDist = player->x - x;
+    float yDist = player->y - y;
+
+
+    x+=xDist/5;
+    y+=yDist/5;
 }

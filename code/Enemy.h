@@ -4,6 +4,8 @@
 #include <d2d1.h>
 #include <memory>
 
+#include "Player.h"
+
 class Enemy
 {
 public:
@@ -14,9 +16,9 @@ public:
     ID2D1Bitmap* bitmap;
     Enemy::Enemy(float x, float y, ID2D1Bitmap* b);
     Enemy::Enemy(float x, float y);
-    // Enemy::Enemy();
+    Enemy::Enemy();
     Enemy::~Enemy();
-    void Enemy::move();
+    void Enemy::move(Player* player);
 };
 
 #endif
