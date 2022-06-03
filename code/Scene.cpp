@@ -4,9 +4,10 @@ Scene::Scene(RECT* rc, HWND hwnd)
 {
     projectiles = {};
     enemies = {};
-    createResources(hwnd, rc);
+
     player = std::make_unique<Player>();// dont forget to free
-    player->bitmap = playerBitmap;
+    // player->bitmap = playerBitmap;
+    // isActive = activeOnDefault;
 }
 Scene::~Scene() {}
 
@@ -25,7 +26,7 @@ void Scene::updateProjectiles(int64_t timeElapsed)
     }
 }
 
-void Scene::updateState(int64_t endTime, int64_t startTime)
+void Scene::updateState(int64_t endTime, int64_t startTime, ID2D1Bitmap *enemyBitmap)
 {
     int64_t timeElapsed = endTime - startTime;
 
@@ -49,7 +50,7 @@ void Scene::updateState(int64_t endTime, int64_t startTime)
     }
 }
 
-void Scene::renderState(RECT* rc, HWND hwnd)
+void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3])
 {
     renderTarget->BeginDraw();
     renderTarget->SetTransform(D2D1::Matrix3x2F::Translation(0,0));
@@ -67,7 +68,7 @@ void Scene::renderState(RECT* rc, HWND hwnd)
 
     renderTarget->DrawRectangle(border, brushes[0]);
 
-    renderGrid(rc);
+    renderGrid(rc, renderTarget, brushes);
 
     if(player->isActive) 
     {
@@ -104,77 +105,15 @@ void Scene::renderState(RECT* rc, HWND hwnd)
         }
         // draw enemies as bitmaps
 
-        drawEnemies();
+        drawEnemies(renderTarget);
     }
     
     // HRESULT hr = renderTarget->EndDraw();  
     renderTarget->EndDraw();  
 }
 
-void Scene::createResources(HWND hwnd, RECT* rc)
-{
-    ID2D1Factory* pD2DFactory = NULL;
 
-    // both lines below return HRESULT, I should make sure they succeez
-    D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
-    D2D1_SIZE_U clientSize = D2D1::SizeU(rc->right - rc->left, rc->bottom - rc->top);
-    pD2DFactory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hwnd, clientSize), &renderTarget);
-  
-    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &brushes[0]); 
-    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &brushes[1]); 
-    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink), &brushes[2]); 
-
-
-
-    // load images here
-    IWICImagingFactory *pIWICFactory = NULL; 
-    playerBitmap = NULL;
-    enemyBitmap = NULL;
-    
-    CoInitializeEx(NULL, COINIT_MULTITHREADED); 
-    HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));    
-
-    LPCWSTR player_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\player.png";
-    hr = LoadBitmapFromFile(pIWICFactory, player_uri, 20, 20, &playerBitmap);
-
-    LPCWSTR enemy_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\enemy.png";
-    hr = LoadBitmapFromFile(pIWICFactory, enemy_uri, 20, 20, &enemyBitmap);
-
-}
-
-HRESULT Scene::LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap)
-{
-    IWICBitmapDecoder *pDecoder = NULL;
-    IWICBitmapFrameDecode *pSource = NULL;
-    // IWICStream *pStream = NULL;
-    IWICFormatConverter *pConverter = NULL;
-    // IWICBitmapScaler *pScaler = NULL;
-
-    HRESULT hr = pIWICFactory->CreateDecoderFromFilename(uri, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &pDecoder);
-
-    if (SUCCEEDED(hr))
-    {
-        hr = pDecoder->GetFrame(0, &pSource);
-    }
-
-    if (SUCCEEDED(hr))
-    {
-        hr = pIWICFactory->CreateFormatConverter(&pConverter);
-    }
-
-    if (SUCCEEDED(hr))
-    {
-        hr = pConverter->Initialize(pSource, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut);
-    }
-    
-    if (SUCCEEDED(hr))
-    {
-        hr = renderTarget->CreateBitmapFromWicBitmap(pConverter, ppBitmap);
-    }
-    return hr;
-}
-
-void Scene::renderGrid(RECT* rc)
+void Scene::renderGrid(RECT* rc, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3])
 {
     // draw grid lines:
     for(int i = 0; i < rc->right; i++)
@@ -200,7 +139,7 @@ void Scene::pointPlayerTowards(POINT mousePosition)
     // player->y = mousePosition.y;
 }
 
-void Scene::drawEnemies()
+void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)
 {
 
     for(Enemy *e : enemies)

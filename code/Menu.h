@@ -13,15 +13,15 @@ public:
     float y;
     bool isActive;
 
-    ID2D1SolidColorBrush* brushes[3];
-    ID2D1HwndRenderTarget* renderTarget;
+    // ID2D1SolidColorBrush* brushes[3];
+    // ID2D1HwndRenderTarget* renderTarget;
 
-    Menu::Menu(RECT* rc, HWND hwnd);
-    Menu::~Menu();
-    void Menu::createResources(HWND hwnd, RECT* rc);
+    // Menu::Menu(RECT* rc, HWND hwnd);
+    // Menu::~Menu();
+    // void Menu::createResources(HWND hwnd, RECT* rc);
 
-    void Menu::renderState(RECT* rc, HWND hwnd);
-    void Menu::updateState(int64_t startTime, int64_t endTime);
+    // void Menu::renderState(RECT* rc, HWND hwnd);
+    // void Menu::updateState(int64_t startTime, int64_t endTime);
 
 };
 

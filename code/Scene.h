@@ -25,21 +25,21 @@ public:
     int64_t lastSpawnTime = 0;
     bool isActive;
 
-    ID2D1SolidColorBrush* brushes[3];
-    ID2D1HwndRenderTarget* renderTarget;
-    ID2D1Bitmap *playerBitmap;
-    ID2D1Bitmap *enemyBitmap;
+    // ID2D1SolidColorBrush* brushes[3];
+    // ID2D1HwndRenderTarget* renderTarget;
+    // ID2D1Bitmap *playerBitmap;
+    // ID2D1Bitmap *enemyBitmap;
     
     Scene::Scene(RECT* rc, HWND hwnd);
     Scene::~Scene();
-    void Scene::drawEnemies();
-    void Scene::updateState(int64_t startTime, int64_t endTime);
+    void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget);
+    void Scene::updateState(int64_t startTime, int64_t endTime, ID2D1Bitmap *enemyBitmap);
     void Scene::updateProjectiles(int64_t timeElapsed);
-    void Scene::renderState(RECT* rc, HWND hwnd);
-    void Scene::createResources(HWND hwnd, RECT* rc);
-    void Scene::renderGrid(RECT* rc);
+    void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3]);
+    // void Scene::createResources(HWND hwnd, RECT* rc);
+    void Scene::renderGrid(RECT* rc, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3]);
     void Scene::pointPlayerTowards(POINT mousePosition);
-    HRESULT Scene::LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, PCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap);
+    // HRESULT Scene::LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, PCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap);
 };
 
 #endif
