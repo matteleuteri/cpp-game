@@ -5,26 +5,35 @@
 #include <stdint.h>
 #include <d2d1.h>
 #include <vector>
-
-#include "Player.h"
-#include "Projectile.h"
+#include <memory>
 #include <wincodec.h>
 #include <combaseapi.h>
 #include <Objbase.h>
+
+#include "Player.h"
+#include "Projectile.h"
+#include "Enemy.h"
+
+
 class Scene
 {
 public:
     ID2D1SolidColorBrush* brushes[3];
-    Player* player;
-    std::vector<Projectile*> projectiles;
-    ID2D1HwndRenderTarget* renderTarget;
+    std::unique_ptr<Player> player;
 
+    std::vector<Projectile> projectiles;
+    std::vector<Enemy> enemies;
+
+    ID2D1HwndRenderTarget* renderTarget;
     ID2D1Bitmap *playerBitmap;
     ID2D1Bitmap *enemyBitmap;
+    
+
+    int64_t lastSpawnTime = 0;
 
     Scene::Scene(HWND hwnd, RECT* rc);
     Scene::~Scene();
-    void Scene::updateState(int64_t timeElapsed);
+    void Scene::updateState(int64_t startTime, int64_t endTime);
     void Scene::updateProjectiles(int64_t timeElapsed);
     void Scene::renderState(RECT* rc, HWND hwnd);
     void Scene::createResources(HWND hwnd, RECT* rc);

@@ -14,16 +14,9 @@ Projectile::Projectile(LPARAM lParam, float x2, float y2)
     x = x2;
     y = y2;
     isActive = true;
-
 }
 Projectile::~Projectile()
 {
     // delete player;
 }
-
-
-
-
-
-
 

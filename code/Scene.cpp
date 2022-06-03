@@ -3,33 +3,52 @@
 Scene::Scene(HWND hwnd, RECT* rc)
 {
     projectiles = {};
+    enemies = {};
     createResources(hwnd, rc);
-    player = new Player();// dont forget to free
+    player = std::make_unique<Player>();// dont forget to free
     player->bitmap = playerBitmap;
 }
 Scene::~Scene()
 {
-    delete player;
+    // delete player;
 }
 
 void Scene::updateProjectiles(int64_t timeElapsed)
 {
-    for(Projectile* proj : projectiles)
+    for(Projectile &proj : projectiles)
     {
-        proj->x += (proj->direction[0]*10);
-        proj->y += (proj->direction[1]*10);
-        if(proj->y <= 0 || proj->y >= 720 || proj->x <= 0 || proj->x >= 1280)
+        proj.x += (proj.direction[0]*10);
+        proj.y += (proj.direction[1]*10);
+        if(proj.y <= 0 || proj.y >= 720 || proj.x <= 0 || proj.x >= 1280)
         {
-            // delete proj;
-            proj->isActive = false;
+            // delete projectile;
+            proj.isActive = false;
         }
     }
 }
 
-void Scene::updateState(int64_t timeElapsed)
+void Scene::updateState(int64_t endTime, int64_t startTime)
 {
+    int64_t timeElapsed = endTime - startTime;
     player->updatePlayer(timeElapsed);
     updateProjectiles(timeElapsed);
+
+
+    if(endTime - lastSpawnTime >= 10000000)
+    {
+        OutputDebugStringA("spwan\n");
+        lastSpawnTime = endTime;
+        Enemy *e = new Enemy();
+        e->x = 100;
+        e->y = 100;
+        e->bitmap = enemyBitmap;
+        enemies.push_back(*e);
+    }
+    for(Enemy &e : enemies)
+    {
+        e.move();       
+    }
+
 }
 
 void Scene::renderState(RECT* rc, HWND hwnd)
@@ -95,9 +114,18 @@ void Scene::renderState(RECT* rc, HWND hwnd)
     }
 
     // draw projectiles
-    for(Projectile* p : projectiles)
+    for(Projectile &p : projectiles)
     {
-        renderTarget->FillRectangle(D2D1::RectF(p->x, p->y, p->x + 10, p->y+10), brushes[0]);        
+        renderTarget->FillRectangle(D2D1::RectF(p.x, p.y, p.x + 10, p.y+10), brushes[0]);        
+    }
+    for(Enemy &e : enemies)
+    {
+        D2D1_SIZE_F size = e.bitmap->GetSize();
+        renderTarget->DrawBitmap(e.bitmap, D2D1::RectF(
+                    e.x - (size.width / 2), 
+                    e.y - (size.height / 2), 
+                    e.x + (size.width / 2), 
+                    e.y + (size.height / 2)));        
     }
     
     HRESULT hr = renderTarget->EndDraw();  
@@ -126,12 +154,9 @@ void Scene::createResources(HWND hwnd, RECT* rc)
 
     LPCWSTR player_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\player.png";
     hr = LoadBitmapFromFile(pIWICFactory, player_uri, 20, 20, &playerBitmap);
-    // player->bitmap = playerBitmap;
 
     LPCWSTR enemy_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\enemy.png";
     hr = LoadBitmapFromFile(pIWICFactory, enemy_uri, 20, 20, &enemyBitmap);
-    // player->bitmap = enemyBitmap;
-
 
 }
 

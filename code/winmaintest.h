@@ -8,7 +8,6 @@
 
 #include "Scene.h"
 
-
 static bool isRunning;
 static Scene* scene;
 

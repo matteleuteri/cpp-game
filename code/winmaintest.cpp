@@ -100,7 +100,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             if(!scene->player->isActive) break;
             Projectile* p = new Projectile(lParam, scene->player->x,  scene->player->y); // dont forget to free
-            scene->projectiles.push_back(p);
+            scene->projectiles.push_back(*p);
         }
         
         case WM_KEYDOWN:
@@ -152,6 +152,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             RECT rc;
             GetClientRect(hwnd, &rc);
             scene = new Scene(hwnd, &rc);
+            
+
+
+
+
+
+
             int64_t startTime = GetTicks();
             
             while(isRunning)
@@ -169,7 +176,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 }
 
                 int64_t endTime = GetTicks();
-                scene->updateState(endTime - startTime);
+                scene->updateState(endTime, startTime);
                 startTime = endTime;
                 scene->renderState(&rc, hwnd);
             }
@@ -184,7 +191,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     {
         // TODO log window registration failure
     }
-    
     
     return 0;
 }
