@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <d2d1.h>
+#include <memory>
 
 
 enum DIRECTION
@@ -17,11 +18,13 @@ enum DIRECTION
 class Player
 {
 public:
-    DIRECTION direction; // make a pointer?
-    ID2D1Bitmap *bitmap;
+    // DIRECTION direction; // make a pointer?
+    ID2D1Bitmap* bitmap;
 
     float x;
     float y;
+    float angle; 
+
     int width;
     int height;
     bool isActive;

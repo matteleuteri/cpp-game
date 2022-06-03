@@ -9,9 +9,12 @@ class Enemy
 public:
     float x;
     float y;
+    float speed;
+    float angle;
     ID2D1Bitmap* bitmap;
-
-    Enemy::Enemy();
+    Enemy::Enemy(float x, float y, ID2D1Bitmap* b);
+    Enemy::Enemy(float x, float y);
+    // Enemy::Enemy();
     Enemy::~Enemy();
     void Enemy::move();
 };

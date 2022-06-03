@@ -1,8 +1,8 @@
 #ifndef _PROJECTILE
 #define _PROJECTILE
-#include <math.h>
 
-#include <windows.h> // for point type
+#include <math.h>
+#include <windows.h>
 
 class Projectile
 {

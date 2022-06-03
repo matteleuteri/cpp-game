@@ -151,14 +151,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             isRunning = true;
             RECT rc;
             GetClientRect(hwnd, &rc);
-            scene = new Scene(hwnd, &rc);
+            scene = std::make_unique<Scene>(hwnd, &rc);
             
-
-
-
-
-
-
             int64_t startTime = GetTicks();
             
             while(isRunning)
@@ -176,9 +170,24 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 }
 
                 int64_t endTime = GetTicks();
+
+
+
+
+
+                // these lines should change depending on the screen state
+
                 scene->updateState(endTime, startTime);
-                startTime = endTime;
                 scene->renderState(&rc, hwnd);
+
+                //-------------------------------------------------------------
+                
+
+
+
+
+
+                startTime = endTime;
             }
             // no longer running
         }

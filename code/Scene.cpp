@@ -8,10 +8,7 @@ Scene::Scene(HWND hwnd, RECT* rc)
     player = std::make_unique<Player>();// dont forget to free
     player->bitmap = playerBitmap;
 }
-Scene::~Scene()
-{
-    // delete player;
-}
+Scene::~Scene() {}
 
 void Scene::updateProjectiles(int64_t timeElapsed)
 {
@@ -30,25 +27,25 @@ void Scene::updateProjectiles(int64_t timeElapsed)
 void Scene::updateState(int64_t endTime, int64_t startTime)
 {
     int64_t timeElapsed = endTime - startTime;
-    player->updatePlayer(timeElapsed);
-    updateProjectiles(timeElapsed);
 
-
-    if(endTime - lastSpawnTime >= 10000000)
+    if(player->isActive) 
     {
-        OutputDebugStringA("spwan\n");
-        lastSpawnTime = endTime;
-        Enemy *e = new Enemy();
-        e->x = 100;
-        e->y = 100;
-        e->bitmap = enemyBitmap;
-        enemies.push_back(*e);
-    }
-    for(Enemy &e : enemies)
-    {
-        e.move();       
-    }
+        player->updatePlayer(timeElapsed);
+        updateProjectiles(timeElapsed);
 
+        if(endTime - lastSpawnTime >= 20000000)
+        {
+            OutputDebugStringA("spwan\n");
+            lastSpawnTime = endTime;
+            Enemy *e = new Enemy(100, 100, enemyBitmap);
+            
+            enemies.push_back(*e);
+        }
+        for(Enemy &e : enemies)
+        {
+            e.move();       
+        }
+    }
 }
 
 void Scene::renderState(RECT* rc, HWND hwnd)
@@ -62,38 +59,18 @@ void Scene::renderState(RECT* rc, HWND hwnd)
     // draw border of window
     renderTarget->DrawRectangle(D2D1::RectF(rc->left, rc->top, rc->right, rc->bottom), brushes[0]);
 
-    // draw grid lines:
-    for(int i = 0; i < rc->right; i++)
-    {
-        if(i % 32 == 0)
-            renderTarget->DrawLine(D2D1::Point2F((float)i, 0.0f), D2D1::Point2F((float)i, rc->bottom), brushes[0], 0.5f);
-    }
-    for(int i = 0; i < rc->bottom; i++)
-    {
-        if(i % 32 == 0)
-            renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)i), D2D1::Point2F(rc->right, (float)i), brushes[0], 0.5f);
-    }
+    renderGrid(rc);
 
-
-    // draw player bitmap
     if(player->isActive) 
     {
-        float fAngle = 0; //  make property of player
+        // float angle = 0; //  make property of player
         POINT mousePosition;
         BOOL cursorFound = GetCursorPos(&mousePosition);
         BOOL converted = ScreenToClient(hwnd, &mousePosition);
 
         if(cursorFound && converted)
         {
-            float xDistance = (mousePosition.x) - (player->x);
-            float yDistance = (mousePosition.y) - (player->y);
-            fAngle = (int)((atan(yDistance / xDistance)) * (180.0/3.141592653589793238463) + 90) % 360;
-
-            if(mousePosition.x < player->x)
-                fAngle += 180;
-
-            // player->x = mousePosition.x;
-            // player->y = mousePosition.y;
+            pointPlayerTowards(mousePosition);
 
         }
 
@@ -102,7 +79,7 @@ void Scene::renderState(RECT* rc, HWND hwnd)
         center.y = player->y;
 
         D2D1_SIZE_F size = player->bitmap->GetSize();
-        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(fAngle, center));
+        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(player->angle, center));
 
         renderTarget->DrawBitmap(player->bitmap, D2D1::RectF(
                     player->x - (size.width / 2), 
@@ -111,21 +88,15 @@ void Scene::renderState(RECT* rc, HWND hwnd)
                     player->y + (size.height / 2)));
 
         renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
-    }
 
-    // draw projectiles
-    for(Projectile &p : projectiles)
-    {
-        renderTarget->FillRectangle(D2D1::RectF(p.x, p.y, p.x + 10, p.y+10), brushes[0]);        
-    }
-    for(Enemy &e : enemies)
-    {
-        D2D1_SIZE_F size = e.bitmap->GetSize();
-        renderTarget->DrawBitmap(e.bitmap, D2D1::RectF(
-                    e.x - (size.width / 2), 
-                    e.y - (size.height / 2), 
-                    e.x + (size.width / 2), 
-                    e.y + (size.height / 2)));        
+        // draw projectiles as rectabngels
+        for(Projectile &p : projectiles)
+        {
+            renderTarget->FillRectangle(D2D1::RectF(p.x, p.y, p.x + 10, p.y + 10), brushes[0]);        
+        }
+        // draw enemies as bitmaps
+
+        drawEnemies();
     }
     
     HRESULT hr = renderTarget->EndDraw();  
@@ -190,4 +161,76 @@ HRESULT Scene::LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri,
         hr = renderTarget->CreateBitmapFromWicBitmap(pConverter, ppBitmap);
     }
     return hr;
+}
+
+void Scene::renderGrid(RECT* rc)
+{
+    // draw grid lines:
+    for(int i = 0; i < rc->right; i++)
+    {
+        if(i % 32 == 0) 
+        {
+            renderTarget->DrawLine(D2D1::Point2F((float)i, 0.0f), D2D1::Point2F((float)i, rc->bottom), brushes[0], 0.5f);
+            renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)i), D2D1::Point2F(rc->right, (float)i), brushes[0], 0.5f);
+        }
+    }
+}
+
+
+void Scene::pointPlayerTowards(POINT mousePosition)
+{
+    float xDistance = (mousePosition.x) - (player->x);
+    float yDistance = (mousePosition.y) - (player->y);
+    player->angle = (int)((atan(yDistance / xDistance)) * (180.0/3.141592653589793238463) + 90) % 360;
+
+    if(mousePosition.x < player->x) player->angle += 180; // not sure why, but this is important
+
+    // player->x = mousePosition.x;
+    // player->y = mousePosition.y;
+}
+
+
+
+
+void Scene::drawEnemies()
+{
+    // get angle so it points toward where the player was a second ago
+
+
+
+
+
+
+    for(Enemy &e : enemies)
+    {
+        float xDistance = (player->x) - (e.x);
+        float yDistance = (player->y) - (e.y);
+
+        e.angle = (int)((atan(yDistance / xDistance)) * (180.0/3.141592653589793238463) + 45) % 360;
+
+        if(player->x < e.x) e.angle += 180; // not sure why, but this is important
+
+
+
+        D2D1_POINT_2F center = {};
+        center.x = e.x;
+        center.y = e.y;
+
+
+        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(e.angle, center));
+
+        D2D1_SIZE_F size = e.bitmap->GetSize();
+        renderTarget->DrawBitmap(e.bitmap, D2D1::RectF(
+                    e.x - (size.width / 2), 
+                    e.y - (size.height / 2), 
+                    e.x + (size.width / 2), 
+                    e.y + (size.height / 2)));        
+    
+        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
+
+
+
+
+
+    }
 }

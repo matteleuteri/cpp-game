@@ -20,25 +20,23 @@ class Scene
 public:
     ID2D1SolidColorBrush* brushes[3];
     std::unique_ptr<Player> player;
-
     std::vector<Projectile> projectiles;
     std::vector<Enemy> enemies;
-
     ID2D1HwndRenderTarget* renderTarget;
     ID2D1Bitmap *playerBitmap;
     ID2D1Bitmap *enemyBitmap;
-    
-
     int64_t lastSpawnTime = 0;
 
     Scene::Scene(HWND hwnd, RECT* rc);
     Scene::~Scene();
+    void Scene::drawEnemies();
     void Scene::updateState(int64_t startTime, int64_t endTime);
     void Scene::updateProjectiles(int64_t timeElapsed);
     void Scene::renderState(RECT* rc, HWND hwnd);
     void Scene::createResources(HWND hwnd, RECT* rc);
+    void Scene::renderGrid(RECT* rc);
+    void Scene::pointPlayerTowards(POINT mousePosition);
     HRESULT Scene::LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, PCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap);
-
 };
 
 #endif
