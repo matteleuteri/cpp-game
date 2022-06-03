@@ -44,7 +44,7 @@ void Scene::updateState(int64_t endTime, int64_t startTime)
         }
         for(Enemy *e : enemies)
         {
-            e->move(player.get());       
+            e->move(player.get(), timeElapsed);       
         }
     }
 }

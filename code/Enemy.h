@@ -18,7 +18,7 @@ public:
     Enemy::Enemy(float x, float y);
     Enemy::Enemy();
     Enemy::~Enemy();
-    void Enemy::move(Player* player);
+    void Enemy::move(Player* player, int64_t timeElapsed);
 };
 
 #endif

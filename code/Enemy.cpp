@@ -14,7 +14,7 @@ Enemy::Enemy(float x, float y, ID2D1Bitmap* b) : x(x), y(y), bitmap(b)
 Enemy::~Enemy() 
 {}
 
-void Enemy::move(Player* player) // needs time elapsed as well
+void Enemy::move(Player* player, int64_t timeElapsed) // needs time elapsed as well
 {
     // use the angle to get how much to go in either direction
     // then add random noise back and forth
@@ -27,6 +27,6 @@ void Enemy::move(Player* player) // needs time elapsed as well
     float yDist = player->y - y;
 
 
-    x+=xDist/5;
-    y+=yDist/5;
+    x+=xDist/50;
+    y+=yDist/50;
 }
