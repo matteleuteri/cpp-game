@@ -1,6 +1,6 @@
 #include "Scene.h"
 
-Scene::Scene(HWND hwnd, RECT* rc)
+Scene::Scene(RECT* rc, HWND hwnd)
 {
     projectiles = {};
     enemies = {};
@@ -123,6 +123,8 @@ void Scene::createResources(HWND hwnd, RECT* rc)
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &brushes[0]); 
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &brushes[1]); 
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink), &brushes[2]); 
+
+
 
     // load images here
     IWICImagingFactory *pIWICFactory = NULL; 

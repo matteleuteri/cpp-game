@@ -23,13 +23,14 @@ public:
     std::vector<Enemy*> enemies;
 
     int64_t lastSpawnTime = 0;
+    bool isActive;
 
     ID2D1SolidColorBrush* brushes[3];
     ID2D1HwndRenderTarget* renderTarget;
     ID2D1Bitmap *playerBitmap;
     ID2D1Bitmap *enemyBitmap;
     
-    Scene::Scene(HWND hwnd, RECT* rc);
+    Scene::Scene(RECT* rc, HWND hwnd);
     Scene::~Scene();
     void Scene::drawEnemies();
     void Scene::updateState(int64_t startTime, int64_t endTime);

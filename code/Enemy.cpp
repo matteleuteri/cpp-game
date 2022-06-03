@@ -27,6 +27,11 @@ void Enemy::move(Player* player, int64_t timeElapsed) // needs time elapsed as w
     float yDist = player->y - y;
 
 
-    x+=xDist/50;
-    y+=yDist/50;
+    x+=xDist/25;
+    y+=yDist/25;
+
+    // random noise to make movement look real
+    y += (std::rand() /((RAND_MAX + 1u)/6 ));
+    x += (std::rand() /((RAND_MAX + 1u)/6 ));
+
 }

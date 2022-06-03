@@ -17,6 +17,11 @@ static void handleKeyDown(WPARAM wParam)
     
     if(wParam == VK_RETURN) // hitting ENTER starts the game
     {
+
+        menu->isActive = false;
+        scene->isActive = true;
+
+
         scene->player->isActive = true;
 
         scene->player->x = 400;
@@ -151,7 +156,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             isRunning = true;
             RECT rc;
             GetClientRect(hwnd, &rc);
-            scene = std::make_unique<Scene>(hwnd, &rc);
+
+
+
+
+
+            menu = std::make_unique<Menu>(&rc, hwnd);
+            scene = std::make_unique<Scene>(&rc, hwnd);
+
+            menu->isActive = true;
+            scene->isActive = false;
             
             int64_t startTime = GetTicks();
             
@@ -174,10 +188,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
                 // these lines should change depending on the screen state
 
-
-                scene->updateState(endTime, startTime);
-                scene->renderState(&rc, hwnd);
-
+                if(scene->isActive)
+                {
+                    scene->updateState(endTime, startTime);
+                    scene->renderState(&rc, hwnd);
+                }
+                else if(menu->isActive)
+                {
+                    menu->renderState(&rc, hwnd);//todo
+                }
                 //-------------------------------------------------------------
                 
 
