@@ -6,6 +6,7 @@
 #include <vector>
 #include "Player.h"
 #include "Projectile.h"
+#include "Animator.h"
 
 class Enemy
 {
@@ -20,9 +21,9 @@ public:
     Enemy::Enemy();
     Enemy::~Enemy();
 
-    void Enemy::update(std::vector<Projectile> projectiles, Player* player, int64_t timeElapsed);
+    void Enemy::update(std::vector<Projectile> projectiles, Player* player, Animator* animator, int64_t timeElapsed);
     void Enemy::move(Player* player, int64_t timeElapsed);
-    void Enemy::detectHit(std::vector<Projectile> projectiles);
+    void Enemy::detectHit(std::vector<Projectile> projectiles, Animator* animator);
 };
 
 #endif

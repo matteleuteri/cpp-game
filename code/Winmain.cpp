@@ -1,4 +1,4 @@
-#include "headers/winmaintest.h"
+#include "headers/Winmain.h"
 
 static inline int64_t GetTicks()
 {

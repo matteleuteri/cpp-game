@@ -11,7 +11,7 @@ To do list:
  -->
 2. animate the player and enemy.
 
-
+3. any object that can trigger an animation needs to receive the pointer to the scene's animator in it's update function
 
 
 
@@ -19,3 +19,8 @@ To do list:
 
 Completed:
 
+1. make player point towards the mouse
+
+2. make enemies point towards player
+
+3. use array for enemies instead of vector

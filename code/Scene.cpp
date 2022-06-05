@@ -7,6 +7,7 @@ Scene::Scene(RECT* rc, HWND hwnd)
     enemyManager = std::make_unique<EnemyManager>();
     enemyManager->lastSpawnTime = 0;
     player = std::make_unique<Player>();
+    animator = std::make_unique<Animator>(-1, -1);
 }
 
 Scene::~Scene() {}
@@ -46,7 +47,7 @@ void Scene::updateState(int64_t endTime, int64_t startTime)
             Enemy* enemy = enemyManager->enemyList[i];
             if(enemy != nullptr && enemy->isActive) // danger!
             {
-                enemy->update(projectiles, player.get(), timeElapsed);
+                enemy->update(projectiles, player.get(), animator.get(), timeElapsed);
             }
         }
     }
@@ -101,24 +102,28 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
         // draw enemies as bitmaps
 
         drawEnemies(renderTarget);
+
     }
     
     // HRESULT hr = renderTarget->EndDraw();  
     renderTarget->EndDraw();  
 }
 
-
 void Scene::renderGrid(RECT* rc, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3])
 {
     // draw grid lines:
+    float w = 0.5f;
     for(int i = 0; i < rc->right; i++)
     {
         if(i % 32 == 0) 
         {
-            renderTarget->DrawLine(D2D1::Point2F((float)i, 0.0f), D2D1::Point2F((float)i, (float)rc->bottom), brushes[0], 0.5f);
-            renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)i), D2D1::Point2F((float)rc->right, (float)i), brushes[0], 0.5f);
+            renderTarget->DrawLine(D2D1::Point2F((float)i, 0.0f), D2D1::Point2F((float)i, (float)rc->bottom), brushes[0], w);
+            renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)i), D2D1::Point2F((float)rc->right, (float)i), brushes[0], w);
         }
     }
+
+    renderTarget->DrawLine(D2D1::Point2F((float)animator->col, 0.0f), D2D1::Point2F((float)animator->col, (float)rc->bottom), brushes[0], 0.75f);
+    renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)animator->row), D2D1::Point2F((float)rc->right, (float)animator->row), brushes[0], 0.75f);
 }
 
 void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)

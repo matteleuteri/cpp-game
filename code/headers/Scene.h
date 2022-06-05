@@ -15,6 +15,7 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "EnemyManager.h"
+#include "Animator.h"
 
 class Scene
 {
@@ -23,6 +24,7 @@ public:
 
     std::unique_ptr<Player> player;
     std::unique_ptr<EnemyManager> enemyManager;
+    std::unique_ptr<Animator> animator;
 
     bool isActive;
 

@@ -1,7 +1,17 @@
+#ifndef _ANIMATOR
+#define _ANIMATOR
+
 class Animator
 {
 public:
     bool isActive;
-    Animator::Animator();
+    int row;
+    int col;
+
+    Animator::Animator(int x, int y);
     Animator::~Animator();
+
+    void Animator::startExplosion(float x, float y);
 };
+
+#endif

@@ -31,7 +31,7 @@ void Enemy::move(Player* player, int64_t timeElapsed) // needs time elapsed as w
 
 }
 
-void Enemy::detectHit(std::vector<Projectile> projectiles)
+void Enemy::detectHit(std::vector<Projectile> projectiles, Animator* animator)
 {
     for(Projectile& p : projectiles)
     {
@@ -40,14 +40,15 @@ void Enemy::detectHit(std::vector<Projectile> projectiles)
             OutputDebugStringA("hit!\n");
             // play explosion animation, and mark as to delete, and glow grid lines
             isActive = false;
-
+            animator->col = x;
+            animator->row = y;
         }
     } 
 }
 
 
-void Enemy::update(std::vector<Projectile> projectiles, Player* player, int64_t timeElapsed)
+void Enemy::update(std::vector<Projectile> projectiles, Player* player, Animator* animator, int64_t timeElapsed)
 {
     move(player, timeElapsed);
-    detectHit(projectiles);
+    detectHit(projectiles, animator);
 }

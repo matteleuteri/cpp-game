@@ -23,5 +23,6 @@
 *.exe
 
 build/
-shell.bat
 assets/
+shell.bat
+.vscode/
