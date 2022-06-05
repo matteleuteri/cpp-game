@@ -13,7 +13,7 @@ To do list:
 
 3. any object that can trigger an animation needs to receive the pointer to the scene's animator in it's update function
 
-
+4. make all four corners potnetial spawn points
 
 
 
@@ -24,3 +24,5 @@ Completed:
 2. make enemies point towards player
 
 3. use array for enemies instead of vector
+
+4. made projectiles a bitmap pointing in proper direction instead of a plain rectangle.

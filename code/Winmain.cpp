@@ -104,7 +104,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_LBUTTONDOWN:
         {
             if(!scene->player->isActive) break;
-            Projectile* p = new Projectile(lParam, scene->player->x,  scene->player->y); // dont forget to free
+            Projectile* p = new Projectile(lParam, scene->player->x,  scene->player->y, projectile1Bitmap); // dont forget to free
             scene->projectiles.push_back(*p);
         }
         
@@ -163,7 +163,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             scene = std::make_unique<Scene>(&rc, hwnd);
             scene->enemyManager->bitmap = enemyBitmap;  // this needs to go
             scene->player->bitmap = playerBitmap;       // so does this
-        
+
             screenState = MAINMENU;
 
             int64_t startTime = GetTicks();
@@ -194,19 +194,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                     }
                     case SCENE:
                     {
-                        scene->updateState(endTime, startTime);
+                        scene->updateState(hwnd, endTime, startTime);
                         scene->renderState(&rc, hwnd, renderTarget, brushes);
                         break;
                     }
                     case PAUSEMENU:
                     {
+                        scene->renderState(&rc, hwnd, renderTarget, brushes);
                         break;
                     }
                     default:
                     {
                     }
                 }
-
                 startTime = endTime;
             }
             // no longer running
@@ -241,6 +241,7 @@ static void createResources(HWND hwnd, RECT* rc)
     IWICImagingFactory *pIWICFactory = NULL; 
     playerBitmap = NULL;
     enemyBitmap = NULL;
+    projectile1Bitmap = NULL;
     
     CoInitializeEx(NULL, COINIT_MULTITHREADED); 
     HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));    
@@ -252,6 +253,9 @@ static void createResources(HWND hwnd, RECT* rc)
 
     LPCWSTR enemy_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\enemy.png";
     hr = LoadBitmapFromFile(pIWICFactory, enemy_uri, 20, 20, &enemyBitmap);
+
+    LPCWSTR projectile1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\projectile1.png";
+    hr = LoadBitmapFromFile(pIWICFactory, projectile1_uri, 20, 20, &projectile1Bitmap);
 
     LPCWSTR button1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\ENTERTOPLAY.png";
     hr = LoadBitmapFromFile(pIWICFactory, button1_uri, 20, 20, &button1Bitmap);

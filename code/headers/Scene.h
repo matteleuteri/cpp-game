@@ -30,9 +30,11 @@ public:
 
     Scene::Scene(RECT* rc, HWND hwnd);
     Scene::~Scene();
+    void Scene::drawPlayer(ID2D1HwndRenderTarget* renderTarget);
+    void Scene::drawProjectiles(ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brush);
 
     void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget);
-    void Scene::updateState(int64_t startTime, int64_t endTime); 
+    void Scene::updateState(HWND hwnd, int64_t startTime, int64_t endTime); 
     void Scene::updateProjectiles(int64_t timeElapsed);
     void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3]);
     void Scene::renderGrid(RECT* rc, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3]);
