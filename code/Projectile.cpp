@@ -18,5 +18,3 @@ Projectile::Projectile(LPARAM lParam, float x2, float y2)
 
 Projectile::~Projectile()
 {}
-
-// Projectile::

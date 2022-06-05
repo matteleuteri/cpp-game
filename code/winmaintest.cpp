@@ -17,6 +17,7 @@ static void handleKeyDown(WPARAM wParam)
     
     if(wParam == VK_RETURN) // hitting ENTER starts the game
     {
+        screenState = SCENE;
         scene->player->isActive = true;
 
         scene->player->x = 400;
@@ -163,13 +164,22 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
             scene->enemyManager->bitmap = enemyBitmap;// this needs to go
-            menu->isActive = false;
-
-            scene->isActive = true;
             scene->player->bitmap = playerBitmap;// so does this
             
+
+
+
+
+            // use screenState instead
+            // menu->isActive = false;
+            // scene->isActive = true;
+            screenState = MAINMENU;
+
+
+
+
             int64_t startTime = GetTicks();
-            
+
             while(isRunning)
             {
                 MSG msg;
@@ -186,38 +196,43 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
                 int64_t endTime = GetTicks();
 
+                // these lines should change depending on the screen state. use a switch with screen states
 
 
-
-
-
-
-
-
-                // these lines should change depending on the screen state
-
-                if(scene->isActive)
+                switch(screenState)
                 {
-                    scene->updateState(endTime, startTime);
-                    scene->renderState(&rc, hwnd, renderTarget, brushes);
+                    case MAINMENU:
+                    {
+                        menu->renderStateq(&rc, hwnd, renderTarget, brushes);
+                        break;
+                    }
+                    case SCENE:
+                    {
+                        scene->updateState(endTime, startTime);
+                        scene->renderState(&rc, hwnd, renderTarget, brushes);
+               
+                        break;
+                    }
+                    case PAUSEMENU:
+                    {
+                        break;
+                    }
+                    default:
+                    {
+                    }
                 }
-                else
-                {
-                    // show menu instead
-                    menu->renderState(&rc, hwnd, renderTarget, brushes);
-                    // scene->renderState(&rc, hwnd, renderTarget, brushes);                    
-                }
-                // else if(menu->isActive)
+
+                // if(scene->isActive)
                 // {
-                //     menu->renderState(&rc, hwnd);//todo
+                    // scene->updateState(endTime, startTime);
+                    // scene->renderState(&rc, hwnd, renderTarget, brushes);
                 // }
-                //-------------------------------------------------------------
-                
-
-
-
-
-
+                // else
+                // {
+                    // show menu instead
+                    // menu->renderState(&rc, hwnd, renderTarget, brushes);
+                    // scene->renderState(&rc, hwnd, renderTarget, brushes);                    
+                // }
 
                 startTime = endTime;
             }

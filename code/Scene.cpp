@@ -5,13 +5,10 @@
 Scene::Scene(RECT* rc, HWND hwnd)
 {
     projectiles = {};
-    // enemies = {};
     enemyManager = std::make_unique<EnemyManager>();
     enemyManager->lastSpawnTime = 0;
 
-    player = std::make_unique<Player>();// dont forget to free
-    // player->bitmap = playerBitmap;
-    // isActive = activeOnDefault;
+    player = std::make_unique<Player>();
 }
 
 Scene::~Scene() {}
@@ -91,20 +88,6 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
 
         D2D1_SIZE_F size = player->bitmap->GetSize();
         renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(player->angle, center));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         renderTarget->DrawBitmap(player->bitmap, D2D1::RectF(
                     player->x - (size.width / 2), 

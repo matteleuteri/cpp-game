@@ -12,12 +12,8 @@ public:
     std::vector<Enemy*> enemyList;
     ID2D1Bitmap *bitmap;
     int64_t lastSpawnTime;
-
-
+    
     void EnemyManager::spawnEnemy();
-
-    // EnemyManager::EnemyManager();
-
 
 };
 

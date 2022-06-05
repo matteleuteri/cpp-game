@@ -1,12 +1,5 @@
 #include "EnemyManager.h"
 
-// EnemyManager::EnemyManager()
-// {
-    // lastSpawnTime = 0;
-    // enemyBitmap = enemyBitmap;
-// }
-
-
 void EnemyManager::spawnEnemy()
 {
 
