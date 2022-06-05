@@ -39,6 +39,7 @@ public:
     bool goingUp;
     bool goingDown;
     void Player::updatePlayer(int64_t timeElapsed);
+    void Player::pointPlayerTowards(POINT mousePosition);
     void Player::moveTowardsZero(DIRECTION direction);   
 };
 

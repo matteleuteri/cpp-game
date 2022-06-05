@@ -17,9 +17,6 @@ static void handleKeyDown(WPARAM wParam)
     
     if(wParam == VK_RETURN) // hitting ENTER starts the game
     {
-
-
-
         scene->player->isActive = true;
 
         scene->player->x = 400;
@@ -48,6 +45,12 @@ static void handleKeyDown(WPARAM wParam)
     else if(wParam == VK_LEFT)
     {
         scene->player->goingLeft = true;
+    }
+    else if(wParam == 0x4D)// M key, or menu button
+    {
+
+        scene->isActive = !scene->isActive;
+        menu->isActive = !menu->isActive;
     }
 }
 
@@ -145,7 +148,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     if(RegisterClass(&wc))
     {
-        HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Learn to Program Windows", 
+        HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Windows Program", 
                     WS_OVERLAPPEDWINDOW|WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 
                     CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, hInstance, 0);
 
@@ -157,15 +160,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
             createResources(hwnd, &rc);
 
-
-
-            // menu = std::make_unique<Menu>(&rc, hwnd);
+            menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
+            scene->enemyManager->bitmap = enemyBitmap;// this needs to go
+            menu->isActive = false;
 
             scene->isActive = true;
-            scene->player->bitmap = playerBitmap;
-
-  
+            scene->player->bitmap = playerBitmap;// so does this
             
             int64_t startTime = GetTicks();
             
@@ -186,12 +187,25 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 int64_t endTime = GetTicks();
 
 
+
+
+
+
+
+
+
                 // these lines should change depending on the screen state
 
                 if(scene->isActive)
                 {
-                    scene->updateState(endTime, startTime, enemyBitmap);
+                    scene->updateState(endTime, startTime);
                     scene->renderState(&rc, hwnd, renderTarget, brushes);
+                }
+                else
+                {
+                    // show menu instead
+                    menu->renderState(&rc, hwnd, renderTarget, brushes);
+                    // scene->renderState(&rc, hwnd, renderTarget, brushes);                    
                 }
                 // else if(menu->isActive)
                 // {
@@ -199,6 +213,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 // }
                 //-------------------------------------------------------------
                 
+
 
 
 
@@ -221,38 +236,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     return 0;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void createResources(HWND hwnd, RECT* rc)
 {
-
     ID2D1Factory* pD2DFactory = NULL;
 
     // both lines below return HRESULT, I should make sure they succeez
@@ -263,8 +248,6 @@ void createResources(HWND hwnd, RECT* rc)
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &brushes[0]); 
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &brushes[1]); 
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink), &brushes[2]); 
-
-
 
     // load images here
     IWICImagingFactory *pIWICFactory = NULL; 
@@ -279,16 +262,7 @@ void createResources(HWND hwnd, RECT* rc)
 
     LPCWSTR enemy_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\enemy.png";
     hr = LoadBitmapFromFile(pIWICFactory, enemy_uri, 20, 20, &enemyBitmap);
-
 }
-
-
-
-
-
-
-
-
 
 HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap)
 {

@@ -35,3 +35,16 @@ void Enemy::move(Player* player, int64_t timeElapsed) // needs time elapsed as w
     x += (std::rand() /((RAND_MAX + 1u)/6 ));
 
 }
+
+
+// void Enemy::spawnEnemy()
+// {
+//     if(endTime - lastSpawnTime >= 20000000)
+//     {
+//         OutputDebugStringA("spwan\n");
+//         lastSpawnTime = endTime;
+//         Enemy *e = new Enemy(100, 100, enemyBitmap);
+            
+//         enemies.push_back(e);
+//     }
+// }

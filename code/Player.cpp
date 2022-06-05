@@ -81,3 +81,13 @@ void Player::updatePlayer(int64_t timeElapsed)
     else if(y < 0)  y = 720;
 
 }
+
+
+void Player::pointPlayerTowards(POINT mousePosition)
+{
+    float xDistance = (mousePosition.x) - (x);
+    float yDistance = (mousePosition.y) - (y);
+    angle = ((float)atan(yDistance / xDistance) * (180.0f /3.141592653589793238463f )) + 90.0f; // offset needed to define origin rotation angle 
+
+    if(mousePosition.x < x) angle += 180; // not sure why, but this is important
+}
