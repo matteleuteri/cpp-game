@@ -22,7 +22,6 @@ public:
     // std::vector<Enemy*> enemies;
     std::unique_ptr<EnemyManager> enemyManager;
 
-    int64_t lastSpawnTime = 0;
     bool isActive;
 
     Scene::Scene(RECT* rc, HWND hwnd);

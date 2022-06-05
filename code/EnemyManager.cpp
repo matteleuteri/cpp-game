@@ -2,16 +2,18 @@
 
 // EnemyManager::EnemyManager()
 // {
-//     // enemyBitmap = enemyBitmap;
+    // lastSpawnTime = 0;
+    // enemyBitmap = enemyBitmap;
 // }
 
 
 void EnemyManager::spawnEnemy()
 {
 
-    enemy *e = new Enemy(100, 100, enemyBitmap);        
+    Enemy *e = new Enemy(100, 100);
+    e->bitmap = bitmap;
+
     enemyList.push_back(e);
 }
-
 
 

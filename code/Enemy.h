@@ -14,7 +14,7 @@ public:
     float speed;
     float angle;
     ID2D1Bitmap* bitmap;
-    Enemy::Enemy(float x, float y, ID2D1Bitmap* b);
+    // Enemy::Enemy(float x, float y);
     Enemy::Enemy(float x, float y);
     Enemy::Enemy();
     Enemy::~Enemy();

@@ -7,6 +7,7 @@ Scene::Scene(RECT* rc, HWND hwnd)
     projectiles = {};
     // enemies = {};
     enemyManager = std::make_unique<EnemyManager>();
+    enemyManager->lastSpawnTime = 0;
 
     player = std::make_unique<Player>();// dont forget to free
     // player->bitmap = playerBitmap;
@@ -34,33 +35,24 @@ void Scene::updateState(int64_t endTime, int64_t startTime)
 {
     int64_t timeElapsed = endTime - startTime;
 
-    if(player->isActive) 
+    if(player->isActive)
     {
         player->updatePlayer(timeElapsed);
         updateProjectiles(timeElapsed);
 
+        if(endTime - enemyManager->lastSpawnTime >= 20000000)
+        {
+            OutputDebugStringA("spwan\n");
+            enemyManager->lastSpawnTime = endTime;
+        
+            enemyManager->spawnEnemy();
 
+        }
 
-
-
-
-        // if(endTime - lastSpawnTime >= 20000000)
-        // {
-        //     OutputDebugStringA("spwan\n");
-        //     lastSpawnTime = endTime;
-        //     Enemy *e = new Enemy(100, 100, enemyBitmap);
-            
-        //     enemies.push_back(e);
-        // }
-
-
-
-
-
-        // for(Enemy *e : enemies)
-        // {
-        //     e->move(player.get(), timeElapsed);       
-        // }
+        for( Enemy *e : enemyManager->enemyList )
+        {
+            e->move(player.get(), timeElapsed);
+        }
     }
 }
 
@@ -153,28 +145,28 @@ void Scene::renderGrid(RECT* rc, ID2D1HwndRenderTarget* renderTarget, ID2D1Solid
 void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)
 {
 
-    // for(Enemy *e : enemies)
-    // {
-    //     float xDistance = (player->x) - (e->x);
-    //     float yDistance = (player->y) - (e->y);
+    for(Enemy *e : enemyManager->enemyList)
+    {
+        float xDistance = (player->x) - (e->x);
+        float yDistance = (player->y) - (e->y);
 
-    //     e->angle = ((float)atan(yDistance / xDistance) * (180.0f /PI)) + 45.0f;
+        e->angle = ((float)atan(yDistance / xDistance) * (180.0f /PI)) + 45.0f;
 
-    //     if(player->x < e->x) e->angle += 180; // not sure why, but this is important
+        if(player->x < e->x) e->angle += 180; // not sure why, but this is important
 
-    //     D2D1_POINT_2F center = {};
-    //     center.x = e->x;
-    //     center.y = e->y;
+        D2D1_POINT_2F center = {};
+        center.x = e->x;
+        center.y = e->y;
 
-    //     renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(e->angle, center));
+        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(e->angle, center));
 
-    //     D2D1_SIZE_F size = e->bitmap->GetSize();
-    //     renderTarget->DrawBitmap(e->bitmap, D2D1::RectF(
-    //                 e->x - (size.width / 2), 
-    //                 e->y - (size.height / 2), 
-    //                 e->x + (size.width / 2), 
-    //                 e->y + (size.height / 2)));
+        D2D1_SIZE_F size = e->bitmap->GetSize();
+        renderTarget->DrawBitmap(e->bitmap, D2D1::RectF(
+                    e->x - (size.width / 2), 
+                    e->y - (size.height / 2), 
+                    e->x + (size.width / 2), 
+                    e->y + (size.height / 2)));
     
-    //     renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
-    // }
+        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
+    }
 }

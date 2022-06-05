@@ -6,8 +6,8 @@ Enemy::Enemy()
 {}
 Enemy::Enemy(float x, float y) : x(x), y(y)
 {}
-Enemy::Enemy(float x, float y, ID2D1Bitmap* b) : x(x), y(y), bitmap(b)
-{}
+// Enemy::Enemy(float x, float y, ID2D1Bitmap* b) : x(x), y(y), bitmap(b)
+// {}
 
 
 
