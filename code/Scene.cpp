@@ -46,9 +46,11 @@ void Scene::updateState(int64_t endTime, int64_t startTime)
 
         }
 
-        for( Enemy *e : enemyManager->enemyList )
+        for(int i = 0; i < sizeof(enemyManager->enemyList) / sizeof(Enemy*); i++)
         {
-            e->move(player.get(), timeElapsed);
+            Enemy* e = enemyManager->enemyList[i];
+            if(e != nullptr)
+                e->update(projectiles, player.get(), timeElapsed);
         }
     }
 }
@@ -127,9 +129,10 @@ void Scene::renderGrid(RECT* rc, ID2D1HwndRenderTarget* renderTarget, ID2D1Solid
 
 void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)
 {
-
     for(Enemy *e : enemyManager->enemyList)
     {
+        if(e == nullptr)
+            return;
         float xDistance = (player->x) - (e->x);
         float yDistance = (player->y) - (e->y);
 

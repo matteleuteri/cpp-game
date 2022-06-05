@@ -2,7 +2,9 @@
 
 // funcitons for enemy go here, like turn angle and reactionspeed
 Enemy::Enemy() 
-{}
+{
+    isActive = true;
+}
 
 Enemy::Enemy(float x, float y) : x(x), y(y)
 {}
@@ -12,7 +14,7 @@ Enemy::~Enemy()
 
 void Enemy::move(Player* player, int64_t timeElapsed) // needs time elapsed as well
 {
-
+    //TODO
     // NOW the player moves using x and y distance at some offset in either direction
     // LATER the player moves using an angle at some offset
     // float d = (float)tan(angle * 3.14159265358979323 / 180);
@@ -24,7 +26,27 @@ void Enemy::move(Player* player, int64_t timeElapsed) // needs time elapsed as w
     y+=yDist/25;
 
     // random noise to make movement look real
-    y += (std::rand() /((RAND_MAX + 1u)/6 ));
-    x += (std::rand() /((RAND_MAX + 1u)/6 ));
+    y += (std::rand() /((RAND_MAX + 1u)/6));
+    x += (std::rand() /((RAND_MAX + 1u)/6));
 
+}
+
+void Enemy::detectHit(std::vector<Projectile> projectiles)
+{
+    for(Projectile& p : projectiles)
+    {
+        if(std::abs(p.x - x) < 20 && std::abs(p.y - y) < 20)
+        {
+            OutputDebugStringA("hit!\n");
+            // play explosion animation, and mark as to delete
+            isActive = false;
+        }
+    } 
+}
+
+
+void Enemy::update(std::vector<Projectile> projectiles, Player* player, int64_t timeElapsed)
+{
+    move(player, timeElapsed);
+    detectHit(projectiles);
 }

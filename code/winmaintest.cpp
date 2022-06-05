@@ -49,9 +49,7 @@ static void handleKeyDown(WPARAM wParam)
     }
     else if(wParam == 0x4D)// M key, or menu button
     {
-
-        scene->isActive = !scene->isActive;
-        menu->isActive = !menu->isActive;
+        screenState = MAINMENU;
     }
 }
 
@@ -210,7 +208,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                     {
                         scene->updateState(endTime, startTime);
                         scene->renderState(&rc, hwnd, renderTarget, brushes);
-               
                         break;
                     }
                     case PAUSEMENU:

@@ -9,12 +9,10 @@
 class EnemyManager
 {
 public:
-    std::vector<Enemy*> enemyList;
+    Enemy* enemyList[10]; // size subject to change
     ID2D1Bitmap *bitmap;
     int64_t lastSpawnTime;
-    
     void EnemyManager::spawnEnemy();
-
 };
 
 

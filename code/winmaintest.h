@@ -25,7 +25,7 @@ SCREENSTATE screenState;
 
 ID2D1Bitmap *playerBitmap;
 ID2D1Bitmap *enemyBitmap;
-ID2D1Bitmap *pressEnterBitmap;
+// ID2D1Bitmap *pressEnterBitmap;
 ID2D1Bitmap *button1Bitmap;
 
 void createResources(HWND hwnd, RECT* rc);
