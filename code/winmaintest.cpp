@@ -203,7 +203,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 {
                     case MAINMENU:
                     {
-                        menu->renderStateq(&rc, hwnd, renderTarget, brushes);
+                        menu->renderState(&rc, hwnd, renderTarget, brushes, button1Bitmap);
                         break;
                     }
                     case SCENE:
@@ -277,6 +277,10 @@ void createResources(HWND hwnd, RECT* rc)
 
     LPCWSTR enemy_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\enemy.png";
     hr = LoadBitmapFromFile(pIWICFactory, enemy_uri, 20, 20, &enemyBitmap);
+
+    LPCWSTR button1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\ENTERTOPLAY.png";
+    hr = LoadBitmapFromFile(pIWICFactory, button1_uri, 20, 20, &button1Bitmap);
+
 }
 
 HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap)

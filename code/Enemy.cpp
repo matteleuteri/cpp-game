@@ -3,6 +3,7 @@
 // funcitons for enemy go here, like turn angle and reactionspeed
 Enemy::Enemy() 
 {}
+
 Enemy::Enemy(float x, float y) : x(x), y(y)
 {}
 
