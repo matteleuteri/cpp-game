@@ -1,5 +1,4 @@
-#include "Menu.h"
-
+#include "headers/Menu.h"
 
 Menu::Menu(RECT *rc, HWND hwnd)
 {}
@@ -18,9 +17,9 @@ void Menu::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget,
 
     // renderGrid(rc, renderTarget, brushes);
 
-    D2D1_SIZE_F size = button1Bitmap->GetSize();
+    // D2D1_SIZE_F size = button1Bitmap->GetSize();
 
-    renderTarget->DrawBitmap(button1Bitmap, D2D1::RectF(100, 100, 500, 200));
+    renderTarget->DrawBitmap(button1Bitmap, D2D1::RectF(100, 100, 500, 200));// fix this?
 
     // returns HRESULT
     renderTarget->EndDraw();  

@@ -1,8 +1,10 @@
-#include "Projectile.h"
+#include "headers/Projectile.h"
 
 
 Projectile::Projectile(LPARAM lParam, float x2, float y2)
 {
+    // consider using an angle instead of direction vector
+
     speed = 1.0;
     direction[0] = LOWORD(lParam) - x2;
     direction[1] = HIWORD(lParam) - y2;

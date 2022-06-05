@@ -1,6 +1,8 @@
 #ifndef _SCENE
 #define _SCENE
 
+#define PI 3.141592653589793238463f
+
 #include <windows.h>
 #include <stdint.h>
 #include <d2d1.h>

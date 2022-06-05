@@ -1,4 +1,4 @@
-#include "Enemy.h"
+#include "headers/Enemy.h"
 
 // funcitons for enemy go here, like turn angle and reactionspeed
 Enemy::Enemy() 
@@ -22,12 +22,12 @@ void Enemy::move(Player* player, int64_t timeElapsed) // needs time elapsed as w
     float xDist = player->x - x;
     float yDist = player->y - y;
 
-    x+=xDist/25;
-    y+=yDist/25;
+    x += xDist/50;
+    y += yDist/50;
 
     // random noise to make movement look real
-    y += (std::rand() /((RAND_MAX + 1u)/6));
-    x += (std::rand() /((RAND_MAX + 1u)/6));
+    // y += (std::rand() / ((RAND_MAX + 1u) / 6));
+    // x += (std::rand() / ((RAND_MAX + 1u) / 6));
 
 }
 
@@ -38,8 +38,9 @@ void Enemy::detectHit(std::vector<Projectile> projectiles)
         if(std::abs(p.x - x) < 20 && std::abs(p.y - y) < 20)
         {
             OutputDebugStringA("hit!\n");
-            // play explosion animation, and mark as to delete
+            // play explosion animation, and mark as to delete, and glow grid lines
             isActive = false;
+
         }
     } 
 }

@@ -1,4 +1,4 @@
-#include "winmaintest.h"
+#include "headers/winmaintest.h"
 
 static inline int64_t GetTicks()
 {
@@ -161,23 +161,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
             menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
-            scene->enemyManager->bitmap = enemyBitmap;// this needs to go
-            scene->player->bitmap = playerBitmap;// so does this
-            
-
-
-
-
-            // use screenState instead
-            // menu->isActive = false;
-            // scene->isActive = true;
+            scene->enemyManager->bitmap = enemyBitmap;  // this needs to go
+            scene->player->bitmap = playerBitmap;       // so does this
+        
             screenState = MAINMENU;
 
-
-
-
             int64_t startTime = GetTicks();
-
+            int64_t endTime;
+            
             while(isRunning)
             {
                 MSG msg;
@@ -192,10 +183,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                     DispatchMessageA(&msg);
                 }
 
-                int64_t endTime = GetTicks();
-
-                // these lines should change depending on the screen state. use a switch with screen states
-
+                endTime = GetTicks();
 
                 switch(screenState)
                 {
@@ -219,18 +207,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                     }
                 }
 
-                // if(scene->isActive)
-                // {
-                    // scene->updateState(endTime, startTime);
-                    // scene->renderState(&rc, hwnd, renderTarget, brushes);
-                // }
-                // else
-                // {
-                    // show menu instead
-                    // menu->renderState(&rc, hwnd, renderTarget, brushes);
-                    // scene->renderState(&rc, hwnd, renderTarget, brushes);                    
-                // }
-
                 startTime = endTime;
             }
             // no longer running
@@ -248,7 +224,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     return 0;
 }
 
-void createResources(HWND hwnd, RECT* rc)
+static void createResources(HWND hwnd, RECT* rc)
 {
     ID2D1Factory* pD2DFactory = NULL;
 
@@ -269,6 +245,8 @@ void createResources(HWND hwnd, RECT* rc)
     CoInitializeEx(NULL, COINIT_MULTITHREADED); 
     HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));    
 
+    // todo: find a  better way to load resources, without needing this path
+
     LPCWSTR player_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\player.png";
     hr = LoadBitmapFromFile(pIWICFactory, player_uri, 20, 20, &playerBitmap);
 
@@ -280,7 +258,7 @@ void createResources(HWND hwnd, RECT* rc)
 
 }
 
-HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap)
+static HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap)
 {
     IWICBitmapDecoder *pDecoder = NULL;
     IWICBitmapFrameDecode *pSource = NULL;

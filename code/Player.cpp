@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "headers/Player.h"
 
 void Player::moveTowardsZero(DIRECTION direction) 
 {
@@ -27,7 +27,7 @@ void Player::updatePlayer(int64_t timeElapsed)
     if(goingRight)
     {
         rightSpeed += 0.025f;
-        if(rightSpeed > 1.0) // do these ones neede f annotation for float?
+        if(rightSpeed > 1.0) // do these ones need f annotation for float?
         {
             rightSpeed = 1.0;
         }
@@ -66,7 +66,6 @@ void Player::updatePlayer(int64_t timeElapsed)
         }
     }
     else moveTowardsZero(UP);
-
 
     x += (rightSpeed* (timeElapsed / 25000));
     x -= (leftSpeed * (timeElapsed / 25000));

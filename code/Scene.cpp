@@ -1,13 +1,11 @@
-#include "Scene.h"
+#include "headers/Scene.h"
 
-#define PI 3.141592653589793238463f
 
 Scene::Scene(RECT* rc, HWND hwnd)
 {
     projectiles = {};
     enemyManager = std::make_unique<EnemyManager>();
     enemyManager->lastSpawnTime = 0;
-
     player = std::make_unique<Player>();
 }
 
@@ -17,8 +15,8 @@ void Scene::updateProjectiles(int64_t timeElapsed)
 {
     for(Projectile &proj : projectiles)
     {
-        proj.x += (proj.direction[0]*10);
-        proj.y += (proj.direction[1]*10);
+        proj.x += (proj.direction[0] * 10);
+        proj.y += (proj.direction[1] * 10);
         // if(proj.y <= 0 || proj.y >= 720 || proj.x <= 0 || proj.x >= 1280)
         // {
         //     // delete projectile;
@@ -39,18 +37,17 @@ void Scene::updateState(int64_t endTime, int64_t startTime)
 
         if(endTime - enemyManager->lastSpawnTime >= 20000000)
         {
-            OutputDebugStringA("spwan\n");
-            enemyManager->lastSpawnTime = endTime;
-        
-            enemyManager->spawnEnemy();
-
+            OutputDebugStringA("Enemy spwaned.\n");
+            enemyManager->spawnEnemy(endTime);
         }
 
         for(int i = 0; i < sizeof(enemyManager->enemyList) / sizeof(Enemy*); i++)
         {
-            Enemy* e = enemyManager->enemyList[i];
-            if(e != nullptr)
-                e->update(projectiles, player.get(), timeElapsed);
+            Enemy* enemy = enemyManager->enemyList[i];
+            if(enemy != nullptr && enemy->isActive) // danger!
+            {
+                enemy->update(projectiles, player.get(), timeElapsed);
+            }
         }
     }
 }
@@ -64,9 +61,7 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
     renderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black));
 
     // draw border of window
-
     D2D1_RECT_F border = D2D1::RectF((float)rc->left, (float)rc->top, (float)rc->right, (float)rc->bottom);
-
     renderTarget->DrawRectangle(border, brushes[0]);
 
     renderGrid(rc, renderTarget, brushes);
@@ -81,7 +76,6 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
         if(cursorFound && converted)
         {
             player->pointPlayerTowards(mousePosition);
-
         }
 
         D2D1_POINT_2F center = {};
@@ -133,6 +127,10 @@ void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)
     {
         if(e == nullptr)
             return;
+
+        if(!e->isActive)
+            continue;
+
         float xDistance = (player->x) - (e->x);
         float yDistance = (player->y) - (e->y);
 
@@ -146,12 +144,12 @@ void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)
 
         renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(e->angle, center));
 
-        D2D1_SIZE_F size = e->bitmap->GetSize();
+        D2D1_SIZE_F enemy_size = e->bitmap->GetSize();
         renderTarget->DrawBitmap(e->bitmap, D2D1::RectF(
-                    e->x - (size.width / 2), 
-                    e->y - (size.height / 2), 
-                    e->x + (size.width / 2), 
-                    e->y + (size.height / 2)));
+                    e->x - (enemy_size.width / 2), 
+                    e->y - (enemy_size.height / 2), 
+                    e->x + (enemy_size.width / 2), 
+                    e->y + (enemy_size.height / 2)));
     
         renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
     }

@@ -1,19 +1,33 @@
-#include "EnemyManager.h"
+#include "headers/EnemyManager.h"
 
-void EnemyManager::spawnEnemy()
+void EnemyManager::spawnEnemy(int64_t endTime)
 {
-    
-
-    for(int i = 0; i < sizeof(enemyList) / sizeof(Enemy*); i++)
+    for(auto& enemy: enemyList)
     {
-        if(enemyList[i] == nullptr)
+        if(enemy == nullptr)
         {
-            Enemy *e = new Enemy(100, 100);
-            e->bitmap = bitmap;
-            enemyList[i] = e;
+            enemy = createEnemy();
+            break;
+        }
+        if(!enemy->isActive)
+        {
+            resetEnemy(enemy);
             break;
         }
     }
+    lastSpawnTime = endTime;
 }
 
+Enemy* EnemyManager::createEnemy()
+{
+    Enemy *e = new Enemy(100, 100);
+    e->bitmap = bitmap;
+    return e;
+}
 
+void EnemyManager::resetEnemy(Enemy* enemy)
+{
+    enemy->x = 100;
+    enemy->y = 100;
+    enemy->isActive = true;
+}
