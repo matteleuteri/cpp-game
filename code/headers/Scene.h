@@ -33,6 +33,7 @@ public:
     void Scene::drawPlayer(ID2D1HwndRenderTarget* renderTarget);
     void Scene::drawProjectiles(ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brush);
 
+    void Scene::assignBitmaps(ID2D1Bitmap *playerBitmap, ID2D1Bitmap *enemyBitmap);
     void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget);
     void Scene::updateState(HWND hwnd, int64_t startTime, int64_t endTime); 
     void Scene::updateProjectiles(int64_t timeElapsed);

@@ -40,8 +40,8 @@ void Enemy::detectHit(std::vector<Projectile> projectiles, Animator* animator)
             OutputDebugStringA("hit!\n");
             // play explosion animation, and mark as to delete, and glow grid lines
             isActive = false;
-            animator->col = x;
-            animator->row = y;
+            // animator->col = x;
+            // animator->row = y;// thse two lines mark an explosion
         }
     } 
 }

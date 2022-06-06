@@ -1,15 +1,13 @@
 #include "headers/Animator.h"
 
 
-Animator::Animator(int x, int y)
+Animator::Animator()
 {
-    row = y;
-    col = x;
 }
 Animator::~Animator(){}
 
-void Animator::startExplosion(float x, float y)
-{
-    row = y;
-    col = x;
-}
+// void Animator::startExplosion(float x, float y)
+// {
+//     row = y;
+//     col = x;
+// }

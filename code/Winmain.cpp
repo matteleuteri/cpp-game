@@ -128,7 +128,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return result;
 }
 
-
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     const wchar_t CLASS_NAME[]  = L"Matt's Windows c++ Project";
@@ -161,11 +160,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
             menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
-            scene->enemyManager->bitmap = enemyBitmap;  // this needs to go
-            scene->player->bitmap = playerBitmap;       // so does this
+            scene->assignBitmaps(playerBitmap, enemyBitmap);
 
             screenState = MAINMENU;
-
             int64_t startTime = GetTicks();
             int64_t endTime;
             
