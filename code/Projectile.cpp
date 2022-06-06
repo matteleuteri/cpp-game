@@ -21,5 +21,3 @@ Projectile::Projectile(LPARAM lParam, float x2, float y2, ID2D1Bitmap *b)
     isActive = true;
 }
 
-Projectile::~Projectile()
-{}

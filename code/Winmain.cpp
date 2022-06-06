@@ -160,7 +160,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
             menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
-            scene->assignBitmaps(playerBitmap, enemyBitmap);
+            scene->assignBitmaps(playerBitmap, enemyBitmap, targetBitmap);
 
             screenState = MAINMENU;
             int64_t startTime = GetTicks();
@@ -256,6 +256,9 @@ static void createResources(HWND hwnd, RECT* rc)
 
     LPCWSTR button1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\ENTERTOPLAY.png";
     hr = LoadBitmapFromFile(pIWICFactory, button1_uri, 20, 20, &button1Bitmap);
+
+    LPCWSTR target_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\target.png";
+    hr = LoadBitmapFromFile(pIWICFactory, target_uri, 20, 20, &targetBitmap);
 
 }
 

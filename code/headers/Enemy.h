@@ -19,7 +19,6 @@ public:
     bool isActive;
     Enemy::Enemy(float x, float y);
     Enemy::Enemy();
-    Enemy::~Enemy();
 
 
     void Enemy::update(std::vector<Projectile> projectiles, Player* player, Animator* animator, int64_t timeElapsed);

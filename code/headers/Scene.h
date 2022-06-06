@@ -16,6 +16,7 @@
 #include "Projectile.h"
 #include "EnemyManager.h"
 #include "Animator.h"
+#include "Target.h"
 
 class Scene
 {
@@ -25,15 +26,15 @@ public:
     std::unique_ptr<Player> player;
     std::unique_ptr<EnemyManager> enemyManager;
     std::unique_ptr<Animator> animator;
+    std::unique_ptr<Target> target;
 
     bool isActive;
 
     Scene::Scene(RECT* rc, HWND hwnd);
-    Scene::~Scene();
     void Scene::drawPlayer(ID2D1HwndRenderTarget* renderTarget);
     void Scene::drawProjectiles(ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brush);
-
-    void Scene::assignBitmaps(ID2D1Bitmap *playerBitmap, ID2D1Bitmap *enemyBitmap);
+    void Scene::drawTarget(ID2D1HwndRenderTarget* renderTarget);
+    void Scene::assignBitmaps(ID2D1Bitmap *playerBitmap, ID2D1Bitmap *enemyBitmap, ID2D1Bitmap *targetBitmap);
     void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget);
     void Scene::updateState(HWND hwnd, int64_t startTime, int64_t endTime); 
     void Scene::updateProjectiles(int64_t timeElapsed);

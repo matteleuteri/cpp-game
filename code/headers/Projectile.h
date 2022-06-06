@@ -16,7 +16,6 @@ public:
     bool isActive;
     ID2D1Bitmap* bitmap;
     Projectile::Projectile(LPARAM lparam, float x2, float y2, ID2D1Bitmap *b);
-    Projectile::~Projectile();
 };
 
 #endif

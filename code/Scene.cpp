@@ -4,13 +4,14 @@
 Scene::Scene(RECT* rc, HWND hwnd)
 {
     projectiles = {};
-    enemyManager = std::make_unique<EnemyManager>();
-    enemyManager->lastSpawnTime = 0;
     player = std::make_unique<Player>();
     animator = std::make_unique<Animator>();
+    target = std::make_unique<Target>();
+    target->x = 600;
+    target->y = 600;
+    enemyManager = std::make_unique<EnemyManager>();
+    enemyManager->lastSpawnTime = 0;
 }
-
-Scene::~Scene() {}
 
 void Scene::updateProjectiles(int64_t timeElapsed)
 {
@@ -33,21 +34,18 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
 
     if(player->isActive)
     {
-        player->updatePlayer(timeElapsed);
-        updateProjectiles(timeElapsed);
-
-
-
         // float angle = 0; //  make property of player
         POINT mousePosition;
         BOOL cursorFound = GetCursorPos(&mousePosition);
         BOOL converted = ScreenToClient(hwnd, &mousePosition);
+        
+        player->updatePlayer(timeElapsed);
+        updateProjectiles(timeElapsed);
 
         if(cursorFound && converted)
         {
             player->pointPlayerTowards(mousePosition);
         }
-
 
         if(endTime - enemyManager->lastSpawnTime >= 20000000)
         {
@@ -76,33 +74,36 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
     // draw border of window
     D2D1_RECT_F border = D2D1::RectF((float)rc->left, (float)rc->top, (float)rc->right, (float)rc->bottom);
     renderTarget->DrawRectangle(border, brushes[0]);
-    // renderGrid(rc, renderTarget, brushes);
+    
+    // mark last enemy hit
+    renderGrid(rc, renderTarget, brushes);
 
     if(player->isActive) 
     {
         drawPlayer(renderTarget);
         drawEnemies(renderTarget);
         drawProjectiles(renderTarget, brushes[0]);
+        drawTarget(renderTarget);
         // drawExplosions()
     }
     renderTarget->EndDraw();  
 }
 
+void Scene::drawTarget(ID2D1HwndRenderTarget* renderTarget)
+{
+    D2D1_SIZE_F size = target->bitmap->GetSize();
+    renderTarget->DrawBitmap(target->bitmap, D2D1::RectF(
+                target->x - (size.width / 2), 
+                target->y - (size.height / 2), 
+                target->x + (size.width / 2), 
+                target->y + (size.height / 2)));
+}
+
+
 void Scene::renderGrid(RECT* rc, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3])
 {
-    // draw grid lines:
-    float w = 0.5f;
-    for(int i = 0; i < rc->right; i++)
-    {
-        if(i % 32 == 0) 
-        {
-            renderTarget->DrawLine(D2D1::Point2F((float)i, 0.0f), D2D1::Point2F((float)i, (float)rc->bottom), brushes[0], w);
-            renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)i), D2D1::Point2F((float)rc->right, (float)i), brushes[0], w);
-        }
-    }
-
-    // renderTarget->DrawLine(D2D1::Point2F((float)animator->col, 0.0f), D2D1::Point2F((float)animator->col, (float)rc->bottom), brushes[0], 0.75f);
-    // renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)animator->row), D2D1::Point2F((float)rc->right, (float)animator->row), brushes[0], 0.75f);
+    renderTarget->DrawLine(D2D1::Point2F((float)animator->col, 0.0f), D2D1::Point2F((float)animator->col, (float)rc->bottom), brushes[0], 0.75f);
+    renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)animator->row), D2D1::Point2F((float)rc->right, (float)animator->row), brushes[0], 0.75f);
 }
 
 void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)
@@ -139,8 +140,6 @@ void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)
     }
 }
 
-
-
 void Scene::drawPlayer(ID2D1HwndRenderTarget* renderTarget)
 {
     D2D1_POINT_2F center = {};
@@ -174,8 +173,9 @@ void Scene::drawProjectiles(ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColor
     }
 }
 
-void Scene::assignBitmaps(ID2D1Bitmap *playerBitmap, ID2D1Bitmap *enemyBitmap)
+void Scene::assignBitmaps(ID2D1Bitmap *playerBitmap, ID2D1Bitmap *enemyBitmap, ID2D1Bitmap *targetBitmap)
 {
     enemyManager->bitmap = enemyBitmap;
     player->bitmap = playerBitmap;
+    target->bitmap = targetBitmap;
 }
