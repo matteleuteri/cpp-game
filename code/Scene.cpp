@@ -82,11 +82,28 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
     {
         drawPlayer(renderTarget);
         drawEnemies(renderTarget);
-        drawProjectiles(renderTarget, brushes[0]);
+        drawProjectiles(renderTarget);
         drawTarget(renderTarget);
-        // drawExplosions()
+        drawExplosions(renderTarget);
     }
     renderTarget->EndDraw();  
+}
+
+void Scene::drawExplosions(ID2D1HwndRenderTarget* renderTarget)
+{
+    for(auto& explosion: animator->explosions)
+    {
+        // OutputDebugString("drawing explosion\n");
+
+        // draw explosion's current bitmap at its curretn transform
+        D2D1_SIZE_F size = animator->expBitmap->GetSize();
+        renderTarget->DrawBitmap(animator->expBitmap, D2D1::RectF(
+                    explosion.x - (size.width / 2), 
+                    explosion.y - (size.height / 2), 
+                    explosion.x + (size.width / 2), 
+                    explosion.y + (size.height / 2)));
+
+    }
 }
 
 void Scene::drawTarget(ID2D1HwndRenderTarget* renderTarget)
@@ -99,15 +116,17 @@ void Scene::drawTarget(ID2D1HwndRenderTarget* renderTarget)
                 target->y + (size.height / 2)));
 }
 
-
 void Scene::renderGrid(RECT* rc, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3])
 {
-    renderTarget->DrawLine(D2D1::Point2F((float)animator->col, 0.0f), D2D1::Point2F((float)animator->col, (float)rc->bottom), brushes[0], 0.75f);
-    renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)animator->row), D2D1::Point2F((float)rc->right, (float)animator->row), brushes[0], 0.75f);
+    renderTarget->DrawLine(D2D1::Point2F((float)animator->gridCol, 0.0f), 
+                D2D1::Point2F((float)animator->gridCol, (float)rc->bottom), brushes[0], 0.75f);
+    renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)animator->gridRow), 
+                D2D1::Point2F((float)rc->right, (float)animator->gridRow), brushes[0], 0.75f);
 }
 
 void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)
 {
+    // this is kind of a mess
     for(Enemy *e : enemyManager->enemyList)
     {
         if(e == nullptr)
@@ -155,7 +174,7 @@ void Scene::drawPlayer(ID2D1HwndRenderTarget* renderTarget)
     renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
 }
 
-void Scene::drawProjectiles(ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brush)
+void Scene::drawProjectiles(ID2D1HwndRenderTarget* renderTarget)
 {
     for(Projectile &p : projectiles)
     {

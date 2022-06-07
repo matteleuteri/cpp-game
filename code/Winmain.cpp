@@ -161,6 +161,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
             scene->assignBitmaps(playerBitmap, enemyBitmap, targetBitmap);
+            scene->animator->expBitmap = explosion1Bitmap;
 
             screenState = MAINMENU;
             int64_t startTime = GetTicks();
@@ -245,20 +246,23 @@ static void createResources(HWND hwnd, RECT* rc)
 
     // todo: find a  better way to load resources, without needing this path
 
-    LPCWSTR player_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\player.png";
+    LPCWSTR player_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\player.png";
     hr = LoadBitmapFromFile(pIWICFactory, player_uri, 20, 20, &playerBitmap);
 
-    LPCWSTR enemy_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\enemy.png";
+    LPCWSTR enemy_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\enemy.png";
     hr = LoadBitmapFromFile(pIWICFactory, enemy_uri, 20, 20, &enemyBitmap);
 
-    LPCWSTR projectile1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\projectile1.png";
+    LPCWSTR projectile1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\projectile1.png";
     hr = LoadBitmapFromFile(pIWICFactory, projectile1_uri, 20, 20, &projectile1Bitmap);
 
-    LPCWSTR button1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\ENTERTOPLAY.png";
+    LPCWSTR button1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\ENTERTOPLAY.png";
     hr = LoadBitmapFromFile(pIWICFactory, button1_uri, 20, 20, &button1Bitmap);
 
-    LPCWSTR target_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\cpp-game\\assets\\target.png";
+    LPCWSTR target_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\target.png";
     hr = LoadBitmapFromFile(pIWICFactory, target_uri, 20, 20, &targetBitmap);
+
+    LPCWSTR exp1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\explosion1.png";
+    hr = LoadBitmapFromFile(pIWICFactory, exp1_uri, 20, 20, &explosion1Bitmap);
 
 }
 
