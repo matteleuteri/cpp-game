@@ -161,7 +161,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
             scene->assignBitmaps(playerBitmap, enemyBitmap, targetBitmap);
-            scene->animator->expBitmap = explosion1Bitmap;
+            scene->animator->exp1Bitmap = explosion1Bitmap;
+            scene->animator->exp2Bitmap = explosion2Bitmap;
 
             screenState = MAINMENU;
             int64_t startTime = GetTicks();
@@ -263,6 +264,9 @@ static void createResources(HWND hwnd, RECT* rc)
 
     LPCWSTR exp1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\explosion1.png";
     hr = LoadBitmapFromFile(pIWICFactory, exp1_uri, 20, 20, &explosion1Bitmap);
+    
+    LPCWSTR exp2_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\explosion2.png";
+    hr = LoadBitmapFromFile(pIWICFactory, exp2_uri, 20, 20, &explosion2Bitmap);
 
 }
 

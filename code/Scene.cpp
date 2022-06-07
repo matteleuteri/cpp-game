@@ -42,6 +42,8 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
         player->updatePlayer(timeElapsed);
         updateProjectiles(timeElapsed);
 
+        animator->refreshAnimationFrame(endTime);
+
         if(cursorFound && converted)
         {
             player->pointPlayerTowards(mousePosition);
@@ -58,7 +60,7 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
             Enemy* enemy = enemyManager->enemyList[i];
             if(enemy != nullptr && enemy->isActive) // danger!
             {
-                enemy->update(projectiles, player.get(), animator.get(), timeElapsed);
+                enemy->update(projectiles, player.get(), animator.get(), timeElapsed, endTime);
             }
         }
     }
@@ -96,8 +98,8 @@ void Scene::drawExplosions(ID2D1HwndRenderTarget* renderTarget)
         // OutputDebugString("drawing explosion\n");
 
         // draw explosion's current bitmap at its curretn transform
-        D2D1_SIZE_F size = animator->expBitmap->GetSize();
-        renderTarget->DrawBitmap(animator->expBitmap, D2D1::RectF(
+        D2D1_SIZE_F size = explosion.bitmap->GetSize();
+        renderTarget->DrawBitmap(explosion.bitmap, D2D1::RectF(
                     explosion.x - (size.width / 2), 
                     explosion.y - (size.height / 2), 
                     explosion.x + (size.width / 2), 

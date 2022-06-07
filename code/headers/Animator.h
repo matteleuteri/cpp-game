@@ -15,15 +15,15 @@ public:
     int gridCol;
     int explosionIndex;
     std::vector<Explosion> explosions;
-    ID2D1Bitmap *expBitmap;
+    ID2D1Bitmap *exp1Bitmap;
+    ID2D1Bitmap *exp2Bitmap;
 
     // Explosion* explosions[10];
 
     Animator::Animator(int64_t start, int x, int y);
-    Animator::~Animator();
     Animator::Animator();
-    void Animator::startExplosion(float x, float y);
-    void Animator::refreshAnimationFrame();
+    void Animator::startExplosion(float x, float y, int64_t timestamp);
+    void Animator::refreshAnimationFrame(int64_t currentTime);
 };
 
 #endif
