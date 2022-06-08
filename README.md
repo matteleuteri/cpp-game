@@ -15,6 +15,7 @@ To do list:
 
 4. make all four corners potnetial spawn points
 
+5. implement player enemy collision detection
 
 
 Completed:
@@ -26,3 +27,5 @@ Completed:
 3. use array for enemies instead of vector
 
 4. made projectiles a bitmap pointing in proper direction instead of a plain rectangle.
+
+5. added an animation of an explosion

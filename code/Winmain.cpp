@@ -161,9 +161,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
             scene->assignBitmaps(playerBitmap, enemyBitmap, targetBitmap);
-            scene->animator->exp1Bitmap = explosion1Bitmap;
-            scene->animator->exp2Bitmap = explosion2Bitmap;
-
+            
+            scene->animator->explosionBitmaps[0] = explosion1Bitmap;
+            scene->animator->explosionBitmaps[1] = explosion2Bitmap;
+            
             screenState = MAINMENU;
             int64_t startTime = GetTicks();
             int64_t endTime;

@@ -95,8 +95,6 @@ void Scene::drawExplosions(ID2D1HwndRenderTarget* renderTarget)
 {
     for(auto& explosion: animator->explosions)
     {
-        // OutputDebugString("drawing explosion\n");
-
         // draw explosion's current bitmap at its curretn transform
         D2D1_SIZE_F size = explosion.bitmap->GetSize();
         renderTarget->DrawBitmap(explosion.bitmap, D2D1::RectF(
@@ -104,7 +102,6 @@ void Scene::drawExplosions(ID2D1HwndRenderTarget* renderTarget)
                     explosion.y - (size.height / 2), 
                     explosion.x + (size.width / 2), 
                     explosion.y + (size.height / 2)));
-
     }
 }
 

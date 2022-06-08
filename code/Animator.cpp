@@ -13,24 +13,25 @@ Animator::Animator(int64_t start, int x, int y): gridRow(y), gridCol(x)
 void Animator::startExplosion(float x, float y, int64_t timestamp)
 {
     // make small and large explosions dependeing on if the target is hit
-    Explosion e(timestamp, x, y);
-    e.isPlaying = true;
-    e.bitmap = exp1Bitmap;
+    Explosion e(timestamp, x, y, true);
+    e.duration = 1600000;
+    e.bitmap = explosionBitmaps[0];
     explosions.push_back(e);
 }
 
 void Animator::refreshAnimationFrame(int64_t currentTime)
 {
-    // for eveery explosion do this
-    for(auto& explosion: explosions) 
+    for(int index = 0; index < explosions.size(); index++) 
     {
-        if(currentTime - explosion.startTime > 200000)
+        Explosion* explosion = &explosions[index];
+        if(currentTime - explosion->startTime > 800000)
         {
-            if(explosion.bitmap == exp1Bitmap) 
-                explosion.bitmap = exp2Bitmap;
-            else if(explosion.bitmap == exp2Bitmap) 
-                explosion.bitmap = exp1Bitmap;
-            explosion.startTime = currentTime;
+            // explosion.flipFrame(exp1Bitmap, exp2Bitmap);
+            explosion->bitmap = explosionBitmaps[1];
+        }
+        if(currentTime - explosion->startTime > explosion->duration)
+        {
+            explosions.erase(explosions.begin() + index);
         }
     }   
 }

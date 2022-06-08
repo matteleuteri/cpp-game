@@ -14,11 +14,9 @@ public:
     int gridRow;
     int gridCol;
     int explosionIndex;
+    
     std::vector<Explosion> explosions;
-    ID2D1Bitmap *exp1Bitmap;
-    ID2D1Bitmap *exp2Bitmap;
-
-    // Explosion* explosions[10];
+    std::array<ID2D1Bitmap*, 2> explosionBitmaps;
 
     Animator::Animator(int64_t start, int x, int y);
     Animator::Animator();
