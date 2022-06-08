@@ -17,7 +17,7 @@ public:
     int64_t startTime;
     int64_t duration;
 
-    void Explosion::flipFrame(ID2D1Bitmap *exp1Bitmap, ID2D1Bitmap *exp2Bitmap);
+    void Explosion::flipFrame(std::array<ID2D1Bitmap*, 3> bitmaps);
     Explosion::Explosion(int64_t start, float xin, float yin, bool t);
 }; 
 

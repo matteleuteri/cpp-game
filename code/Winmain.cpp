@@ -17,6 +17,7 @@ static void handleKeyDown(WPARAM wParam)
     
     if(wParam == VK_RETURN) // hitting ENTER starts the game
     {
+        // put this in a constructor  or something, this is poor form
         screenState = SCENE;
         scene->player->isActive = true;
 
@@ -137,7 +138,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     wc.lpfnWndProc   = WindowProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
-    wc.hInstance     = hInstance;
+    wc.hInstance = hInstance;
     wc.hIcon = 0;
     wc.hCursor = 0;
     wc.hbrBackground = 0;
@@ -158,12 +159,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
             createResources(hwnd, &rc);
 
+            // clean up these lines below.
             menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
             scene->assignBitmaps(playerBitmap, enemyBitmap, targetBitmap);
             
             scene->animator->explosionBitmaps[0] = explosion1Bitmap;
             scene->animator->explosionBitmaps[1] = explosion2Bitmap;
+            scene->animator->explosionBitmaps[2] = explosion3Bitmap;
             
             screenState = MAINMENU;
             int64_t startTime = GetTicks();
@@ -209,7 +212,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 }
                 startTime = endTime;
             }
-            // no longer running
         }
         else 
         {
@@ -220,7 +222,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     {
         // TODO log window registration failure
     }
-    
     return 0;
 }
 
@@ -269,6 +270,8 @@ static void createResources(HWND hwnd, RECT* rc)
     LPCWSTR exp2_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\explosion2.png";
     hr = LoadBitmapFromFile(pIWICFactory, exp2_uri, 20, 20, &explosion2Bitmap);
 
+    LPCWSTR exp3_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\explosion3.png";
+    hr = LoadBitmapFromFile(pIWICFactory, exp3_uri, 20, 20, &explosion3Bitmap);    
 }
 
 static HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap)

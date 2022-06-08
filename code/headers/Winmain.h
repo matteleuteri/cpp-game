@@ -30,6 +30,7 @@ ID2D1Bitmap *projectile1Bitmap;
 ID2D1Bitmap *targetBitmap;
 ID2D1Bitmap *explosion1Bitmap;
 ID2D1Bitmap *explosion2Bitmap;
+ID2D1Bitmap *explosion3Bitmap;
 
 static void createResources(HWND hwnd, RECT* rc);
 static HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, PCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap);

@@ -5,10 +5,11 @@ Explosion::Explosion(int64_t start, float xin, float yin, bool t): x(xin), y(yin
     frameNum = 0;
 }
 
-void Explosion::flipFrame(ID2D1Bitmap *exp1Bitmap, ID2D1Bitmap *exp2Bitmap)
+void Explosion::flipFrame(std::array<ID2D1Bitmap*, 3> bitmaps)
 {
     // if(bitmap == exp1Bitmap) 
     //     bitmap = exp2Bitmap;
     // else if(bitmap == exp2Bitmap) 
     //     bitmap = exp1Bitmap;
+    bitmap = bitmaps[frameNum];
 }
