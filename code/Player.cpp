@@ -67,11 +67,11 @@ void Player::updatePlayer(int64_t timeElapsed)
     }
     else moveTowardsZero(UP);
 
-    x += (rightSpeed* (timeElapsed / 25000));
-    x -= (leftSpeed * (timeElapsed / 25000));
+    x += (rightSpeed * speedScale * (timeElapsed / 25000));
+    x -= (leftSpeed  * speedScale * (timeElapsed / 25000));
 
-    y += (downSpeed * (timeElapsed / 25000));
-    y -= (upSpeed * (timeElapsed / 25000));
+    y += (downSpeed  * speedScale * (timeElapsed / 25000));
+    y -= (upSpeed  * speedScale * (timeElapsed / 25000));
 
     if(x > 1280)    x = 0;
     else if(x < 0)  x = 1280;

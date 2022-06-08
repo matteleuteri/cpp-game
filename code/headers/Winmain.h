@@ -5,9 +5,13 @@
 #include <windows.h>
 #include <stdint.h>
 #include <profileapi.h>
+#include <filesystem>
+#include <iostream>
 
 #include "Scene.h"
 #include "Menu.h"
+#include "ButtonAction.h"
+#include "FireButton.h"
 
 enum SCREENSTATE
 {
@@ -16,6 +20,7 @@ enum SCREENSTATE
     PAUSEMENU
 };
 
+std::filesystem::path p;
 static bool isRunning;
 std::unique_ptr<Scene> scene;
 std::unique_ptr<Menu> menu;
@@ -32,6 +37,11 @@ ID2D1Bitmap *explosion1Bitmap;
 ID2D1Bitmap *explosion2Bitmap;
 ID2D1Bitmap *explosion3Bitmap;
 
+// button 
+ButtonAction *q_Button;
+ButtonAction *w_Button;
+ButtonAction *e_Button;
+ButtonAction *r_Button;
+
 static void createResources(HWND hwnd, RECT* rc);
 static HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, PCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap);
-

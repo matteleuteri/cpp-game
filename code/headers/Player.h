@@ -33,6 +33,8 @@ public:
     float rightSpeed;
     float upSpeed;
     float downSpeed;
+
+    float speedScale;// speed boost modifier / scaler/ thingy
     
     bool goingRight;
     bool goingLeft;

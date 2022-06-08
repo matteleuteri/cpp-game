@@ -29,13 +29,11 @@ void Animator::refreshAnimationFrame(int64_t currentTime)
         {
             explosion->frameNum = 1;
             explosion->flipFrame(explosionBitmaps);
-            // explosion->bitmap = explosionBitmaps[1];
         }
         if(currentTime - explosion->startTime > 1600000)
         {
             explosion->frameNum = 2;
             explosion->flipFrame(explosionBitmaps);
-            // explosion->bitmap = explosionBitmaps[1];
         }
         if(currentTime - explosion->startTime > explosion->duration)
         {

@@ -26,6 +26,8 @@ static void handleKeyDown(WPARAM wParam)
 
         scene->player->width = 20;
         scene->player->height = 20;
+
+        scene->player->speedScale = 1.0f;
         
         scene->player->leftSpeed = 0;
         scene->player->rightSpeed = 0;
@@ -48,9 +50,26 @@ static void handleKeyDown(WPARAM wParam)
     {
         scene->player->goingLeft = true;
     }
-    else if(wParam == 0x4D)// M key, or menu button
+    else if(wParam == 77)// M key, or menu button
     {
-        screenState = MAINMENU;
+        // screenState = MAINMENU;
+        q_Button->execute(scene->player.get());// can be swapped out
+    }
+    else if(wParam == 69)//E
+    {
+        e_Button->execute(scene->player.get());
+    }
+    else if(wParam == 81)//Q
+    {
+        q_Button->execute(scene->player.get());
+    }
+    else if(wParam == 82)//R
+    {
+        r_Button->execute(scene->player.get());
+    }
+    else if(wParam == 87)//W
+    {
+        w_Button->execute(scene->player.get());
     }
 }
 
@@ -79,10 +98,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     LRESULT result = 0;
     // POINT pt;
-
     switch (uMsg)
     {
-
         case WM_CLOSE: 
         {
             isRunning = false;
@@ -90,25 +107,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             DestroyWindow(hwnd);
             break;
         } 
-
         case WM_DESTROY:
         {
             isRunning = false;
             PostQuitMessage(0);
             break;
         } 
-
         // case WM_PAINT:
         // {
-        // } 
-
+        // }
         case WM_LBUTTONDOWN:
         {
             if(!scene->player->isActive) break;
             Projectile* p = new Projectile(lParam, scene->player->x,  scene->player->y, projectile1Bitmap); // dont forget to free
             scene->projectiles.push_back(*p);
         }
-        
         case WM_KEYDOWN:
         {
             handleKeyDown(wParam);
@@ -119,12 +132,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             handleKeyUp(wParam);
             return 0;
         } 
-
         default: 
         {
             result = DefWindowProc(hwnd, uMsg, wParam, lParam);
         } 
-
     }
     return result;
 }
@@ -150,12 +161,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Windows Program", 
                     WS_OVERLAPPEDWINDOW|WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 
                     CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, hInstance, 0);
-
         if(hwnd) 
         {
             isRunning = true;
             RECT rc;
+
+
             GetClientRect(hwnd, &rc);
+
+            p = std::filesystem::current_path().remove_filename();
 
             createResources(hwnd, &rc);
 
@@ -168,6 +182,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             scene->animator->explosionBitmaps[1] = explosion2Bitmap;
             scene->animator->explosionBitmaps[2] = explosion3Bitmap;
             
+            // initialize controls
+            e_Button = new FireButton();
+            q_Button = new FireButton();
+            r_Button = new FireButton();            
+            w_Button = new FireButton();
+
             screenState = MAINMENU;
             int64_t startTime = GetTicks();
             int64_t endTime;
@@ -212,17 +232,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                 }
                 startTime = endTime;
             }
+            // game is no longer running here
         }
-        else 
-        {
-            // TODO log window creation failure
-        }
-    }
-    else 
-    {
-        // TODO log window registration failure
     }
     return 0;
+}
+
+static void loadBitmapFile(IWICImagingFactory* pIWICFactory, std::filesystem::path bitmapFileName, ID2D1Bitmap **tBitmap)
+{
+    p /= bitmapFileName;
+    LoadBitmapFromFile(pIWICFactory, p.c_str(), 20, 20, tBitmap);  
+    p.remove_filename();
 }
 
 static void createResources(HWND hwnd, RECT* rc)
@@ -247,31 +267,15 @@ static void createResources(HWND hwnd, RECT* rc)
     CoInitializeEx(NULL, COINIT_MULTITHREADED); 
     HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));    
 
-    // todo: find a  better way to load resources, without needing this path
-
-    LPCWSTR player_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\player.png";
-    hr = LoadBitmapFromFile(pIWICFactory, player_uri, 20, 20, &playerBitmap);
-
-    LPCWSTR enemy_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\enemy.png";
-    hr = LoadBitmapFromFile(pIWICFactory, enemy_uri, 20, 20, &enemyBitmap);
-
-    LPCWSTR projectile1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\projectile1.png";
-    hr = LoadBitmapFromFile(pIWICFactory, projectile1_uri, 20, 20, &projectile1Bitmap);
-
-    LPCWSTR button1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\ENTERTOPLAY.png";
-    hr = LoadBitmapFromFile(pIWICFactory, button1_uri, 20, 20, &button1Bitmap);
-
-    LPCWSTR target_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\target.png";
-    hr = LoadBitmapFromFile(pIWICFactory, target_uri, 20, 20, &targetBitmap);
-
-    LPCWSTR exp1_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\explosion1.png";
-    hr = LoadBitmapFromFile(pIWICFactory, exp1_uri, 20, 20, &explosion1Bitmap);
-    
-    LPCWSTR exp2_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\explosion2.png";
-    hr = LoadBitmapFromFile(pIWICFactory, exp2_uri, 20, 20, &explosion2Bitmap);
-
-    LPCWSTR exp3_uri = L"C:\\Users\\meleu\\OneDrive\\Desktop\\robo-spiders-in-space\\assets\\explosion3.png";
-    hr = LoadBitmapFromFile(pIWICFactory, exp3_uri, 20, 20, &explosion3Bitmap);    
+    p /= "assets";
+    loadBitmapFile(pIWICFactory, "player.png", &playerBitmap);
+    loadBitmapFile(pIWICFactory, "enemy.png", &enemyBitmap);
+    loadBitmapFile(pIWICFactory, "projectile1.png", &projectile1Bitmap);
+    loadBitmapFile(pIWICFactory, "ENTERTOPLAY.png", &button1Bitmap);
+    loadBitmapFile(pIWICFactory, "target.png", &targetBitmap);
+    loadBitmapFile(pIWICFactory, "explosion1.png", &explosion1Bitmap);
+    loadBitmapFile(pIWICFactory, "explosion2.png", &explosion2Bitmap);
+    loadBitmapFile(pIWICFactory, "explosion3.png", &explosion3Bitmap);
 }
 
 static HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap)
