@@ -63,6 +63,7 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
                 enemy->update(projectiles, player.get(), animator.get(), timeElapsed, endTime);
             }
         }
+        target->checkIfHit(animator.get());
     }
 }
 
@@ -191,9 +192,13 @@ void Scene::drawProjectiles(ID2D1HwndRenderTarget* renderTarget)
     }
 }
 
-void Scene::assignBitmaps(ID2D1Bitmap *playerBitmap, ID2D1Bitmap *enemyBitmap, ID2D1Bitmap *targetBitmap)
+void Scene::assignBitmaps(ID2D1Bitmap *playerBitmap, ID2D1Bitmap *enemyBitmap, ID2D1Bitmap *targetBitmap,
+            ID2D1Bitmap *explosion1Bitmap,ID2D1Bitmap *explosion2Bitmap,ID2D1Bitmap *explosion3Bitmap)
 {
     enemyManager->bitmap = enemyBitmap;
     player->bitmap = playerBitmap;
     target->bitmap = targetBitmap;
+    animator->explosionBitmaps[0] = explosion1Bitmap;
+    animator->explosionBitmaps[1] = explosion2Bitmap;
+    animator->explosionBitmaps[2] = explosion3Bitmap;
 }

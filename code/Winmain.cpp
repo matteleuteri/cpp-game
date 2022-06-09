@@ -249,11 +249,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             // clean up these lines below.
             menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
-            scene->assignBitmaps(playerBitmap, enemyBitmap, targetBitmap);
-            
-            scene->animator->explosionBitmaps[0] = explosion1Bitmap;
-            scene->animator->explosionBitmaps[1] = explosion2Bitmap;
-            scene->animator->explosionBitmaps[2] = explosion3Bitmap;
+            scene->assignBitmaps(playerBitmap, enemyBitmap, targetBitmap, explosion1Bitmap, explosion2Bitmap, explosion3Bitmap);
             
             // initialize controls
             e_Button = new FireButton();

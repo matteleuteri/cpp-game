@@ -38,7 +38,7 @@ public:
     void Scene::drawProjectiles(ID2D1HwndRenderTarget* renderTarget);
     void Scene::drawTarget(ID2D1HwndRenderTarget* renderTarget);
     void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget);
-    void Scene::assignBitmaps(ID2D1Bitmap *playerBitmap, ID2D1Bitmap *enemyBitmap, ID2D1Bitmap *targetBitmap);
+    void Scene::assignBitmaps(ID2D1Bitmap *playerBitmap, ID2D1Bitmap *enemyBitmap, ID2D1Bitmap *targetBitmap, ID2D1Bitmap *explosion1Bitmap,ID2D1Bitmap *explosion2Bitmap,ID2D1Bitmap *explosion3Bitmap);
     void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3]);
     void Scene::renderGrid(RECT* rc, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3]);
     

@@ -14,6 +14,7 @@ public:
     int gridRow;
     int gridCol;
     int explosionIndex;
+    int score;
 
     std::vector<Explosion> explosions;
     std::array<ID2D1Bitmap*, 3> explosionBitmaps;

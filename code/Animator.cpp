@@ -8,6 +8,7 @@ Animator::Animator()
 Animator::Animator(int64_t start, int x, int y): gridRow(y), gridCol(x) 
 {
     explosionIndex = 0;
+    score = 0;
 }
 
 void Animator::startExplosion(float x, float y, int64_t timestamp)

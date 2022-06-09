@@ -5,7 +5,6 @@
 #include <d2d1.h>
 #include <memory>
 
-
 enum DIRECTION
 {
     UP,
