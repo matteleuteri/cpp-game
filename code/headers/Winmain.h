@@ -6,7 +6,6 @@
 #include <stdint.h>
 #include <profileapi.h>
 #include <filesystem>
-#include <iostream>
 
 #include "Scene.h"
 #include "Menu.h"
@@ -42,6 +41,3 @@ ButtonAction *q_Button;
 ButtonAction *w_Button;
 ButtonAction *e_Button;
 ButtonAction *r_Button;
-
-static void createResources(HWND hwnd, RECT* rc);
-static HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, PCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap);

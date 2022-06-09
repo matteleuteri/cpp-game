@@ -10,6 +10,78 @@ static inline int64_t GetTicks()
     return ticks.QuadPart;
 }
 
+static HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap)
+{
+    IWICBitmapDecoder *pDecoder = NULL;
+    IWICBitmapFrameDecode *pSource = NULL;
+    // IWICStream *pStream = NULL;
+    IWICFormatConverter *pConverter = NULL;
+    // IWICBitmapScaler *pScaler = NULL;
+
+    HRESULT hr = pIWICFactory->CreateDecoderFromFilename(uri, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &pDecoder);
+
+    if (SUCCEEDED(hr))
+    {
+        hr = pDecoder->GetFrame(0, &pSource);
+    }
+
+    if (SUCCEEDED(hr))
+    {
+        hr = pIWICFactory->CreateFormatConverter(&pConverter);
+    }
+
+    if (SUCCEEDED(hr))
+    {
+        hr = pConverter->Initialize(pSource, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut);
+    }
+    
+    if (SUCCEEDED(hr))
+    {
+        hr = renderTarget->CreateBitmapFromWicBitmap(pConverter, ppBitmap);
+    }
+    return hr;
+}
+
+static void loadBitmapFile(IWICImagingFactory* pIWICFactory, std::filesystem::path bitmapFileName, ID2D1Bitmap **tBitmap)
+{
+    p /= bitmapFileName;
+    LoadBitmapFromFile(pIWICFactory, p.c_str(), 20, 20, tBitmap);  
+    p.remove_filename();
+}
+
+static void createResources(HWND hwnd, RECT* rc)
+{
+    ID2D1Factory* pD2DFactory = NULL;
+
+    // both lines below return HRESULT, I should make sure they succeez
+    D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
+    D2D1_SIZE_U clientSize = D2D1::SizeU(rc->right - rc->left, rc->bottom - rc->top);
+    pD2DFactory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hwnd, clientSize), &renderTarget);
+  
+    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &brushes[0]); 
+    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &brushes[1]); 
+    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink), &brushes[2]); 
+
+    // load images here
+    IWICImagingFactory *pIWICFactory = NULL; 
+    playerBitmap = NULL;
+    enemyBitmap = NULL;
+    projectile1Bitmap = NULL;
+    
+    CoInitializeEx(NULL, COINIT_MULTITHREADED); 
+    HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));    
+
+    p /= "assets";
+    loadBitmapFile(pIWICFactory, "player.png", &playerBitmap);
+    loadBitmapFile(pIWICFactory, "enemy.png", &enemyBitmap);
+    loadBitmapFile(pIWICFactory, "projectile1.png", &projectile1Bitmap);
+    loadBitmapFile(pIWICFactory, "ENTERTOPLAY.png", &button1Bitmap);
+    loadBitmapFile(pIWICFactory, "target.png", &targetBitmap);
+    loadBitmapFile(pIWICFactory, "explosion1.png", &explosion1Bitmap);
+    loadBitmapFile(pIWICFactory, "explosion2.png", &explosion2Bitmap);
+    loadBitmapFile(pIWICFactory, "explosion3.png", &explosion3Bitmap);
+}
+
 /*  THESE KEY FUNCTIONS BELOW ARE NOT FINAL  */
 static void handleKeyDown(WPARAM wParam)
 {
@@ -119,8 +191,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_LBUTTONDOWN:
         {
             if(!scene->player->isActive) break;
-            Projectile* p = new Projectile(lParam, scene->player->x,  scene->player->y, projectile1Bitmap); // dont forget to free
-            scene->projectiles.push_back(*p);
+            Projectile* proj = new Projectile(lParam, scene->player->x,  scene->player->y, projectile1Bitmap); // dont forget to free
+            scene->projectiles.push_back(*proj);
         }
         case WM_KEYDOWN:
         {
@@ -165,11 +237,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         {
             isRunning = true;
             RECT rc;
-
-
             GetClientRect(hwnd, &rc);
 
             p = std::filesystem::current_path().remove_filename();
+
+            wchar_t fnameBuffer[MAX_PATH];
+            GetModuleFileName(NULL, fnameBuffer, MAX_PATH);
 
             createResources(hwnd, &rc);
 
@@ -238,74 +311,3 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     return 0;
 }
 
-static void loadBitmapFile(IWICImagingFactory* pIWICFactory, std::filesystem::path bitmapFileName, ID2D1Bitmap **tBitmap)
-{
-    p /= bitmapFileName;
-    LoadBitmapFromFile(pIWICFactory, p.c_str(), 20, 20, tBitmap);  
-    p.remove_filename();
-}
-
-static void createResources(HWND hwnd, RECT* rc)
-{
-    ID2D1Factory* pD2DFactory = NULL;
-
-    // both lines below return HRESULT, I should make sure they succeez
-    D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
-    D2D1_SIZE_U clientSize = D2D1::SizeU(rc->right - rc->left, rc->bottom - rc->top);
-    pD2DFactory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hwnd, clientSize), &renderTarget);
-  
-    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &brushes[0]); 
-    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &brushes[1]); 
-    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink), &brushes[2]); 
-
-    // load images here
-    IWICImagingFactory *pIWICFactory = NULL; 
-    playerBitmap = NULL;
-    enemyBitmap = NULL;
-    projectile1Bitmap = NULL;
-    
-    CoInitializeEx(NULL, COINIT_MULTITHREADED); 
-    HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));    
-
-    p /= "assets";
-    loadBitmapFile(pIWICFactory, "player.png", &playerBitmap);
-    loadBitmapFile(pIWICFactory, "enemy.png", &enemyBitmap);
-    loadBitmapFile(pIWICFactory, "projectile1.png", &projectile1Bitmap);
-    loadBitmapFile(pIWICFactory, "ENTERTOPLAY.png", &button1Bitmap);
-    loadBitmapFile(pIWICFactory, "target.png", &targetBitmap);
-    loadBitmapFile(pIWICFactory, "explosion1.png", &explosion1Bitmap);
-    loadBitmapFile(pIWICFactory, "explosion2.png", &explosion2Bitmap);
-    loadBitmapFile(pIWICFactory, "explosion3.png", &explosion3Bitmap);
-}
-
-static HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri, UINT destinationWidth, UINT destinationHeight, ID2D1Bitmap **ppBitmap)
-{
-    IWICBitmapDecoder *pDecoder = NULL;
-    IWICBitmapFrameDecode *pSource = NULL;
-    // IWICStream *pStream = NULL;
-    IWICFormatConverter *pConverter = NULL;
-    // IWICBitmapScaler *pScaler = NULL;
-
-    HRESULT hr = pIWICFactory->CreateDecoderFromFilename(uri, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &pDecoder);
-
-    if (SUCCEEDED(hr))
-    {
-        hr = pDecoder->GetFrame(0, &pSource);
-    }
-
-    if (SUCCEEDED(hr))
-    {
-        hr = pIWICFactory->CreateFormatConverter(&pConverter);
-    }
-
-    if (SUCCEEDED(hr))
-    {
-        hr = pConverter->Initialize(pSource, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut);
-    }
-    
-    if (SUCCEEDED(hr))
-    {
-        hr = renderTarget->CreateBitmapFromWicBitmap(pConverter, ppBitmap);
-    }
-    return hr;
-}
