@@ -77,17 +77,15 @@ static void createResources(HWND hwnd, RECT* rc)
     loadBitmapFile(pIWICFactory, "projectile1.png", &projectile1Bitmap);
     loadBitmapFile(pIWICFactory, "ENTERTOPLAY.png", &button1Bitmap);
     loadBitmapFile(pIWICFactory, "target.png", &targetBitmap);
+    
     loadBitmapFile(pIWICFactory, "explosion1.png", &explosion1Bitmap);
     loadBitmapFile(pIWICFactory, "explosion2.png", &explosion2Bitmap);
     loadBitmapFile(pIWICFactory, "explosion3.png", &explosion3Bitmap);
-
 
     loadBitmapFile(pIWICFactory, "one_01.png", &one_01);
     loadBitmapFile(pIWICFactory, "one_02.png", &one_02);
     loadBitmapFile(pIWICFactory, "one_03.png", &one_03);
     loadBitmapFile(pIWICFactory, "one_04.png", &one_04);
-
-
 }
 
 /*  THESE KEY FUNCTIONS BELOW ARE NOT FINAL  */
@@ -220,6 +218,25 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return result;
 }
 
+void assignBitmaps()
+{
+    scene->enemyManager->bitmap = enemyBitmap;
+    scene->player->bitmap = playerBitmap;
+    scene->target->bitmap = targetBitmap;
+    scene->animator->explosionBitmaps[0] = explosion1Bitmap;
+    scene->animator->explosionBitmaps[1] = explosion2Bitmap;
+    scene->animator->explosionBitmaps[2] = explosion3Bitmap;
+
+    scene->animator->score->bitmap = one_01;
+    scene->animator->scoreBitmaps[0] = one_01;
+    scene->animator->scoreBitmaps[1] = one_02;
+    scene->animator->scoreBitmaps[2] = one_03;
+    scene->animator->scoreBitmaps[3] = one_04;
+
+    
+}
+
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     const wchar_t CLASS_NAME[]  = L"Matt's Windows c++ Project";
@@ -248,20 +265,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             GetClientRect(hwnd, &rc);
 
             p = std::filesystem::current_path().remove_filename();
-
-            wchar_t fnameBuffer[MAX_PATH];
-            GetModuleFileName(NULL, fnameBuffer, MAX_PATH);
-
+            // wchar_t fnameBuffer[MAX_PATH];
+            // GetModuleFileName(NULL, fnameBuffer, MAX_PATH);
             createResources(hwnd, &rc);
 
-            // clean up these lines below.
             menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
-            scene->assignBitmaps(playerBitmap, enemyBitmap, targetBitmap, explosion1Bitmap, explosion2Bitmap, explosion3Bitmap);
-            scene->assignBitmaps2(one_01, one_02, one_03, one_04);
-
-
-
+    
+            assignBitmaps();
 
             // initialize controls
             e_Button = new FireButton();

@@ -51,24 +51,29 @@ void Animator::showScore(int64_t currentTime)
     // collect bitmap(s) needed to display the score, at key frame 1
     // scoreObj
 
-    score->bitmap = scoreBitmaps[0];
+    // score->bitmap = scoreBitmaps[0];
     score->isActive = true;
+    
 
-
-        // if(currentTime - explosion->startTime > 800000)
-        // {
-        //     explosion->frameNum = 1;
-        //     explosion->flipFrame(explosionBitmaps);
-        // }
-        // if(currentTime - explosion->startTime > 1600000)
-        // {
-        //     explosion->frameNum = 2;
-        //     explosion->flipFrame(explosionBitmaps);
-        // }
-        // if(currentTime - explosion->startTime > explosion->duration)
-        // {
-        //     score->isActive = false;
-        // }
+    if(currentTime - score->startTime > 800000)
+    {
+        score->frameNum = 1;
+        score->flipFrame(scoreBitmaps);
+    }
+    if(currentTime - score->startTime > 1600000)
+    {
+        score->frameNum = 2;
+        score->flipFrame(scoreBitmaps);
+    }
+    if(currentTime - score->startTime > 3200000)
+    {
+        score->isActive = false;
+    }
 
 }
+
+
+
+
+
 

@@ -1,6 +1,5 @@
 #include "headers/Scene.h"
 
-
 Scene::Scene(RECT* rc, HWND hwnd)
 {
     projectiles = {};
@@ -19,6 +18,7 @@ void Scene::updateProjectiles(int64_t timeElapsed)
     {
         proj.x += (proj.direction[0] * timeElapsed / 10000);
         proj.y += (proj.direction[1] * timeElapsed / 10000);
+        // leak memory
         // if(proj.y <= 0 || proj.y >= 720 || proj.x <= 0 || proj.x >= 1280)
         // {
         //     // delete projectile;
@@ -88,10 +88,8 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
         drawProjectiles(renderTarget);
         drawTarget(renderTarget);
         drawExplosions(renderTarget);
-        if(animator->score->isActive)
-        {
-            drawScore(renderTarget);
-        }
+        if(animator->score->isActive) drawScore(renderTarget);
+        
     }
     renderTarget->EndDraw();  
 }
@@ -196,39 +194,15 @@ void Scene::drawProjectiles(ID2D1HwndRenderTarget* renderTarget)
     }
 }
 
-void Scene::assignBitmaps(ID2D1Bitmap *playerBitmap, ID2D1Bitmap *enemyBitmap, ID2D1Bitmap *targetBitmap,
-            ID2D1Bitmap *explosion1Bitmap,ID2D1Bitmap *explosion2Bitmap,ID2D1Bitmap *explosion3Bitmap)
-{
-    enemyManager->bitmap = enemyBitmap;
-    player->bitmap = playerBitmap;
-    target->bitmap = targetBitmap;
-    animator->explosionBitmaps[0] = explosion1Bitmap;
-    animator->explosionBitmaps[1] = explosion2Bitmap;
-    animator->explosionBitmaps[2] = explosion3Bitmap;
-}
-
-void Scene::assignBitmaps2(ID2D1Bitmap *one_01, ID2D1Bitmap *one_02, ID2D1Bitmap *one_03, ID2D1Bitmap *one_04)
-{
-    animator->scoreBitmaps[0] = one_01;
-    animator->scoreBitmaps[1] = one_02;
-
-    animator->scoreBitmaps[2] = one_03;
-
-    animator->scoreBitmaps[3] = one_04;
-
-}
-
 void Scene::drawScore(ID2D1HwndRenderTarget* renderTarget)
 {
     D2D1_POINT_2F center = {};
     center.x = 200.0f;
     center.y = 200.0f;        
     D2D1_SIZE_F size = animator->score->bitmap->GetSize();
-    // renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(p.angle, center));
-        renderTarget->DrawBitmap(animator->score->bitmap, D2D1::RectF(
-                    animator->score->x - (size.width / 2), 
-                    animator->score->y - (size.height / 2), 
-                    animator->score->x + (size.width / 2), 
-                    animator->score->y + (size.height / 2)));
-        // renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));    
+                renderTarget->DrawBitmap(animator->score->bitmap, D2D1::RectF(
+                animator->score->x - (size.width / 2), 
+                animator->score->y - (size.height / 2), 
+                animator->score->x + (size.width / 2), 
+                animator->score->y + (size.height / 2)));
 }
