@@ -10,7 +10,7 @@ public:
     int x;
     int y;
     bool isHit;
-    void Target::checkIfHit(Animator *animator);
+    void Target::checkIfHit(Animator *animator, int64_t t);
 
     ID2D1Bitmap *bitmap;
     Target::Target();

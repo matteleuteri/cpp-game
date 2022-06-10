@@ -63,7 +63,7 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
                 enemy->update(projectiles, player.get(), animator.get(), timeElapsed, endTime);
             }
         }
-        target->checkIfHit(animator.get());
+        target->checkIfHit(animator.get(), endTime);
     }
 }
 
@@ -88,6 +88,10 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
         drawProjectiles(renderTarget);
         drawTarget(renderTarget);
         drawExplosions(renderTarget);
+        if(animator->score->isActive)
+        {
+            drawScore(renderTarget);
+        }
     }
     renderTarget->EndDraw();  
 }
@@ -201,4 +205,30 @@ void Scene::assignBitmaps(ID2D1Bitmap *playerBitmap, ID2D1Bitmap *enemyBitmap, I
     animator->explosionBitmaps[0] = explosion1Bitmap;
     animator->explosionBitmaps[1] = explosion2Bitmap;
     animator->explosionBitmaps[2] = explosion3Bitmap;
+}
+
+void Scene::assignBitmaps2(ID2D1Bitmap *one_01, ID2D1Bitmap *one_02, ID2D1Bitmap *one_03, ID2D1Bitmap *one_04)
+{
+    animator->scoreBitmaps[0] = one_01;
+    animator->scoreBitmaps[1] = one_02;
+
+    animator->scoreBitmaps[2] = one_03;
+
+    animator->scoreBitmaps[3] = one_04;
+
+}
+
+void Scene::drawScore(ID2D1HwndRenderTarget* renderTarget)
+{
+    D2D1_POINT_2F center = {};
+    center.x = 200.0f;
+    center.y = 200.0f;        
+    D2D1_SIZE_F size = animator->score->bitmap->GetSize();
+    // renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(p.angle, center));
+        renderTarget->DrawBitmap(animator->score->bitmap, D2D1::RectF(
+                    animator->score->x - (size.width / 2), 
+                    animator->score->y - (size.height / 2), 
+                    animator->score->x + (size.width / 2), 
+                    animator->score->y + (size.height / 2)));
+        // renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));    
 }

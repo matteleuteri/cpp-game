@@ -69,7 +69,7 @@ static void createResources(HWND hwnd, RECT* rc)
     projectile1Bitmap = NULL;
     
     CoInitializeEx(NULL, COINIT_MULTITHREADED); 
-    HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));    
+    CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));    
 
     p /= "assets";
     loadBitmapFile(pIWICFactory, "player.png", &playerBitmap);
@@ -80,6 +80,14 @@ static void createResources(HWND hwnd, RECT* rc)
     loadBitmapFile(pIWICFactory, "explosion1.png", &explosion1Bitmap);
     loadBitmapFile(pIWICFactory, "explosion2.png", &explosion2Bitmap);
     loadBitmapFile(pIWICFactory, "explosion3.png", &explosion3Bitmap);
+
+
+    loadBitmapFile(pIWICFactory, "one_01.png", &one_01);
+    loadBitmapFile(pIWICFactory, "one_02.png", &one_02);
+    loadBitmapFile(pIWICFactory, "one_03.png", &one_03);
+    loadBitmapFile(pIWICFactory, "one_04.png", &one_04);
+
+
 }
 
 /*  THESE KEY FUNCTIONS BELOW ARE NOT FINAL  */
@@ -250,7 +258,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             menu = std::make_unique<Menu>(&rc, hwnd);
             scene = std::make_unique<Scene>(&rc, hwnd);
             scene->assignBitmaps(playerBitmap, enemyBitmap, targetBitmap, explosion1Bitmap, explosion2Bitmap, explosion3Bitmap);
-            
+            scene->assignBitmaps2(one_01, one_02, one_03, one_04);
+
+
+
+
             // initialize controls
             e_Button = new FireButton();
             q_Button = new FireButton();

@@ -36,6 +36,18 @@ ID2D1Bitmap *explosion1Bitmap;
 ID2D1Bitmap *explosion2Bitmap;
 ID2D1Bitmap *explosion3Bitmap;
 
+ID2D1Bitmap *one_01;
+ID2D1Bitmap *one_02;
+ID2D1Bitmap *one_03;
+ID2D1Bitmap *one_04;
+// ID2D1Bitmap *one_05;
+// ID2D1Bitmap *one_06;
+// ID2D1Bitmap *one_07;
+// ID2D1Bitmap *one_08;
+// ID2D1Bitmap *one_09;
+// ID2D1Bitmap *one_10;
+
+
 // button 
 ButtonAction *q_Button;
 ButtonAction *w_Button;
