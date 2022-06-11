@@ -19,8 +19,8 @@ enum SCREENSTATE
     PAUSEMENU
 };
 
-std::filesystem::path p;
 static bool isRunning;
+std::filesystem::path p;
 std::unique_ptr<Scene> scene;
 std::unique_ptr<Menu> menu;
 ID2D1HwndRenderTarget* renderTarget;

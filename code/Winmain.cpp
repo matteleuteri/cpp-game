@@ -91,85 +91,30 @@ static void createResources(HWND hwnd, RECT* rc)
 /*  THESE KEY FUNCTIONS BELOW ARE NOT FINAL  */
 static void handleKeyDown(WPARAM wParam)
 {
-    OutputDebugStringA("key down\n");
-    
     if(wParam == VK_RETURN) // hitting ENTER starts the game
     {
-        // put this in a constructor  or something, this is poor form
-        screenState = SCENE;
         scene->player->isActive = true;
+        screenState = SCENE;
+    }
 
-        scene->player->x = 400;
-        scene->player->y = 400;
-
-        scene->player->width = 20;
-        scene->player->height = 20;
-
-        scene->player->speedScale = 1.0f;
+    if(wParam == VK_UP)    scene->player->goingUp    = true;
+    if(wParam == VK_RIGHT) scene->player->goingRight = true;
+    if(wParam == VK_DOWN)  scene->player->goingDown  = true;
+    if(wParam == VK_LEFT)  scene->player->goingLeft  = true;    
         
-        scene->player->leftSpeed = 0;
-        scene->player->rightSpeed = 0;
-        scene->player->upSpeed = 0;
-        scene->player->downSpeed = 0;
-    }
-    else if(wParam == VK_UP)
-    {
-        scene->player->goingUp = true;
-    }
-    else if(wParam == VK_RIGHT)
-    {
-        scene->player->goingRight = true;
-    }
-    else if(wParam == VK_DOWN)
-    {
-        scene->player->goingDown = true;
-    }
-    else if(wParam == VK_LEFT)
-    {
-        scene->player->goingLeft = true;
-    }
-    else if(wParam == 77)// M key, or menu button
-    {
-        // screenState = MAINMENU;
-        q_Button->execute(scene->player.get());// can be swapped out
-    }
-    else if(wParam == 69)//E
-    {
-        e_Button->execute(scene->player.get());
-    }
-    else if(wParam == 81)//Q
-    {
-        q_Button->execute(scene->player.get());
-    }
-    else if(wParam == 82)//R
-    {
-        r_Button->execute(scene->player.get());
-    }
-    else if(wParam == 87)//W
-    {
-        w_Button->execute(scene->player.get());
-    }
+    if(wParam == 77) q_Button->execute(scene->player.get()); // M, main menu right now
+    if(wParam == 69) e_Button->execute(scene->player.get()); // E
+    if(wParam == 81) q_Button->execute(scene->player.get()); // Q
+    if(wParam == 82) r_Button->execute(scene->player.get()); // R
+    if(wParam == 87) w_Button->execute(scene->player.get()); // W
 }
 
 static void handleKeyUp(WPARAM wParam)
 {
-    OutputDebugStringA("key up\n");
-    if(wParam == VK_UP)
-    {
-        scene->player->goingUp = false;
-    }
-    else if(wParam == VK_RIGHT)
-    {
-        scene->player->goingRight = false;
-    }
-    else if(wParam == VK_DOWN)
-    {
-        scene->player->goingDown = false;
-    }
-    else if(wParam == VK_LEFT)
-    {
-        scene->player->goingLeft = false;
-    }
+    if(wParam == VK_UP)    scene->player->goingUp    = false;
+    if(wParam == VK_RIGHT) scene->player->goingRight = false;
+    if(wParam == VK_DOWN)  scene->player->goingDown  = false;
+    if(wParam == VK_LEFT)  scene->player->goingLeft  = false;
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -197,8 +142,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_LBUTTONDOWN:
         {
             if(!scene->player->isActive) break;
-            Projectile* proj = new Projectile(lParam, scene->player->x,  scene->player->y, projectile1Bitmap); // dont forget to free
-            scene->projectiles.push_back(*proj);
+            Projectile proj(lParam, scene->player->x,  scene->player->y, projectile1Bitmap); // dont forget to free
+            scene->projectiles.push_back(proj);
         }
         case WM_KEYDOWN:
         {
@@ -218,21 +163,22 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return result;
 }
 
-void assignBitmaps()
+static void assignBitmaps() // this is a mess. fix it
 {
     scene->enemyManager->bitmap = enemyBitmap;
     scene->player->bitmap = playerBitmap;
     scene->target->bitmap = targetBitmap;
-    scene->animator->explosionBitmaps[0] = explosion1Bitmap;
-    scene->animator->explosionBitmaps[1] = explosion2Bitmap;
-    scene->animator->explosionBitmaps[2] = explosion3Bitmap;
+
+    scene->animator->explosionBitmaps = { explosion1Bitmap, explosion2Bitmap, explosion3Bitmap };
+
+    // can this line go?
     scene->animator->score->bitmap = one_01;
     scene->animator->scoreBitmaps = {one_01, one_02, one_03, one_04};   
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    const wchar_t CLASS_NAME[]  = L"Matt's Windows c++ Project";
+    const wchar_t CLASS_NAME[]  = L"Robo Spiders in Space";
     
     WNDCLASS wc = { };
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -248,7 +194,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     if(RegisterClass(&wc))
     {
-        HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Windows Program", 
+        HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Robo Spiders in Space", 
                     WS_OVERLAPPEDWINDOW|WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 
                     CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, hInstance, 0);
         if(hwnd) 

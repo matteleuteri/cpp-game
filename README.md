@@ -17,6 +17,8 @@ To do list:
 
 5. implement player enemy collision detection
 
+6. fix the mess of bitmap assignment
+
 
 Completed:
 

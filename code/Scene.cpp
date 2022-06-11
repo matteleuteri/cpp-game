@@ -18,7 +18,7 @@ void Scene::updateProjectiles(int64_t timeElapsed)
     {
         proj.x += (proj.direction[0] * timeElapsed / 10000);
         proj.y += (proj.direction[1] * timeElapsed / 10000);
-        // leak memory
+        // leak memory (fix this!)
         // if(proj.y <= 0 || proj.y >= 720 || proj.x <= 0 || proj.x >= 1280)
         // {
         //     // delete projectile;
@@ -36,7 +36,6 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
         player->updatePlayer(timeElapsed, hwnd);
         // projectile update is handled by Scene
         updateProjectiles(timeElapsed);
-        animator->refreshAnimationFrame(endTime);
 
         //calling spawn enemy here could be an update function of the enemyManager class
         if(endTime - enemyManager->lastSpawnTime >= 20000000) enemyManager->spawnEnemy(endTime);
@@ -50,6 +49,7 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
             }
         }
         target->checkIfHit(animator.get(), endTime);
+        animator->refreshAnimationFrame(endTime);
     }
 }
 

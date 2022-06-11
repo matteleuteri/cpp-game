@@ -1,6 +1,8 @@
 #ifndef _PLAYER
 #define _PLAYER
 
+#define PI 3.141592653589793238463f
+
 #include <stdint.h>
 #include <d2d1.h>
 #include <memory>
@@ -33,6 +35,7 @@ public:
     bool goingUp;
     bool goingDown;
     
+    Player::Player();
     void Player::updatePlayer(int64_t timeElapsed, HWND hwnd);
     void Player::pointPlayerTowards(POINT mousePosition);
     void Player::moveTowardsZero(DIRECTION direction);   
