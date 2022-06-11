@@ -15,7 +15,7 @@ public:
     int gridRow;
     int gridCol;
     int explosionIndex;
-    int scoreValue;
+    // int scoreValue;
     Score* score;
 
     std::vector<Explosion> explosions;

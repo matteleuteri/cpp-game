@@ -31,29 +31,15 @@ void Scene::updateProjectiles(int64_t timeElapsed)
 void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
 {
     int64_t timeElapsed = endTime - startTime;
-
     if(player->isActive)
     {
-        // float angle = 0; //  make property of player
-        POINT mousePosition;
-        BOOL cursorFound = GetCursorPos(&mousePosition);
-        BOOL converted = ScreenToClient(hwnd, &mousePosition);
-        
-        player->updatePlayer(timeElapsed);
+        player->updatePlayer(timeElapsed, hwnd);
+        // projectile update is handled by Scene
         updateProjectiles(timeElapsed);
-
         animator->refreshAnimationFrame(endTime);
 
-        if(cursorFound && converted)
-        {
-            player->pointPlayerTowards(mousePosition);
-        }
-
-        if(endTime - enemyManager->lastSpawnTime >= 20000000)
-        {
-            OutputDebugStringA("Enemy spwaned.\n");
-            enemyManager->spawnEnemy(endTime);
-        }
+        //calling spawn enemy here could be an update function of the enemyManager class
+        if(endTime - enemyManager->lastSpawnTime >= 20000000) enemyManager->spawnEnemy(endTime);
 
         for(int i = 0; i < sizeof(enemyManager->enemyList) / sizeof(Enemy*); i++)
         {
@@ -131,17 +117,13 @@ void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)
     // this is kind of a mess
     for(Enemy *e : enemyManager->enemyList)
     {
-        if(e == nullptr)
-            return;
-
-        if(!e->isActive)
-            continue;
+        if(e == nullptr) return;
+        if(!e->isActive) continue;
 
         float xDistance = player->x - e->x;
         float yDistance = player->y - e->y;
 
         e->angle = ((float)atan(yDistance / xDistance) * (180.0f /PI)) + 45.0f;
-
         if(player->x < e->x) e->angle += 180; // not sure why, but this is important
 
         D2D1_POINT_2F center = {};

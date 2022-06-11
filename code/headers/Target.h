@@ -10,10 +10,9 @@ public:
     int x;
     int y;
     bool isHit;
-    void Target::checkIfHit(Animator *animator, int64_t t);
-
     ID2D1Bitmap *bitmap;
     Target::Target();
+    void Target::checkIfHit(Animator *animator, int64_t t);
     // must react to an enemy being hit in the same area
 };
 

@@ -19,11 +19,15 @@ void Player::moveTowardsZero(DIRECTION direction)
             *dirSpeed = 0;
         }
     }
-
 }
 
-void Player::updatePlayer(int64_t timeElapsed)
+void Player::updatePlayer(int64_t timeElapsed, HWND hwnd)
 {
+    POINT mousePosition;
+    BOOL cursorFound = GetCursorPos(&mousePosition);
+    BOOL converted = ScreenToClient(hwnd, &mousePosition);
+    if(cursorFound && converted) pointPlayerTowards(mousePosition);
+
     if(goingRight)
     {
         rightSpeed += 0.025f;
@@ -33,7 +37,6 @@ void Player::updatePlayer(int64_t timeElapsed)
         }
     }
     else moveTowardsZero(RIGHT);
-
 
     if(goingLeft)
     {
@@ -45,7 +48,6 @@ void Player::updatePlayer(int64_t timeElapsed)
     }
     else moveTowardsZero(LEFT);
 
-
     if(goingDown)
     {
         (downSpeed) += 0.025f;
@@ -55,7 +57,6 @@ void Player::updatePlayer(int64_t timeElapsed)
         }
     }
     else moveTowardsZero(DOWN);
-
 
     if(goingUp)
     {
@@ -78,7 +79,6 @@ void Player::updatePlayer(int64_t timeElapsed)
 
     if(y > 720)     y = 0;
     else if(y < 0)  y = 720;
-
 }
 
 

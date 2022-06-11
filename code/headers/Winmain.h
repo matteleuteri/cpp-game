@@ -35,7 +35,6 @@ ID2D1Bitmap *targetBitmap;
 ID2D1Bitmap *explosion1Bitmap;
 ID2D1Bitmap *explosion2Bitmap;
 ID2D1Bitmap *explosion3Bitmap;
-
 ID2D1Bitmap *one_01;
 ID2D1Bitmap *one_02;
 ID2D1Bitmap *one_03;

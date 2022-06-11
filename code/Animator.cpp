@@ -3,7 +3,6 @@
 Animator::Animator()
 {
     explosionIndex = 0;
-    scoreValue = 0;
     isActive = false;
     score = new Score();
     // score->bitmap = ;
@@ -12,7 +11,6 @@ Animator::Animator()
 Animator::Animator(int64_t start, int x, int y): gridRow(y), gridCol(x) 
 {
     explosionIndex = 0;
-    scoreValue = 0;
 }
 
 void Animator::startExplosion(float x, float y, int64_t timestamp)
@@ -29,51 +27,50 @@ void Animator::refreshAnimationFrame(int64_t currentTime)
 {
     for(int index = 0; index < explosions.size(); index++) 
     {
+        //TODO: BUG: wrong ineqwualities on explosion animation frame, flipping at unexpected rate
         Explosion* explosion = &explosions[index];
-        if(currentTime - explosion->startTime > 800000)
+        if(currentTime - explosion->startTime < 800000)
         {
             explosion->frameNum = 1;
             explosion->flipFrame(explosionBitmaps);
         }
-        if(currentTime - explosion->startTime > 1600000)
+        else if(currentTime - explosion->startTime < 1600000)
         {
             explosion->frameNum = 2;
             explosion->flipFrame(explosionBitmaps);
         }
-        if(currentTime - explosion->startTime > explosion->duration)
+        else if(currentTime - explosion->startTime < explosion->duration)
         {
             explosions.erase(explosions.begin() + index);
         }
     }   
-}
-void Animator::showScore(int64_t currentTime)
-{
-    // collect bitmap(s) needed to display the score, at key frame 1
-    // scoreObj
 
-    // score->bitmap = scoreBitmaps[0];
-    score->isActive = true;
-    
-
-    if(currentTime - score->startTime > 800000)
+    if(currentTime - score->startTime < 800000)
+    {
+        score->frameNum = 0;
+        score->flipFrame(scoreBitmaps);
+    }
+    else if(currentTime - score->startTime < 1600000)
     {
         score->frameNum = 1;
         score->flipFrame(scoreBitmaps);
     }
-    if(currentTime - score->startTime > 1600000)
+    else if(currentTime - score->startTime < 2400000)
     {
         score->frameNum = 2;
         score->flipFrame(scoreBitmaps);
     }
-    if(currentTime - score->startTime > 3200000)
+    else if(currentTime - score->startTime < 3200000)
     {
-        score->isActive = false;
+        score->frameNum = 3;
+        score->flipFrame(scoreBitmaps);
+        score->startTime = currentTime;
     }
 
 }
-
-
-
-
-
+void Animator::showScore(int64_t currentTime)
+{
+    score->isActive = true;
+    score->startTime = currentTime;
+}
 

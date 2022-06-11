@@ -31,8 +31,3 @@ void EnemyManager::resetEnemy(Enemy* enemy)
     enemy->y = 100;
     enemy->isActive = true;
 }
-
-// EnemyManager::EnemyManager(int64_t l)
-// {
-//     lastSpawnTime = l;
-// }

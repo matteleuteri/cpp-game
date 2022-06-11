@@ -9,7 +9,6 @@ Enemy::Enemy()
 Enemy::Enemy(float x, float y) : x(x), y(y)
 {}
 
-
 void Enemy::move(Player* player, int64_t timeElapsed) // needs time elapsed as well
 {
     //TODO
@@ -37,9 +36,9 @@ void Enemy::detectHit(std::vector<Projectile> projectiles, Animator* animator, i
         {
             OutputDebugStringA("hit!\n");
             // play explosion animation, and mark as to delete, and glow grid lines
-            isActive = false;
-            animator->gridCol = (int)x;
+            isActive = false; //does this need to be here?
             animator->gridRow = (int)y;// thse two lines mark an explosion
+            animator->gridCol = (int)x;
             animator->startExplosion(x, y, t);
         }
     }

@@ -226,16 +226,9 @@ void assignBitmaps()
     scene->animator->explosionBitmaps[0] = explosion1Bitmap;
     scene->animator->explosionBitmaps[1] = explosion2Bitmap;
     scene->animator->explosionBitmaps[2] = explosion3Bitmap;
-
     scene->animator->score->bitmap = one_01;
-    scene->animator->scoreBitmaps[0] = one_01;
-    scene->animator->scoreBitmaps[1] = one_02;
-    scene->animator->scoreBitmaps[2] = one_03;
-    scene->animator->scoreBitmaps[3] = one_04;
-
-    
+    scene->animator->scoreBitmaps = {one_01, one_02, one_03, one_04};   
 }
-
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
@@ -264,6 +257,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             RECT rc;
             GetClientRect(hwnd, &rc);
 
+            // this is a cpp17 feature, try to get rid of it
             p = std::filesystem::current_path().remove_filename();
             // wchar_t fnameBuffer[MAX_PATH];
             // GetModuleFileName(NULL, fnameBuffer, MAX_PATH);
