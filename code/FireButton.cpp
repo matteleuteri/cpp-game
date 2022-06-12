@@ -1,6 +1,6 @@
 #include "headers/FireButton.h"
 
-void FireButton::execute(Player* player)
+void FireButton::execute(std::unique_ptr<Scene>& scene)
 {
-    player->speedScale = 2.0f; // will, or how will I set this back to 1?
+    scene->player->speedScale = 2.0f; // will, or how will I set this back to 1?
 }

@@ -1,6 +1,6 @@
 #include "headers/PauseButton.h"
 
-void PauseButton::execute(Player* player)
+void PauseButton::execute(std::unique_ptr<Scene>& scene)
 {
-    player->isActive = !player->isActive;
+    scene->player->isActive = !scene->player->isActive;
 }

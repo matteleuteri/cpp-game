@@ -17,7 +17,7 @@ public:
     float angle;
     ID2D1Bitmap* bitmap;
     bool isActive;
-    Enemy::Enemy(float x, float y);
+    Enemy::Enemy(float x, float y, bool ia, ID2D1Bitmap* b);
     Enemy::Enemy();
 
 

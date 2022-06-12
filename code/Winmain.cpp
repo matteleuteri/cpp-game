@@ -91,6 +91,7 @@ static void handleKeyDown(WPARAM wParam)
     if(wParam == VK_RETURN) // hitting ENTER starts the game
     {
         scene->player->isActive = true;
+        scene->enemyManager->isActive = true;
         screenState = SCENE;
     }
 
@@ -99,12 +100,12 @@ static void handleKeyDown(WPARAM wParam)
     if(wParam == VK_DOWN)  scene->player->goingDown  = true;
     if(wParam == VK_LEFT)  scene->player->goingLeft  = true;    
         
-    if(wParam == 77) q_Button->execute(scene->player.get()); // M, main menu right now
-    if(wParam == 80) p_Button->execute(scene->player.get()); // P
-    if(wParam == 69) e_Button->execute(scene->player.get()); // E
-    if(wParam == 81) q_Button->execute(scene->player.get()); // Q
-    if(wParam == 82) r_Button->execute(scene->player.get()); // R
-    if(wParam == 87) w_Button->execute(scene->player.get()); // W
+    if(wParam == 77) m_Button->execute(scene); // M, main menu right now
+    if(wParam == 80) p_Button->execute(scene); // P
+    if(wParam == 69) e_Button->execute(scene); // E
+    if(wParam == 81) q_Button->execute(scene); // Q
+    if(wParam == 82) r_Button->execute(scene); // R
+    if(wParam == 87) w_Button->execute(scene); // W
 }
 
 static void handleKeyUp(WPARAM wParam)
@@ -117,7 +118,7 @@ static void handleKeyUp(WPARAM wParam)
 
 static void assignBitmaps() // this is a mess. fix it
 {
-    scene->enemyManager->bitmap = enemyBitmap;
+    // scene->enemyManager->bitmap = enemyBitmap;
     scene->player->bitmap = playerBitmap;
     scene->target->bitmap = targetBitmap;
 
@@ -208,7 +209,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             createResources(hwnd, &rc);
 
             menu = std::make_unique<Menu>();
-            scene = std::make_unique<Scene>(GetTicks());//pass bitmps here?
+            scene = std::make_unique<Scene>(GetTicks(), false, enemyBitmap);//pass bitmps here?
     
             assignBitmaps();
 
@@ -218,6 +219,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             r_Button = new FireButton();            
             w_Button = new FireButton();
             p_Button = new PauseButton();
+            m_Button = new PauseButton();
 
             screenState = MAINMENU; 
             int64_t startTime = GetTicks();

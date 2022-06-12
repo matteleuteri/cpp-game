@@ -6,7 +6,7 @@
 class FireButton : public ButtonAction
 {
 public:
-    virtual void execute(Player* player);
+    virtual void execute(std::unique_ptr<Scene>& scene);
 };
 
 #endif

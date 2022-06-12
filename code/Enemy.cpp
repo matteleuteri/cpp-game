@@ -6,7 +6,7 @@ Enemy::Enemy()
     isActive = true;
 }
 
-Enemy::Enemy(float x, float y) : x(x), y(y)
+Enemy::Enemy(float x, float y, bool ia, ID2D1Bitmap* b) : x(x), y(y), isActive(ia), bitmap(b)
 {}
 
 void Enemy::move(Player* player, int64_t timeElapsed) // needs time elapsed as well

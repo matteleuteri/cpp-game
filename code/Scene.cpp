@@ -1,15 +1,12 @@
 #include "headers/Scene.h"
 
-Scene::Scene(int64_t currentTime)
+Scene::Scene(int64_t currentTime, bool ia, ID2D1Bitmap* enemyBitmap) : isActive(ia)
 {
-    projectiles = {};
     player = std::make_unique<Player>();
     animator = std::make_unique<Animator>();
-    target = std::make_unique<Target>();
-    target->x = 600;
-    target->y = 600;
-    enemyManager = std::make_unique<EnemyManager>();
-    enemyManager->lastSpawnTime = 0;
+    target = std::make_unique<Target>(600, 600);
+    enemyManager = std::make_unique<EnemyManager>(currentTime, enemyBitmap);
+
 }
 
 void Scene::updateProjectiles(int64_t timeElapsed)
@@ -37,15 +34,17 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
         // projectile update is handled by Scene
         updateProjectiles(timeElapsed);
 
-        //calling spawn enemy here could be an update function of the enemyManager class
-        if(endTime - enemyManager->lastSpawnTime >= 20000000) enemyManager->spawnEnemy(endTime);
-
-        for(int i = 0; i < sizeof(enemyManager->enemyList) / sizeof(Enemy*); i++)
+        if(enemyManager->isActive)
         {
-            Enemy* enemy = enemyManager->enemyList[i];
-            if(enemy != nullptr && enemy->isActive) // danger!
+            if(endTime - enemyManager->lastSpawnTime >= 20000000) enemyManager->spawnEnemy(endTime);
+
+            for(int i = 0; i < sizeof(enemyManager->enemyList) / sizeof(Enemy*); i++)
             {
-                enemy->update(projectiles, player.get(), animator.get(), timeElapsed, endTime);
+                Enemy* enemy = enemyManager->enemyList[i];
+                if(enemy->isActive) // danger!
+                {
+                    enemy->update(projectiles, player.get(), animator.get(), timeElapsed, endTime);
+                }   
             }
         }
         target->update(animator.get(), endTime);
@@ -70,10 +69,11 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
     if(player->isActive) 
     {
         drawPlayer(renderTarget);
-        drawEnemies(renderTarget);
         drawProjectiles(renderTarget);
         drawTarget(renderTarget);
         drawExplosions(renderTarget);
+        // can conditional draws be combined with others to be done in one call?
+        if(enemyManager->isActive) drawEnemies(renderTarget);
         if(animator->score->isActive) drawScore(renderTarget);
         
     }
@@ -117,7 +117,6 @@ void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)
     // this is kind of a mess
     for(Enemy *e : enemyManager->enemyList)
     {
-        if(e == nullptr) return;
         if(!e->isActive) continue;
 
         float xDistance = player->x - e->x;

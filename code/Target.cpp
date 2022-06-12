@@ -1,6 +1,6 @@
 #include "headers/Target.h"
 
-Target::Target()
+Target::Target(int startX, int startY): x(startX), y(startY)
 {}
 
 void Target::update(Animator *animator, int64_t t)

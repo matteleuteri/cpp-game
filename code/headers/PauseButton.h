@@ -6,7 +6,7 @@
 class PauseButton : public ButtonAction
 {
 public:
-    void PauseButton::execute(Player* player);
+    void PauseButton::execute(std::unique_ptr<Scene>& scene);
 };
 
 #endif

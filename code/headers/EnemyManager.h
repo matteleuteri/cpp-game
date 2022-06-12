@@ -13,12 +13,11 @@ public:
     std::array<Enemy*, 10> enemyList; // size subject to change
     ID2D1Bitmap *bitmap;
     int64_t lastSpawnTime;
-    // EnemyManager::EnemyManager(int64_t l);
+    bool isActive;
 
-
+    EnemyManager::EnemyManager(int64_t t, ID2D1Bitmap* b);
     void EnemyManager::spawnEnemy(int64_t endTime);
     void EnemyManager::resetEnemy(Enemy* enemy);
-    Enemy* EnemyManager::createEnemy();
 };
 
 
