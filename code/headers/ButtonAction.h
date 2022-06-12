@@ -1,5 +1,5 @@
-#ifndef _BUTTON_ACTION
-#define _BUTTON_ACTION
+#ifndef _BUTTONACTION
+#define _BUTTONACTION
 
 #include "Player.h"
 

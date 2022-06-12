@@ -9,8 +9,11 @@
 
 #include "Scene.h"
 #include "Menu.h"
+
+// is there a better way to do this
 #include "ButtonAction.h"
 #include "FireButton.h"
+#include "PauseButton.h"
 
 enum SCREENSTATE
 {
@@ -52,3 +55,4 @@ ButtonAction *q_Button;
 ButtonAction *w_Button;
 ButtonAction *e_Button;
 ButtonAction *r_Button;
+ButtonAction *p_Button;

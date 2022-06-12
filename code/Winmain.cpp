@@ -58,15 +58,12 @@ static void createResources(HWND hwnd, RECT* rc)
     D2D1_SIZE_U clientSize = D2D1::SizeU(rc->right - rc->left, rc->bottom - rc->top);
     pD2DFactory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hwnd, clientSize), &renderTarget);
   
-    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &brushes[0]); 
+    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red),   &brushes[0]); 
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &brushes[1]); 
-    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink), &brushes[2]); 
+    renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink),  &brushes[2]); 
 
     // load images here
     IWICImagingFactory *pIWICFactory = NULL; 
-    playerBitmap = NULL;
-    enemyBitmap = NULL;
-    projectile1Bitmap = NULL;
     
     CoInitializeEx(NULL, COINIT_MULTITHREADED); 
     CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory));    
@@ -103,6 +100,7 @@ static void handleKeyDown(WPARAM wParam)
     if(wParam == VK_LEFT)  scene->player->goingLeft  = true;    
         
     if(wParam == 77) q_Button->execute(scene->player.get()); // M, main menu right now
+    if(wParam == 80) p_Button->execute(scene->player.get()); // P
     if(wParam == 69) e_Button->execute(scene->player.get()); // E
     if(wParam == 81) q_Button->execute(scene->player.get()); // Q
     if(wParam == 82) r_Button->execute(scene->player.get()); // R
@@ -115,6 +113,19 @@ static void handleKeyUp(WPARAM wParam)
     if(wParam == VK_RIGHT) scene->player->goingRight = false;
     if(wParam == VK_DOWN)  scene->player->goingDown  = false;
     if(wParam == VK_LEFT)  scene->player->goingLeft  = false;
+}
+
+static void assignBitmaps() // this is a mess. fix it
+{
+    scene->enemyManager->bitmap = enemyBitmap;
+    scene->player->bitmap = playerBitmap;
+    scene->target->bitmap = targetBitmap;
+
+    scene->animator->explosionBitmaps = { explosion1Bitmap, explosion2Bitmap, explosion3Bitmap };
+
+    // can this line go?
+    scene->animator->score->bitmap = one_01;
+    scene->animator->scoreBitmaps = {one_01, one_02, one_03, one_04};   
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -163,19 +174,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return result;
 }
 
-static void assignBitmaps() // this is a mess. fix it
-{
-    scene->enemyManager->bitmap = enemyBitmap;
-    scene->player->bitmap = playerBitmap;
-    scene->target->bitmap = targetBitmap;
-
-    scene->animator->explosionBitmaps = { explosion1Bitmap, explosion2Bitmap, explosion3Bitmap };
-
-    // can this line go?
-    scene->animator->score->bitmap = one_01;
-    scene->animator->scoreBitmaps = {one_01, one_02, one_03, one_04};   
-}
-
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     const wchar_t CLASS_NAME[]  = L"Robo Spiders in Space";
@@ -209,8 +207,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             // GetModuleFileName(NULL, fnameBuffer, MAX_PATH);
             createResources(hwnd, &rc);
 
-            menu = std::make_unique<Menu>(&rc, hwnd);
-            scene = std::make_unique<Scene>(&rc, hwnd);
+            menu = std::make_unique<Menu>();
+            scene = std::make_unique<Scene>(GetTicks());//pass bitmps here?
     
             assignBitmaps();
 
@@ -219,8 +217,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             q_Button = new FireButton();
             r_Button = new FireButton();            
             w_Button = new FireButton();
+            p_Button = new PauseButton();
 
-            screenState = MAINMENU;
+            screenState = MAINMENU; 
             int64_t startTime = GetTicks();
             int64_t endTime;
             

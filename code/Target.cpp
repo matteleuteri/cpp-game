@@ -3,7 +3,7 @@
 Target::Target()
 {}
 
-void Target::checkIfHit(Animator *animator, int64_t t)
+void Target::update(Animator *animator, int64_t t)
 {
     if(std::abs(animator->gridCol - x) < 50 && std::abs(animator->gridRow - y) < 50)
     {

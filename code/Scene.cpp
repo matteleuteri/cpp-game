@@ -1,6 +1,6 @@
 #include "headers/Scene.h"
 
-Scene::Scene(RECT* rc, HWND hwnd)
+Scene::Scene(int64_t currentTime)
 {
     projectiles = {};
     player = std::make_unique<Player>();
@@ -48,7 +48,7 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
                 enemy->update(projectiles, player.get(), animator.get(), timeElapsed, endTime);
             }
         }
-        target->checkIfHit(animator.get(), endTime);
+        target->update(animator.get(), endTime);
         animator->refreshAnimationFrame(endTime);
     }
 }

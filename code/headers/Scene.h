@@ -37,7 +37,7 @@ public:
     std::unique_ptr<EnemyManager> enemyManager;
     std::unique_ptr<Animator> animator;
     std::unique_ptr<Target> target;
-    Scene::Scene(RECT* rc, HWND hwnd);
+    Scene::Scene(int64_t currentTime);
     void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3]);
     void Scene::updateState(HWND hwnd, int64_t startTime, int64_t endTime); 
 };

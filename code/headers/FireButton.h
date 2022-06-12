@@ -1,5 +1,5 @@
-#ifndef _FIRE_BUTTON
-#define _FIRE_BUTTON
+#ifndef _FIREBUTTON
+#define _FIREBUTTON
 
 #include "ButtonAction.h"
 
