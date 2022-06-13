@@ -17,7 +17,7 @@ To do list:
 
 5. implement player enemy collision detection
 
-6. fix the mess of bitmap assignment
+6. fix bug of mouse pointer rotation after resizng window
 
 
 Completed:
@@ -31,3 +31,5 @@ Completed:
 4. made projectiles a bitmap pointing in proper direction instead of a plain rectangle.
 
 5. added an animation of an explosion
+
+6. fix the mess of bitmap assignment

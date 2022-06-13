@@ -12,9 +12,9 @@
 #include "Menu.h"
 
 // is there a better way to do this
-#include "ButtonAction.h"
-#include "FireButton.h"
-#include "PauseButton.h"
+#include "input/headers/ButtonAction.h"
+#include "input/headers/FireButton.h"
+#include "input/headers/PauseButton.h"
 
 enum SCREENSTATE
 {
@@ -43,13 +43,6 @@ ID2D1Bitmap *one_01;
 ID2D1Bitmap *one_02;
 ID2D1Bitmap *one_03;
 ID2D1Bitmap *one_04;
-// ID2D1Bitmap *one_05;
-// ID2D1Bitmap *one_06;
-// ID2D1Bitmap *one_07;
-// ID2D1Bitmap *one_08;
-// ID2D1Bitmap *one_09;
-// ID2D1Bitmap *one_10;
-
 
 // button 
 ButtonAction *q_Button;

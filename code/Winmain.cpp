@@ -24,17 +24,14 @@ static HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri,
     {
         hr = pDecoder->GetFrame(0, &pSource);
     }
-
     if (SUCCEEDED(hr))
     {
         hr = pIWICFactory->CreateFormatConverter(&pConverter);
     }
-
     if (SUCCEEDED(hr))
     {
         hr = pConverter->Initialize(pSource, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut);
     }
-    
     if (SUCCEEDED(hr))
     {
         hr = renderTarget->CreateBitmapFromWicBitmap(pConverter, ppBitmap);
@@ -200,9 +197,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                         one_01, one_02, one_03, one_04};
 
             menu = std::make_unique<Menu>();
-            scene = std::make_unique<Scene>(GetTicks(), false, bitmaps);//pass bitmps here?
+            scene = std::make_unique<Scene>(GetTicks(), false, bitmaps);
 
-            // initialize control defaults
+            // initialize control defaults. 
             e_Button = new FireButton();
             m_Button = new PauseButton();
             p_Button = new PauseButton();
