@@ -1,12 +1,11 @@
 #include "headers/Scene.h"
 
-Scene::Scene(int64_t currentTime, bool ia, ID2D1Bitmap* enemyBitmap) : isActive(ia)
+Scene::Scene(int64_t currentTime, bool ia, std::array<ID2D1Bitmap*, 10> bitmaps) : isActive(ia)
 {
-    player = std::make_unique<Player>();
-    animator = std::make_unique<Animator>();
-    target = std::make_unique<Target>(600, 600);
-    enemyManager = std::make_unique<EnemyManager>(currentTime, enemyBitmap);
-
+    player       = std::make_unique<Player>(bitmaps[1]);
+    animator     = std::make_unique<Animator>(currentTime, 100, 100, bitmaps);
+    target       = std::make_unique<Target>(600, 600, bitmaps[2]);
+    enemyManager = std::make_unique<EnemyManager>(currentTime, bitmaps[0]);
 }
 
 void Scene::updateProjectiles(int64_t timeElapsed)
@@ -41,7 +40,7 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
             for(int i = 0; i < sizeof(enemyManager->enemyList) / sizeof(Enemy*); i++)
             {
                 Enemy* enemy = enemyManager->enemyList[i];
-                if(enemy->isActive) // danger!
+                if(enemy->isActive)
                 {
                     enemy->update(projectiles, player.get(), animator.get(), timeElapsed, endTime);
                 }   

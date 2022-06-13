@@ -99,7 +99,7 @@ static void handleKeyDown(WPARAM wParam)
     if(wParam == VK_RIGHT) scene->player->goingRight = true;
     if(wParam == VK_DOWN)  scene->player->goingDown  = true;
     if(wParam == VK_LEFT)  scene->player->goingLeft  = true;    
-        
+
     if(wParam == 77) m_Button->execute(scene); // M, main menu right now
     if(wParam == 80) p_Button->execute(scene); // P
     if(wParam == 69) e_Button->execute(scene); // E
@@ -114,19 +114,6 @@ static void handleKeyUp(WPARAM wParam)
     if(wParam == VK_RIGHT) scene->player->goingRight = false;
     if(wParam == VK_DOWN)  scene->player->goingDown  = false;
     if(wParam == VK_LEFT)  scene->player->goingLeft  = false;
-}
-
-static void assignBitmaps() // this is a mess. fix it
-{
-    // scene->enemyManager->bitmap = enemyBitmap;
-    scene->player->bitmap = playerBitmap;
-    scene->target->bitmap = targetBitmap;
-
-    scene->animator->explosionBitmaps = { explosion1Bitmap, explosion2Bitmap, explosion3Bitmap };
-
-    // can this line go?
-    scene->animator->score->bitmap = one_01;
-    scene->animator->scoreBitmaps = {one_01, one_02, one_03, one_04};   
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -206,22 +193,24 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             p = std::filesystem::current_path().remove_filename();
             // wchar_t fnameBuffer[MAX_PATH];
             // GetModuleFileName(NULL, fnameBuffer, MAX_PATH);
+
             createResources(hwnd, &rc);
+            std::array<ID2D1Bitmap*, 10> bitmaps = {enemyBitmap, playerBitmap, targetBitmap, 
+                        explosion1Bitmap, explosion2Bitmap, explosion3Bitmap, 
+                        one_01, one_02, one_03, one_04};
 
             menu = std::make_unique<Menu>();
-            scene = std::make_unique<Scene>(GetTicks(), false, enemyBitmap);//pass bitmps here?
-    
-            assignBitmaps();
+            scene = std::make_unique<Scene>(GetTicks(), false, bitmaps);//pass bitmps here?
 
-            // initialize controls
+            // initialize control defaults
             e_Button = new FireButton();
-            q_Button = new FireButton();
-            r_Button = new FireButton();            
-            w_Button = new FireButton();
-            p_Button = new PauseButton();
             m_Button = new PauseButton();
+            p_Button = new PauseButton();
+            q_Button = new FireButton();
+            r_Button = new FireButton();           
+            w_Button = new FireButton();
 
-            screenState = MAINMENU; 
+            screenState = MAINMENU;
             int64_t startTime = GetTicks();
             int64_t endTime;
             
@@ -270,4 +259,3 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     }
     return 0;
 }
-

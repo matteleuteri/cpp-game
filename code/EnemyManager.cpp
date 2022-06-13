@@ -3,9 +3,9 @@
 
 EnemyManager::EnemyManager(int64_t t, ID2D1Bitmap* b): lastSpawnTime(t), bitmap(b)
 {
-    isActive = false;
+    isActive = false; // ???
     
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < 10; ++i)
         enemyList[i] = new Enemy(100, 100, false, b);
 }
 

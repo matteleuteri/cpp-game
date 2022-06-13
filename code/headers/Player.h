@@ -34,8 +34,8 @@ public:
     bool goingLeft;
     bool goingUp;
     bool goingDown;
-    
-    Player::Player();
+
+    Player::Player(ID2D1Bitmap *bitmap);
     void Player::updatePlayer(int64_t timeElapsed, HWND hwnd);
     void Player::pointPlayerTowards(POINT mousePosition);
     void Player::moveTowardsZero(DIRECTION direction);   

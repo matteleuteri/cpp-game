@@ -1,6 +1,6 @@
 #include "headers/Target.h"
 
-Target::Target(int startX, int startY): x(startX), y(startY)
+Target::Target(int startX, int startY, ID2D1Bitmap* b): x(startX), y(startY), bitmap(b)
 {}
 
 void Target::update(Animator *animator, int64_t t)

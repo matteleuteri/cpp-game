@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <profileapi.h>
 #include <filesystem>
+#include <array>
 
 #include "Scene.h"
 #include "Menu.h"

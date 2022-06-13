@@ -1,16 +1,21 @@
 #include "headers/Animator.h"
 
-Animator::Animator()
+Animator::Animator(int64_t start, int x, int y, std::array<ID2D1Bitmap*, 10> bitmaps)
 {
+    gridRow = y;
+    gridCol = x;
     explosionIndex = 0;
+    scoreBitmaps[0] = bitmaps[6];
+    scoreBitmaps[1] = bitmaps[7];
+    scoreBitmaps[2] = bitmaps[8];
+    scoreBitmaps[3] = bitmaps[9];
+    explosionBitmaps[0] = bitmaps[3];
+    explosionBitmaps[1] = bitmaps[4];
+    explosionBitmaps[2] = bitmaps[5];
     isActive = false;
+    
     score = new Score();
-    // score->bitmap = ;
-}
-
-Animator::Animator(int64_t start, int x, int y): gridRow(y), gridCol(x) 
-{
-    explosionIndex = 0;
+    score->bitmap = bitmaps[6];
 }
 
 void Animator::startExplosion(float x, float y, int64_t timestamp)
