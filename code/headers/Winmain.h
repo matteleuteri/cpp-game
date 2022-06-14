@@ -7,6 +7,7 @@
 #include <profileapi.h>
 #include <filesystem>
 #include <array>
+#include <dwrite.h>
 
 #include "Scene.h"
 #include "Menu.h"
@@ -51,3 +52,12 @@ ButtonAction *e_Button;
 ButtonAction *r_Button;
 ButtonAction *p_Button;
 ButtonAction *m_Button;
+
+
+
+
+
+
+
+IDWriteFactory* pDWriteFactory_;
+IDWriteTextFormat* pTextFormat_;

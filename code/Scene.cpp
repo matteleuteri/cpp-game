@@ -3,7 +3,7 @@
 Scene::Scene(int64_t currentTime, bool ia, std::array<ID2D1Bitmap*, 10> bitmaps) : isActive(ia)
 {
     player       = std::make_unique<Player>(bitmaps[1]);
-    animator     = std::make_unique<Animator>(currentTime, 100, 100, bitmaps);
+    animator     = std::make_unique<Animator>(currentTime, 0, 0, bitmaps);
     target       = std::make_unique<Target>(600, 600, bitmaps[2]);
     enemyManager = std::make_unique<EnemyManager>(currentTime, bitmaps[0]);
 }
@@ -51,7 +51,7 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
     }
 }
 
-void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3])
+void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3], IDWriteTextFormat* pTextFormat_)
 {
     renderTarget->BeginDraw();
     renderTarget->SetTransform(D2D1::Matrix3x2F::Translation(0,0));
@@ -75,6 +75,27 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
         if(enemyManager->isActive) drawEnemies(renderTarget);
         if(animator->score->isActive) drawScore(renderTarget);
         
+
+        D2D1_RECT_F layoutRect = D2D1::RectF(
+            static_cast<FLOAT>(rc->left),
+            static_cast<FLOAT>(rc->top),
+            static_cast<FLOAT>(rc->right - rc->left),
+            static_cast<FLOAT>(rc->bottom - rc->top));
+
+
+        const wchar_t* wszText_ = L"This is my text, it has a null terminating charcetr\n";
+        UINT32 cTextLength_ = 53;// check for overflow
+
+        renderTarget->DrawText(
+            wszText_,        // The string to render.
+            cTextLength_,    // The string's length.
+            pTextFormat_,    // The text format.
+            layoutRect,       // The region of the window where the text will be rendered.
+            brushes[0]);
+
+
+
+
     }
     renderTarget->EndDraw();  
 }

@@ -39,7 +39,7 @@ public:
     std::unique_ptr<Target> target;
     
     Scene::Scene(int64_t currentTime, bool ia, std::array<ID2D1Bitmap*, 10> bitmaps);
-    void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3]);
+    void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget, ID2D1SolidColorBrush* brushes[3], IDWriteTextFormat* pTextFormat_);
     void Scene::updateState(HWND hwnd, int64_t startTime, int64_t endTime); 
 };
 

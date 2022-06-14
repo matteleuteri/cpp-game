@@ -59,6 +59,32 @@ static void createResources(HWND hwnd, RECT* rc)
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &brushes[1]); 
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink),  &brushes[2]); 
 
+
+
+
+
+    HRESULT hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&pDWriteFactory_));
+
+
+    hr = pDWriteFactory_->CreateTextFormat(L"Gabriola", NULL, DWRITE_FONT_WEIGHT_REGULAR, 
+                DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 20.0f, L"en-us", &pTextFormat_);
+
+    if (SUCCEEDED(hr))
+    {
+        hr = pTextFormat_->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+    }
+
+    if (SUCCEEDED(hr))
+    {
+        hr = pTextFormat_->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+    }
+
+
+
+
+
+
+
     // load images here
     IWICImagingFactory *pIWICFactory = NULL; 
     
@@ -237,12 +263,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
                     case SCENE:
                     {
                         scene->updateState(hwnd, endTime, startTime);
-                        scene->renderState(&rc, hwnd, renderTarget, brushes);
+                        scene->renderState(&rc, hwnd, renderTarget, brushes, pTextFormat_);
                         break;
                     }
                     case PAUSEMENU:
                     {
-                        scene->renderState(&rc, hwnd, renderTarget, brushes);
+                        scene->renderState(&rc, hwnd, renderTarget, brushes, pTextFormat_);
                         break;
                     }
                     default:
