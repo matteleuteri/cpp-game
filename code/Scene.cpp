@@ -1,6 +1,6 @@
 #include "headers/Scene.h"
 
-Scene::Scene(int64_t currentTime, bool ia, std::array<ID2D1Bitmap*, 10> bitmaps) : isActive(ia)
+Scene::Scene(int64_t currentTime, bool ia, std::array<ID2D1Bitmap*, 12> bitmaps) : isActive(ia)
 {
     player       = std::make_unique<Player>(bitmaps[1]);
     animator     = std::make_unique<Animator>(currentTime, 0, 0, bitmaps);
@@ -31,6 +31,10 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
     {
         player->updatePlayer(timeElapsed, hwnd);
         // projectile update is handled by Scene
+
+        animator->mountain->update(player.get(), timeElapsed);
+        animator->mountain2->update(player.get(), timeElapsed);
+
         updateProjectiles(timeElapsed);
 
         if(enemyManager->isActive)
@@ -67,6 +71,9 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
 
     if(player->isActive) 
     {
+
+        drawMountains(renderTarget);
+
         drawPlayer(renderTarget);
         drawProjectiles(renderTarget);
         drawTarget(renderTarget);
@@ -92,10 +99,6 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
             pTextFormat_,    // The text format.
             layoutRect,       // The region of the window where the text will be rendered.
             brushes[0]);
-
-
-
-
     }
     renderTarget->EndDraw();  
 }
@@ -206,4 +209,21 @@ void Scene::drawScore(ID2D1HwndRenderTarget* renderTarget)
                 animator->score->y - (size.height / 2), 
                 animator->score->x + (size.width / 2), 
                 animator->score->y + (size.height / 2)));
+}
+
+void Scene::drawMountains(ID2D1HwndRenderTarget* renderTarget)
+{
+    D2D1_SIZE_F size = animator->mountain->bitmap->GetSize();
+    renderTarget->DrawBitmap(animator->mountain->bitmap, D2D1::RectF(
+                animator->mountain->x - (size.width / 2), 
+                animator->mountain->y - (size.height / 2), 
+                animator->mountain->x + (size.width / 2), 
+                animator->mountain->y + (size.height / 2)));
+    
+    size = animator->mountain2->bitmap->GetSize();
+    renderTarget->DrawBitmap(animator->mountain2->bitmap, D2D1::RectF(
+                animator->mountain2->x - (size.width / 2), 
+                animator->mountain2->y - (size.height / 2), 
+                animator->mountain2->x + (size.width / 2), 
+                animator->mountain2->y + (size.height / 2)));
 }

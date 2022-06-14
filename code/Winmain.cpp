@@ -106,6 +106,10 @@ static void createResources(HWND hwnd, RECT* rc)
     loadBitmapFile(pIWICFactory, "one_02.png", &one_02);
     loadBitmapFile(pIWICFactory, "one_03.png", &one_03);
     loadBitmapFile(pIWICFactory, "one_04.png", &one_04);
+
+    loadBitmapFile(pIWICFactory, "Mountains1.png", &mountain1);
+    loadBitmapFile(pIWICFactory, "Mountains2.png", &mountain2);
+
 }
 
 /*  THESE KEY FUNCTIONS BELOW ARE NOT FINAL  */
@@ -218,9 +222,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             // GetModuleFileName(NULL, fnameBuffer, MAX_PATH);
 
             createResources(hwnd, &rc);
-            std::array<ID2D1Bitmap*, 10> bitmaps = {enemyBitmap, playerBitmap, targetBitmap, 
+            std::array<ID2D1Bitmap*, 12> bitmaps = {enemyBitmap, playerBitmap, targetBitmap, 
                         explosion1Bitmap, explosion2Bitmap, explosion3Bitmap, 
-                        one_01, one_02, one_03, one_04};
+                        one_01, one_02, one_03, one_04, mountain1, mountain2};
 
             menu = std::make_unique<Menu>();
             scene = std::make_unique<Scene>(GetTicks(), false, bitmaps);

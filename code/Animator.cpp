@@ -1,6 +1,6 @@
 #include "headers/Animator.h"
 
-Animator::Animator(int64_t start, int x, int y, std::array<ID2D1Bitmap*, 10> bitmaps)
+Animator::Animator(int64_t start, int x, int y, std::array<ID2D1Bitmap*, 12> bitmaps)
 {
     gridRow = y;
     gridCol = x;
@@ -15,12 +15,24 @@ Animator::Animator(int64_t start, int x, int y, std::array<ID2D1Bitmap*, 10> bit
     isActive = false;
     
     score = new Score();
-    score->bitmap = bitmaps[6];
+    score->bitmap = bitmaps[6]; //TODO: put in constructor !!!
+    
+    mountain = new Mountain(bitmaps[10], 700, 700);
+    mountain->xMax = 800; //TODO: put in constructor !!!
+    mountain->xMin = 600; //TODO: put in constructor !!!
+    mountain->yMax = 800; //TODO: put in constructor !!!
+    mountain->yMin = 600; //TODO: put in constructor !!!
+
+    mountain2 = new Mountain(bitmaps[11], 700, 700);
+    mountain2->xMax = 750; //TODO: put in constructor !!!
+    mountain2->xMin = 650; //TODO: put in constructor !!!
+    mountain2->yMax = 750; //TODO: put in constructor !!!
+    mountain2->yMin = 650; //TODO: put in constructor !!!
 }
 
 void Animator::startExplosion(float x, float y, int64_t timestamp)
 {
-    // make small and large explosions dependeing on if the target is hit
+    //TODO make small and large explosions dependeing on if the target is hit
     Explosion e(timestamp, x, y, true);
     e.duration = 2400000;
     e.bitmap = explosionBitmaps[0];

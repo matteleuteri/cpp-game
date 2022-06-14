@@ -45,6 +45,10 @@ ID2D1Bitmap *one_02;
 ID2D1Bitmap *one_03;
 ID2D1Bitmap *one_04;
 
+ID2D1Bitmap *mountain1;
+ID2D1Bitmap *mountain2;
+
+
 // button 
 ButtonAction *q_Button;
 ButtonAction *w_Button;

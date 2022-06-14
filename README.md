@@ -19,6 +19,8 @@ To do list:
 
 6. fix bug of mouse pointer rotation after resizng window
 
+7. all the animationms have a similar form. the animator only takes each object, and tells it to flip bitmaps at a certain time. All this should do is keep track of objects it needs to animate, the timing of their creation, and the timing of when they need to flip, in maybe an array of timeframes. When it is time to flip, it just calls the flip bitmap function of the corresponding object. also when to start and stop, and which particular animations are playing
+
 
 Completed:
 
