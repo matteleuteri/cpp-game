@@ -20,19 +20,19 @@ static HRESULT LoadBitmapFromFile(IWICImagingFactory *pIWICFactory, LPCWSTR uri,
 
     HRESULT hr = pIWICFactory->CreateDecoderFromFilename(uri, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &pDecoder);
 
-    if (SUCCEEDED(hr))
+    if(SUCCEEDED(hr))
     {
         hr = pDecoder->GetFrame(0, &pSource);
     }
-    if (SUCCEEDED(hr))
+    if(SUCCEEDED(hr))
     {
         hr = pIWICFactory->CreateFormatConverter(&pConverter);
     }
-    if (SUCCEEDED(hr))
+    if(SUCCEEDED(hr))
     {
         hr = pConverter->Initialize(pSource, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut);
     }
-    if (SUCCEEDED(hr))
+    if(SUCCEEDED(hr))
     {
         hr = renderTarget->CreateBitmapFromWicBitmap(pConverter, ppBitmap);
     }
@@ -59,12 +59,7 @@ static void createResources(HWND hwnd, RECT* rc)
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &brushes[1]); 
     renderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Pink),  &brushes[2]); 
 
-
-
-
-
     HRESULT hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&pDWriteFactory_));
-
 
     hr = pDWriteFactory_->CreateTextFormat(L"Gabriola", NULL, DWRITE_FONT_WEIGHT_REGULAR, 
                 DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 20.0f, L"en-us", &pTextFormat_);
@@ -78,12 +73,6 @@ static void createResources(HWND hwnd, RECT* rc)
     {
         hr = pTextFormat_->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
     }
-
-
-
-
-
-
 
     // load images here
     IWICImagingFactory *pIWICFactory = NULL; 

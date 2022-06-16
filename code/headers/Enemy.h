@@ -24,6 +24,7 @@ public:
     void Enemy::update(std::vector<Projectile> projectiles, Player* player, Animator* animator, int64_t timeElapsed, int64_t currTime);
     void Enemy::move(Player* player, int64_t timeElapsed);
     void Enemy::detectHit(std::vector<Projectile> projectiles, Animator* animator, int64_t t);
+    void Enemy::draw(ID2D1HwndRenderTarget* renderTarget, Player* player);
 };
 
 #endif

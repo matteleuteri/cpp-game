@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <d2d1.h>
 #include <memory>
+#include "GameObject.h"
 
 enum DIRECTION
 {
@@ -15,12 +16,12 @@ enum DIRECTION
     LEFT
 };
 
-class Player
+class Player: public GameObject
 {
 public:
-    ID2D1Bitmap* bitmap;
-    float x;
-    float y;
+    // ID2D1Bitmap* bitmap;
+    // float x;
+    // float y;
     float angle; 
     int width;
     int height;
@@ -35,10 +36,11 @@ public:
     bool goingUp;
     bool goingDown;
 
-    Player::Player(ID2D1Bitmap *bitmap);
-    void Player::updatePlayer(int64_t timeElapsed, HWND hwnd);
+    Player::Player(ID2D1Bitmap *bitmap, float x, float y);
+    void Player::update(int64_t timeElapsed, HWND hwnd);
     void Player::pointPlayerTowards(POINT mousePosition);
     void Player::moveTowardsZero(DIRECTION direction);   
+    void Player::flipBitmap();
 };
 
 #endif

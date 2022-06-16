@@ -48,7 +48,6 @@ ID2D1Bitmap *one_04;
 ID2D1Bitmap *mountain1;
 ID2D1Bitmap *mountain2;
 
-
 // button 
 ButtonAction *q_Button;
 ButtonAction *w_Button;
@@ -56,12 +55,6 @@ ButtonAction *e_Button;
 ButtonAction *r_Button;
 ButtonAction *p_Button;
 ButtonAction *m_Button;
-
-
-
-
-
-
 
 IDWriteFactory* pDWriteFactory_;
 IDWriteTextFormat* pTextFormat_;

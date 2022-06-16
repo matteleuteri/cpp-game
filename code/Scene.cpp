@@ -2,7 +2,7 @@
 
 Scene::Scene(int64_t currentTime, bool ia, std::array<ID2D1Bitmap*, 12> bitmaps) : isActive(ia)
 {
-    player       = std::make_unique<Player>(bitmaps[1]);
+    player       = std::make_unique<Player>(bitmaps[1], 400.0f, 400.0f);
     animator     = std::make_unique<Animator>(currentTime, 0, 0, bitmaps);
     target       = std::make_unique<Target>(600, 600, bitmaps[2]);
     enemyManager = std::make_unique<EnemyManager>(currentTime, bitmaps[0]);
@@ -29,7 +29,7 @@ void Scene::updateState(HWND hwnd, int64_t endTime, int64_t startTime)
     int64_t timeElapsed = endTime - startTime;
     if(player->isActive)
     {
-        player->updatePlayer(timeElapsed, hwnd);
+        player->update(timeElapsed, hwnd);
         // projectile update is handled by Scene
 
         animator->mountain->update(player.get(), timeElapsed);
@@ -71,17 +71,24 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
 
     if(player->isActive) 
     {
-
         drawMountains(renderTarget);
-
         drawPlayer(renderTarget);
         drawProjectiles(renderTarget);
         drawTarget(renderTarget);
         drawExplosions(renderTarget);
         // can conditional draws be combined with others to be done in one call?
-        if(enemyManager->isActive) drawEnemies(renderTarget);
-        if(animator->score->isActive) drawScore(renderTarget);
-        
+        if(enemyManager->isActive) 
+        {
+            for(Enemy* e: enemyManager->enemyList)
+            {
+                if(e->isActive) e->draw(renderTarget, player.get());
+            }
+        }
+
+        if(animator->score->isActive) 
+        {
+            drawScore(renderTarget);
+        }
 
         D2D1_RECT_F layoutRect = D2D1::RectF(
             static_cast<FLOAT>(rc->left),
@@ -133,36 +140,6 @@ void Scene::renderGrid(RECT* rc, ID2D1HwndRenderTarget* renderTarget, ID2D1Solid
                 D2D1::Point2F((float)animator->gridCol, (float)rc->bottom), brushes[0], 0.75f);
     renderTarget->DrawLine(D2D1::Point2F(0.0f, (float)animator->gridRow), 
                 D2D1::Point2F((float)rc->right, (float)animator->gridRow), brushes[0], 0.75f);
-}
-
-void Scene::drawEnemies(ID2D1HwndRenderTarget* renderTarget)
-{
-    // this is kind of a mess
-    for(Enemy *e : enemyManager->enemyList)
-    {
-        if(!e->isActive) continue;
-
-        float xDistance = player->x - e->x;
-        float yDistance = player->y - e->y;
-
-        e->angle = ((float)atan(yDistance / xDistance) * (180.0f /PI)) + 45.0f;
-        if(player->x < e->x) e->angle += 180; // not sure why, but this is important
-
-        D2D1_POINT_2F center = {};
-        center.x = e->x;
-        center.y = e->y;
-
-        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(e->angle, center));
-
-        D2D1_SIZE_F enemy_size = e->bitmap->GetSize();
-        renderTarget->DrawBitmap(e->bitmap, D2D1::RectF(
-                    e->x - (enemy_size.width / 2), 
-                    e->y - (enemy_size.height / 2), 
-                    e->x + (enemy_size.width / 2), 
-                    e->y + (enemy_size.height / 2)));
-    
-        renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
-    }
 }
 
 void Scene::drawPlayer(ID2D1HwndRenderTarget* renderTarget)
@@ -227,3 +204,16 @@ void Scene::drawMountains(ID2D1HwndRenderTarget* renderTarget)
                 animator->mountain2->x + (size.width / 2), 
                 animator->mountain2->y + (size.height / 2)));
 }
+
+
+// void Scene::drawBM(GameObject* g)
+// {
+//     size = g->bitmap->GetSize();
+//     renderTmrget->DrawBitmap(g->>bitmap, D2D1::RectF(
+//                 g->x - (size.width / 2), 
+//                 g->y - (size.height / 2), 
+//                 g->x + (size.width / 2), 
+//                 g->y + (size.height / 2)));
+// }
+
+

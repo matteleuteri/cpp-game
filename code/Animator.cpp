@@ -56,34 +56,14 @@ void Animator::refreshAnimationFrame(int64_t currentTime)
             explosion->frameNum = 2;
             explosion->flipFrame(explosionBitmaps);
         }
+        
         else if(currentTime - explosion->startTime < explosion->duration)
         {
             explosions.erase(explosions.begin() + index);
         }
     }   
 
-    if(currentTime - score->startTime < 800000)
-    {
-        score->frameNum = 0;
-        score->flipFrame(scoreBitmaps);
-    }
-    else if(currentTime - score->startTime < 1600000)
-    {
-        score->frameNum = 1;
-        score->flipFrame(scoreBitmaps);
-    }
-    else if(currentTime - score->startTime < 2400000)
-    {
-        score->frameNum = 2;
-        score->flipFrame(scoreBitmaps);
-    }
-    else if(currentTime - score->startTime < 3200000)
-    {
-        score->frameNum = 3;
-        score->flipFrame(scoreBitmaps);
-        score->startTime = currentTime;
-    }
-
+    score->flipFrame(scoreBitmaps, currentTime);
 }
 void Animator::showScore(int64_t currentTime)
 {

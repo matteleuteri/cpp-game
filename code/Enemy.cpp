@@ -49,3 +49,41 @@ void Enemy::update(std::vector<Projectile> projectiles, Player* player, Animator
     move(player, timeElapsed);
     detectHit(projectiles, animator, currTime);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Enemy::draw(ID2D1HwndRenderTarget* renderTarget, Player* player)
+{
+    float xDistance = player->x - x;
+    float yDistance = player->y - y;
+
+    angle = ((float)atan(yDistance / xDistance) * (180.0f /PI)) + 45.0f;
+    if(player->x < x) angle += 180; // not sure why, but this is important
+
+    D2D1_POINT_2F center = {};
+    center.x = x;
+    center.y = y;
+
+    renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(angle, center));
+
+    D2D1_SIZE_F enemy_size = bitmap->GetSize();
+    renderTarget->DrawBitmap(bitmap, D2D1::RectF(
+                x - (enemy_size.width / 2), 
+                y - (enemy_size.height / 2), 
+                x + (enemy_size.width / 2), 
+                y + (enemy_size.height / 2)));
+    
+    renderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(0, center));
+    
+}

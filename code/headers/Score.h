@@ -15,8 +15,7 @@ public:
     float x;
     float y;
     int frameNum;
-    void Score::flipFrame(std::array<ID2D1Bitmap*, 4> bitmaps);
-
+    void Score::flipFrame(std::array<ID2D1Bitmap*, 4> bitmaps, int64_t currentTime);
 };
 
 #endif
