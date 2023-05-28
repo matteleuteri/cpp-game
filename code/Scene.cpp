@@ -94,8 +94,8 @@ void Scene::renderState(RECT* rc, HWND hwnd, ID2D1HwndRenderTarget* renderTarget
             static_cast<FLOAT>(rc->left),
             static_cast<FLOAT>(rc->top),
             static_cast<FLOAT>(rc->right - rc->left),
-            static_cast<FLOAT>(rc->bottom - rc->top));
-
+            static_cast<FLOAT>(rc->bottom - rc->top)
+        );
 
         const wchar_t* wszText_ = L"This is my text, it has a null terminating charcetr\n";
         UINT32 cTextLength_ = 53;// check for overflow
